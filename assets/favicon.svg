@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Briefcase Handle -->
+  <path d="M11 10 V7 C11 5.343 12.343 4 14 4 H18 C19.657 4 21 5.343 21 7 V10" fill="none" stroke="#242424" stroke-width="3"/>
+  <!-- Briefcase Body -->
+  <rect x="3" y="10" width="26" height="18" rx="3" fill="#242424"/>
+  <!-- Lightning Bolt -->
+  <path d="M18.5 12 L11 21 H16 L14 27 L22 17 H17.5 L18.5 12 Z" fill="#f4c74a"/>
+</svg>

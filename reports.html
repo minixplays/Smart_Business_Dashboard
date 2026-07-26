@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports & Data Sync - Manager</title>
+    <link rel="stylesheet" href="assets/theme.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/theme.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #fefbf6 0%, #fdf5e1 50%, #fae5ac 100%);
+            color: #242424;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .dashboard-container {
+            background: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .pill-nav-active {
+            background: #242424;
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .pill-nav {
+            color: #525252;
+            transition: all 0.2s;
+        }
+
+        .pill-nav:hover {
+            background: rgba(36, 36, 36, 0.05);
+            color: #242424;
+        }
+
+        .upload-card {
+            background: white;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .upload-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.06);
+        }
+
+        .upload-zone {
+            transition: all 0.2s ease-in-out;
+            border: 2px dashed #e2e8f0;
+            background: #f8fafc;
+        }
+
+        .upload-zone.dragover {
+            border-color: #6366f1;
+            background-color: #eef2ff;
+        }
+
+        .upload-zone.success {
+            border-color: #10b981;
+            background-color: #ecfdf5;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: #ffffff;
+            transition: all 0.3s;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.3);
+        }
+
+        /* Toast Notification */
+        .toast-container {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 9998;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .toast {
+            min-width: 300px;
+            padding: 1rem 1.25rem;
+            border-radius: 1rem;
+            background: white;
+            color: #242424;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transform: translateX(120%);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.21, 1.02, 0.73, 1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .toast-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .toast-success .toast-icon {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .toast-warning .toast-icon {
+            background: #fef9c3;
+            color: #ca8a04;
+        }
+
+        .toast-error .toast-icon {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .toast-info .toast-icon {
+            background: #e0e7ff;
+            color: #4f46e5;
+        }
+
+        .toast-content {
+            flex-grow: 1;
+        }
+
+        .toast-title {
+            font-weight: 700;
+            font-size: 0.875rem;
+            margin-bottom: 0.125rem;
+        }
+
+        .toast-message {
+            font-size: 0.8125rem;
+            color: #64748b;
+            line-height: 1.4;
+        }
+
+        .toast-close {
+            color: #94a3b8;
+            cursor: pointer;
+            transition: color 0.2s;
+            padding: 0.25rem;
+        }
+
+        .toast-close:hover {
+            color: #475569;
+        }
+    </style>
+</head>
+
+<body class="py-4 sm:py-6 px-2 sm:px-4 md:px-6 min-h-screen">
+
+    <div class="max-w-[1440px] mx-auto relative">
+        <div
+            class="dashboard-container rounded-[2.5rem] sm:rounded-[3rem] p-4 sm:p-8 md:p-10 border border-white/60 min-h-[92vh] flex flex-col">
+
+            <!-- Header -->
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-6 w-full">
+                <!-- Logo & Brand -->
+                <div class="flex items-center gap-3 bg-white px-5 py-2.5 rounded-full shadow-sm border border-neutral-100/50 cursor-pointer"
+                    onclick="window.location.href='index.html'">
+                    <div
+                        class="w-8 h-8 rounded-full bg-[#f4c74a] flex items-center justify-center text-[#242424] font-extrabold text-sm shadow-inner">
+                        PNR
+                    </div>
+                    <span class="font-extrabold text-lg tracking-tight">Manager</span>
+                </div>
+
+                <!-- Navigation -->
+                <div
+                    class="flex items-center overflow-x-auto w-full lg:w-auto bg-white/60 backdrop-blur-md p-1.5 rounded-full border border-white shadow-[0_4px_20px_rgba(0,0,0,0.02)] hide-scrollbar">
+                    <button class="pill-nav px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap"
+                        onclick="window.location.href='index.html'">Dashboard</button>
+                    <button class="pill-nav px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap"
+                        onclick="window.location.href='index.html?panel=tools'">Tools</button>
+                    <button
+                        class="pill-nav-active px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap">Reports</button>
+                    <button class="pill-nav px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap"
+                        onclick="window.location.href='calendar.html'">Calendar</button>
+                </div>
+
+                <!-- Right Action (Clear All Data) -->
+                <button onclick="clearAllData()"
+                    class="btn-danger flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm shadow-md whitespace-nowrap">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                        </path>
+                    </svg>
+                    Clear All Data
+                </button>
+            </div>
+
+            <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+                <div>
+                    <h1 class="text-2xl font-bold text-[#242424]">Reports & Data Sync</h1>
+                    <p class="text-sm text-neutral-500 font-medium">Upload datasets here to automatically sync them
+                        across all tools.</p>
+                </div>
+
+                <!-- KPI large numbers -->
+                <div class="flex items-center gap-8 sm:gap-12">
+                    <div class="text-left sm:text-right">
+                        <div class="flex items-center gap-2 sm:justify-end mb-1 text-neutral-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                                </path>
+                            </svg>
+                            <h3 id="reports-pending-kpi" class="text-4xl font-light text-[#242424] tracking-tight">5
+                            </h3>
+                        </div>
+                        <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Pending</span>
+                    </div>
+                    <div class="text-left sm:text-right">
+                        <div class="flex items-center gap-2 sm:justify-end mb-1 text-neutral-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <h3 id="reports-completed-kpi" class="text-4xl font-light text-[#242424] tracking-tight">0
+                            </h3>
+                        </div>
+                        <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Completed</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upload Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <!-- Tailoring Data -->
+                <div class="upload-card rounded-[2rem] p-6 flex flex-col gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5">
+                                </path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-[#242424]">Tailoring Data</h3>
+                            <p class="text-xs text-neutral-500 font-medium">For Tailoring Tracker & Calendar</p>
+                        </div>
+                    </div>
+                    <div class="upload-zone rounded-2xl p-6 text-center cursor-pointer flex-grow flex flex-col justify-center items-center gap-3 relative"
+                        id="dz-tailoring" data-key="raw_csv_tailoring">
+                        <input type="file" id="fi-tailoring" accept=".csv" class="hidden">
+                        <div
+                            class="status-icon w-10 h-10 bg-indigo-50 text-indigo-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                            </svg>
+                        </div>
+                        <p class="text-sm font-bold text-neutral-700 status-text">Drop Tailoring CSV</p>
+                        <p class="text-xs text-neutral-400 font-medium">or click to browse</p>
+                    </div>
+                </div>
+
+                <!-- GC Maker Data -->
+                <div class="upload-card rounded-[2rem] p-6 flex flex-col gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-[#242424]">Global Count Data</h3>
+                            <p class="text-xs text-neutral-500 font-medium">For GC Maker</p>
+                        </div>
+                    </div>
+                    <div class="upload-zone rounded-2xl p-6 text-center cursor-pointer flex-grow flex flex-col justify-center items-center gap-3 relative"
+                        id="dz-gcMaker" data-key="raw_csv_gcMaker">
+                        <input type="file" id="fi-gcMaker" accept=".csv" class="hidden">
+                        <div
+                            class="status-icon w-10 h-10 bg-indigo-50 text-indigo-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                            </svg>
+                        </div>
+                        <p class="text-sm font-bold text-neutral-700 status-text">Drop Stock CSV</p>
+                        <p class="text-xs text-neutral-400 font-medium">or click to browse</p>
+                    </div>
+                </div>
+
+                <!-- Unconfirmed Stock Data -->
+                <div class="upload-card rounded-[2rem] p-6 flex flex-col gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-[#242424]">Unconfirmed Stock</h3>
+                            <p class="text-xs text-neutral-500 font-medium">For Distribution Tracker</p>
+                        </div>
+                    </div>
+                    <div class="upload-zone rounded-2xl p-6 text-center cursor-pointer flex-grow flex flex-col justify-center items-center gap-3 relative"
+                        id="dz-unconfirmedStock" data-key="raw_csv_unconfirmedStock">
+                        <input type="file" id="fi-unconfirmedStock" accept=".csv" class="hidden">
+                        <div
+                            class="status-icon w-10 h-10 bg-indigo-50 text-indigo-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                            </svg>
+                        </div>
+                        <p class="text-sm font-bold text-neutral-700 status-text">Drop Unconfirmed CSV</p>
+                        <p class="text-xs text-neutral-400 font-medium">or click to browse</p>
+                    </div>
+                </div>
+
+                <!-- PO Maker Data -->
+                <div class="upload-card rounded-[2rem] p-6 flex flex-col gap-4">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                </path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-[#242424]">Purchase Orders</h3>
+                            <p class="text-xs text-neutral-500 font-medium">For PO Maker</p>
+                        </div>
+                    </div>
+                    <div class="upload-zone rounded-2xl p-6 text-center cursor-pointer flex-grow flex flex-col justify-center items-center gap-3 relative"
+                        id="dz-poMaker" data-key="raw_csv_poMaker">
+                        <input type="file" id="fi-poMaker" accept=".csv" class="hidden">
+                        <div
+                            class="status-icon w-10 h-10 bg-indigo-50 text-indigo-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                            </svg>
+                        </div>
+                        <p class="text-sm font-bold text-neutral-700 status-text">Drop PO CSV</p>
+                        <p class="text-xs text-neutral-400 font-medium">or click to browse</p>
+                    </div>
+                </div>
+
+                <!-- Knockoff Maker Data -->
+                <div class="upload-card rounded-[2rem] p-6 flex flex-col gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01">
+                                </path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-[#242424]">Knockoff Data</h3>
+                            <p class="text-xs text-neutral-500 font-medium">For Knockoff Maker</p>
+                        </div>
+                    </div>
+                    <div class="upload-zone rounded-2xl p-6 text-center cursor-pointer flex-grow flex flex-col justify-center items-center gap-3 relative"
+                        id="dz-knockoffMaker" data-key="raw_csv_knockoffMaker">
+                        <input type="file" id="fi-knockoffMaker" accept=".csv" class="hidden">
+                        <div
+                            class="status-icon w-10 h-10 bg-indigo-50 text-indigo-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                            </svg>
+                        </div>
+                        <p class="text-sm font-bold text-neutral-700 status-text">Drop Knockoff CSV</p>
+                        <p class="text-xs text-neutral-400 font-medium">or click to browse</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script>
+        // --- Toast Notification System ---
+        function showToast(message, type = 'info', duration = 4000) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+
+            let iconSvg = '';
+            let titleText = '';
+            switch (type) {
+                case 'success':
+                    iconSvg = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>`;
+                    titleText = 'Success';
+                    break;
+                case 'warning':
+                    iconSvg = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>`;
+                    titleText = 'Warning';
+                    break;
+                case 'error':
+                    iconSvg = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+                    titleText = 'Error';
+                    break;
+                default:
+                    iconSvg = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+                    titleText = 'Info';
+            }
+
+            toast.innerHTML = `
+                <div class="toast-icon">${iconSvg}</div>
+                <div class="toast-content">
+                    <div class="toast-title">${titleText}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <div class="toast-close">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </div>
+            `;
+
+            container.appendChild(toast);
+
+            toast.querySelector('.toast-close').addEventListener('click', () => {
+                removeToast(toast);
+            });
+
+            // Trigger animation
+            setTimeout(() => toast.classList.add('show'), 10);
+
+            // Auto remove
+            setTimeout(() => {
+                removeToast(toast);
+            }, duration);
+        }
+
+        function removeToast(toast) {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 400); // Wait for transition
+        }
+
+
+        // --- File Upload Logic ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const zones = document.querySelectorAll('.upload-zone');
+
+            zones.forEach(zone => {
+                const input = zone.querySelector('input[type="file"]');
+                const key = zone.dataset.key;
+
+                // Make zone clickable
+                zone.addEventListener('click', () => input.click());
+
+                // Handle file selection
+                input.addEventListener('change', (e) => {
+                    if (e.target.files.length) {
+                        handleFile(e.target.files[0], zone, key);
+                    }
+                });
+
+                // Drag and drop handlers
+                zone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    zone.classList.add('dragover');
+                });
+
+                zone.addEventListener('dragleave', () => {
+                    zone.classList.remove('dragover');
+                });
+
+                zone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    zone.classList.remove('dragover');
+                    if (e.dataTransfer.files.length) {
+                        input.files = e.dataTransfer.files;
+                        handleFile(e.dataTransfer.files[0], zone, key);
+                    }
+                });
+
+                // Check if already has data on load
+                if (localStorage.getItem(key)) {
+                    setZoneSuccess(zone, "Data loaded");
+                }
+            });
+            updateReportsKPI();
+        });
+
+        function updateReportsKPI() {
+            const reportKeys = [
+                'raw_csv_tailoring',
+                'raw_csv_gcMaker',
+                'raw_csv_unconfirmedStock',
+                'raw_csv_poMaker',
+                'raw_csv_knockoffMaker'
+            ];
+            let completed = 0;
+            reportKeys.forEach(key => {
+                if (localStorage.getItem(key)) completed++;
+            });
+            const total = reportKeys.length;
+            const pending = total - completed;
+
+            const pendingEl = document.getElementById('reports-pending-kpi');
+            const completedEl = document.getElementById('reports-completed-kpi');
+            if (pendingEl) pendingEl.textContent = pending;
+            if (completedEl) completedEl.textContent = completed;
+        }
+
+        function handleFile(file, zone, key) {
+            if (!file.name.endsWith('.csv')) {
+                showToast('Please select a valid CSV file.', 'warning');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const text = e.target.result;
+                try {
+                    localStorage.setItem(key, text);
+
+                    // Specific logic for tailoring tracker backward compatibility
+                    if (key === 'raw_csv_tailoring') {
+                        // We also clear the processed one so it re-processes on next open
+                        localStorage.removeItem('tailoring_orders');
+                    }
+
+                    showToast(`Successfully saved ${file.name}`, 'success');
+                    setZoneSuccess(zone, file.name);
+                } catch (err) {
+                    console.error("Storage error:", err);
+                    showToast('Failed to save data. Local storage might be full.', 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function setZoneSuccess(zone, filename) {
+            zone.classList.add('success');
+            const icon = zone.querySelector('.status-icon');
+            icon.classList.remove('bg-indigo-50', 'text-indigo-500');
+            icon.classList.add('bg-green-100', 'text-green-600');
+            icon.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>`;
+
+            const text = zone.querySelector('.status-text');
+            text.textContent = filename;
+
+            const subtext = zone.querySelector('p:last-child');
+            subtext.textContent = "Click or drag to replace";
+
+            updateReportsKPI();
+        }
+
+        function resetZones() {
+            document.querySelectorAll('.upload-zone').forEach(zone => {
+                zone.classList.remove('success');
+                const icon = zone.querySelector('.status-icon');
+                icon.classList.remove('bg-green-100', 'text-green-600');
+                icon.classList.add('bg-indigo-50', 'text-indigo-500');
+                icon.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>`;
+
+                const input = zone.querySelector('input[type="file"]');
+                input.value = '';
+
+                // Restore original texts based on ID
+                const text = zone.querySelector('.status-text');
+                const id = zone.id;
+                if (id === 'dz-tailoring') text.textContent = "Drop Tailoring CSV";
+                else if (id === 'dz-gcMaker') text.textContent = "Drop Stock CSV";
+                else if (id === 'dz-unconfirmedStock') text.textContent = "Drop Unconfirmed CSV";
+                else if (id === 'dz-poMaker') text.textContent = "Drop PO CSV";
+                else if (id === 'dz-knockoffMaker') text.textContent = "Drop Knockoff CSV";
+
+                const subtext = zone.querySelector('p:last-child');
+                subtext.textContent = "or click to browse";
+            });
+            updateReportsKPI();
+        }
+
+        function clearAllData() {
+            if (confirm("Are you sure you want to clear all synced CSV data? This will require you to upload the files again in their respective tools.")) {
+                const keysToClear = [
+                    'raw_csv_tailoring',
+                    'tailoring_orders', // Processed version
+                    'raw_csv_gcMaker',
+                    'raw_csv_unconfirmedStock',
+                    'raw_csv_poMaker',
+                    'raw_csv_knockoffMaker'
+                ];
+
+                keysToClear.forEach(key => localStorage.removeItem(key));
+                resetZones();
+                showToast("All data successfully cleared.", "success");
+            }
+        }
+    </script>
+</body>
+
+</html>

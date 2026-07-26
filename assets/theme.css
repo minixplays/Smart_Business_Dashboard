@@ -1,0 +1,263 @@
+/* Dark Theme Styles - Refined & Visually Friendly Aesthetic */
+body.dark-mode {
+    color-scheme: dark;
+    color: #f8fafc !important;
+}
+
+body.dark-mode .theme-bg,
+body.dark-mode.theme-bg {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%) !important;
+}
+
+/* Base structural adjustments */
+body.dark-mode .dashboard-container {
+    background: rgba(15, 23, 42, 0.7);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Typography Overrides */
+body.dark-mode .text-\[\#242424\],
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6 {
+    color: #f8fafc !important;
+}
+
+body.dark-mode .text-neutral-500 {
+    color: #94a3b8 !important;
+}
+
+body.dark-mode .text-neutral-400 {
+    color: #cbd5e1 !important;
+}
+
+body.dark-mode .text-neutral-600 {
+    color: #cbd5e1 !important;
+}
+
+body.dark-mode .text-neutral-700 {
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .text-\[\#1a1a1a\] {
+    color: #f8fafc !important;
+}
+
+/* Backgrounds and Cards */
+body.dark-mode .bg-white {
+    background: #1e293b !important;
+    color: #f8fafc !important;
+    border-color: rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode .bg-neutral-50,
+body.dark-mode .hover\:bg-neutral-50:hover {
+    background: #334155 !important;
+}
+
+body.dark-mode .bg-neutral-100,
+body.dark-mode .border-neutral-100 {
+    background: #334155 !important;
+    border-color: #475569 !important;
+}
+
+body.dark-mode .border-neutral-300,
+body.dark-mode .bg-neutral-300 {
+    border-color: #64748b !important;
+    background: #64748b !important;
+}
+
+body.dark-mode .bg-neutral-200 {
+    background: #475569 !important;
+}
+
+body.dark-mode .border-white {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+body.dark-mode .border-neutral-200 {
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.dark-mode .shadow-sm {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Component Overrides */
+body.dark-mode .bento-dark {
+    background: #0f172a !important;
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6) !important;
+}
+
+body.dark-mode .bg-\[\#242424\] {
+    background: #0f172a !important;
+}
+
+body.dark-mode .bento-card {
+    background: #1e293b;
+    color: #f8fafc;
+}
+
+body.dark-mode .bento-card:hover,
+body.dark-mode .tool-card:hover,
+body.dark-mode .upload-card:hover {
+    border-color: rgba(244, 199, 74, 0.6) !important;
+    box-shadow: 0 10px 40px -10px rgba(244, 199, 74, 0.15), 0 20px 40px -10px rgba(0, 0, 0, 0.5) !important;
+}
+
+body.dark-mode .glass-card {
+    background: rgba(30, 41, 59, 0.8) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(16px);
+}
+
+body.dark-mode .bg-white\/60 {
+    background: rgba(30, 41, 59, 0.6) !important;
+}
+
+/* Nav Pills */
+body.dark-mode .pill-nav-active {
+    background: #f4c74a !important;
+    color: #0f172a !important;
+    box-shadow: 0 0 15px rgba(244, 199, 74, 0.3) !important;
+}
+
+body.dark-mode .pill-nav {
+    color: #cbd5e1 !important;
+}
+
+body.dark-mode .pill-nav:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+}
+
+/* Inputs and Forms */
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select {
+    background: #0f172a !important;
+    color: #f8fafc !important;
+    border-color: #475569 !important;
+}
+
+body.dark-mode input:focus,
+body.dark-mode textarea:focus,
+body.dark-mode select:focus {
+    border-color: #f4c74a !important;
+    box-shadow: 0 0 0 4px rgba(244, 199, 74, 0.2) !important;
+}
+
+/* Modals */
+body.dark-mode .modal-overlay,
+body.dark-mode .lock-overlay {
+    background: rgba(0, 0, 0, 0.75) !important;
+    backdrop-filter: blur(10px);
+}
+
+body.dark-mode .modal-content,
+body.dark-mode .lock-modal {
+    background: #1e293b !important;
+    color: #f8fafc !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+body.dark-mode .lock-modal h2 {
+    color: #f8fafc !important;
+}
+
+body.dark-mode .lock-modal p {
+    color: #94a3b8 !important;
+}
+
+/* Quotation Generator Card Override */
+body.dark-mode .bg-\[\#f4c74a\] {
+    background: linear-gradient(135deg, #c2410c 0%, #ea580c 100%) !important;
+    border-color: #c2410c !important;
+}
+
+body.dark-mode .bg-\[\#f4c74a\] .text-\[\#242424\],
+body.dark-mode .bg-\[\#f4c74a\] .text-amber-950 {
+    color: #ffffff !important;
+}
+
+body.dark-mode .bg-\[\#f4c74a\] .text-amber-950\/70 {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+body.dark-mode .bg-\[\#f4c74a\] .bg-white\/40,
+body.dark-mode .bg-\[\#f4c74a\] .bg-white\/30 {
+    background: rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Routine Tags */
+body.dark-mode #barcode-routine-list .bg-white\/60 {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5) !important;
+}
+
+body.dark-mode .routine-tag-today {
+    background: rgba(244, 199, 74, 0.2) !important;
+    color: #fef08a !important;
+}
+
+body.dark-mode .routine-tag-tomorrow {
+    background: rgba(16, 185, 129, 0.2) !important;
+    color: #6ee7b7 !important;
+}
+
+/* Notification System Overrides */
+body.dark-mode #notificationPanel {
+    background: #1e293b !important;
+    border-color: rgba(148, 163, 184, 0.1) !important;
+}
+
+body.dark-mode #notificationPanel>div:first-child {
+    background: rgba(15, 23, 42, 0.7) !important;
+    border-bottom-color: rgba(148, 163, 184, 0.1) !important;
+}
+
+body.dark-mode #notificationPanel h4 {
+    color: #f8fafc !important;
+}
+
+body.dark-mode #notificationList {
+    background: #1e293b !important;
+}
+
+body.dark-mode .notification-item {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.dark-mode .notification-item:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+body.dark-mode .notification-msg {
+    color: #cbd5e1 !important;
+}
+
+body.dark-mode .notification-time {
+    color: #94a3b8 !important;
+}
+
+/* Table Overrides for Sub-pages */
+body.dark-mode table thead tr {
+    background: #0f172a !important;
+    color: #f8fafc !important;
+}
+
+body.dark-mode table tbody tr {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+    color: #cbd5e1 !important;
+}
+
+body.dark-mode table tbody tr:hover {
+    background: #334155 !important;
+}
