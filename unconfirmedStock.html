@@ -298,6 +298,23 @@
                         </select>
                     </div>
 
+                    <!-- Search Box (Tran Id, Dist Order, Remarks) -->
+                    <div class="flex flex-col gap-1 w-full sm:w-auto">
+                        <label class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Search</label>
+                        <div class="relative flex items-center">
+                            <svg class="w-4 h-4 text-neutral-400 absolute left-3.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                            <input type="text" id="searchInput" oninput="onSearchInput(event)" placeholder="Search Tran ID, Dist Order..."
+                                class="pl-10 pr-8 py-2.5 bg-white border border-neutral-200 rounded-xl text-sm font-semibold text-[#292929] focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all min-w-[220px] placeholder-neutral-400" />
+                            <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-2.5 text-neutral-400 hover:text-neutral-600 p-0.5 rounded-lg transition" title="Clear Search">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- Password Toggle -->
                     <div class="flex flex-col gap-1 w-full sm:w-auto sm:ml-auto">
                         <label class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Conf
@@ -396,6 +413,9 @@
                                 <th
                                     class="px-5 py-4 text-left text-[10px] font-bold text-neutral-500 uppercase tracking-widest">
                                     #</th>
+                                <th id="thTranId"
+                                    class="px-5 py-4 text-left text-[10px] font-bold text-neutral-500 uppercase tracking-widest hidden">
+                                    Tran Id</th>
                                 <th
                                     class="px-5 py-4 text-left text-[10px] font-bold text-neutral-500 uppercase tracking-widest">
                                     Tran Date</th>
@@ -526,6 +546,7 @@
 
             const colSiteToName = findCol('Site To Na');
             const colSiteFromName = findCol('Site From');
+            const colTranId = findCol('Tran Id') || findCol('Tran ID') || findCol('TranId') || findCol('Transaction') || findCol('Tran #');
             const colTranDate = findCol('Tran Date');
             const colDistOrder = findCol('Dist Order');
             const colRemarks = findCol('Remarks');
@@ -538,7 +559,13 @@
             }
 
             // Store column mappings globally
-            window._cols = { colSiteToName, colSiteFromName, colTranDate, colDistOrder, colRemarks, colConfPasswd, colNetAmt };
+            window._cols = { colSiteToName, colSiteFromName, colTranId, colTranDate, colDistOrder, colRemarks, colConfPasswd, colNetAmt };
+
+            const thTranId = document.getElementById('thTranId');
+            if (thTranId) {
+                if (colTranId) thTranId.classList.remove('hidden');
+                else thTranId.classList.add('hidden');
+            }
 
             // Populate Site To dropdown with unique city names
             const siteToNames = [...new Set(rawData.map(r => (r[colSiteToName] || '').trim()).filter(Boolean))].sort();
@@ -572,17 +599,84 @@
             showToast(`Loaded ${rawData.length} records from CSV.`, 'success');
         }
 
+        // --- Search Input Handlers ---
+        function onSearchInput(event) {
+            const clearBtn = document.getElementById('clearSearchBtn');
+            if (event.target.value.length > 0) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+            applyFilters();
+        }
+
+        function clearSearch() {
+            const input = document.getElementById('searchInput');
+            input.value = '';
+            document.getElementById('clearSearchBtn').classList.add('hidden');
+            applyFilters();
+            input.focus();
+        }
+
+        // --- Unified Filtering Logic ---
+        function applyFilters() {
+            const selectedTo = document.getElementById('siteToFilter').value;
+            const selectedFrom = document.getElementById('siteFromFilter').value;
+            const searchInput = document.getElementById('searchInput');
+            const searchTerm = searchInput ? searchInput.value.trim().toLowerCase() : '';
+
+            const { colSiteToName, colSiteFromName, colTranId, colTranDate, colDistOrder, colRemarks, colConfPasswd } = window._cols || {};
+
+            let filtered = rawData;
+
+            if (selectedTo) {
+                filtered = filtered.filter(r => (r[colSiteToName] || '').trim() === selectedTo);
+            }
+
+            if (selectedFrom) {
+                filtered = filtered.filter(r => (r[colSiteFromName] || '').trim() === selectedFrom);
+            }
+
+            if (searchTerm) {
+                filtered = filtered.filter(r => {
+                    const tranId = colTranId ? (r[colTranId] || '').toLowerCase() : '';
+                    const distOrder = colDistOrder ? (r[colDistOrder] || '').toLowerCase() : '';
+                    const remarks = colRemarks ? (r[colRemarks] || '').toLowerCase() : '';
+                    const tranDate = colTranDate ? (r[colTranDate] || '').toLowerCase() : '';
+                    const confPasswd = colConfPasswd ? (r[colConfPasswd] || '').toLowerCase() : '';
+                    const siteFrom = colSiteFromName ? (r[colSiteFromName] || '').toLowerCase() : '';
+                    const siteTo = colSiteToName ? (r[colSiteToName] || '').toLowerCase() : '';
+
+                    return tranId.includes(searchTerm) ||
+                        distOrder.includes(searchTerm) ||
+                        remarks.includes(searchTerm) ||
+                        tranDate.includes(searchTerm) ||
+                        confPasswd.includes(searchTerm) ||
+                        siteFrom.includes(searchTerm) ||
+                        siteTo.includes(searchTerm);
+                });
+            }
+
+            if (!selectedTo && !selectedFrom && !searchTerm) {
+                document.getElementById('tableArea').classList.add('hidden');
+                document.getElementById('recordCount').textContent = '0';
+                return;
+            }
+
+            document.getElementById('recordCount').textContent = filtered.length;
+            renderTable(filtered);
+            document.getElementById('tableArea').classList.remove('hidden');
+        }
+
         // --- Site To Change: populate Site From filtered ---
         function onSiteToChange() {
             const selectedTo = document.getElementById('siteToFilter').value;
             const siteFromSelect = document.getElementById('siteFromFilter');
             siteFromSelect.innerHTML = '<option value="">— Select Source —</option>';
-            document.getElementById('tableArea').classList.add('hidden');
-            document.getElementById('tableBody').innerHTML = '';
-            document.getElementById('recordCount').textContent = '0';
 
             if (!selectedTo) {
                 siteFromSelect.disabled = true;
+                applyFilters();
                 return;
             }
 
@@ -600,29 +694,12 @@
             });
 
             siteFromSelect.disabled = false;
+            applyFilters();
         }
 
         // --- Site From Change: render table ---
         function onSiteFromChange() {
-            const selectedTo = document.getElementById('siteToFilter').value;
-            const selectedFrom = document.getElementById('siteFromFilter').value;
-
-            if (!selectedTo || !selectedFrom) {
-                document.getElementById('tableArea').classList.add('hidden');
-                document.getElementById('recordCount').textContent = '0';
-                return;
-            }
-
-            const { colSiteToName, colSiteFromName, colTranDate, colDistOrder, colRemarks, colConfPasswd } = window._cols;
-
-            const filtered = rawData.filter(r =>
-                (r[colSiteToName] || '').trim() === selectedTo &&
-                (r[colSiteFromName] || '').trim() === selectedFrom
-            );
-
-            document.getElementById('recordCount').textContent = filtered.length;
-            renderTable(filtered);
-            document.getElementById('tableArea').classList.remove('hidden');
+            applyFilters();
         }
 
         // --- Render Table ---
@@ -630,9 +707,10 @@
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
 
-            const { colTranDate, colDistOrder, colRemarks, colConfPasswd } = window._cols;
+            const { colTranId, colTranDate, colDistOrder, colRemarks, colConfPasswd } = window._cols;
 
             data.forEach((row, idx) => {
+                const tranId = colTranId ? (row[colTranId] || '').trim() : '';
                 const tranDate = (row[colTranDate] || '').trim();
                 const distOrder = (row[colDistOrder] || '').trim();
                 const remarks = (row[colRemarks] || '').trim();
@@ -644,6 +722,7 @@
                 tr.className = 'data-row border-b border-neutral-100';
                 tr.innerHTML = `
                     <td class="px-5 py-4 text-xs font-bold text-neutral-400">${idx + 1}</td>
+                    ${colTranId ? `<td class="px-5 py-4 text-sm font-bold text-indigo-600 whitespace-nowrap">${escapeHtml(tranId || '—')}</td>` : ''}
                     <td class="px-5 py-4 text-sm font-semibold text-[#292929] whitespace-nowrap">${escapeHtml(tranDate)}</td>
                     <td class="px-5 py-4 text-sm font-semibold text-[#292929] whitespace-nowrap">${escapeHtml(distOrder)}</td>
                     <td class="px-5 py-4 text-sm text-neutral-600 max-w-[300px] truncate" title="${escapeHtml(remarks)}">${escapeHtml(remarks || '—')}</td>
