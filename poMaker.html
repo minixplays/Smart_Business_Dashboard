@@ -247,14 +247,20 @@
             document.getElementById('uploadText').textContent = file.name;
             showToast('Loading database...', 'info', 1000);
 
-            Papa.parse(file, {
-                header: true,
-                skipEmptyLines: true,
-                complete: handleParsedData,
-                error: function(err) {
-                    showToast('Failed to parse CSV: ' + err.message, 'error');
-                }
-            });
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const csvText = e.target.result;
+                localStorage.setItem('raw_csv_poMaker', csvText);
+                Papa.parse(csvText, {
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: handleParsedData,
+                    error: function(err) {
+                        showToast('Failed to parse CSV: ' + err.message, 'error');
+                    }
+                });
+            };
+            reader.readAsText(file);
         }
 
         function handleParsedData(results) {
