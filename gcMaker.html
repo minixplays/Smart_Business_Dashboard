@@ -327,28 +327,96 @@
                 </div>
 
                 <!-- Tools Row -->
-                <div class="flex justify-end mb-4">
-                    <button onclick="exportReconciliation()"
-                        class="flex items-center justify-center px-5 py-3 bg-[#292929] hover:bg-black text-white rounded-2xl font-bold transition shadow-md text-xs sm:text-sm">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
-                            </path>
-                        </svg>
-                        Export CSV Report
-                    </button>
+                <div class="flex flex-col lg:flex-row justify-between items-center gap-4 mb-4">
+                    <!-- Product Category Search Bar -->
+                    <div class="relative flex items-center w-full lg:w-96">
+                        <div class="absolute left-3.5 flex items-center pointer-events-none text-neutral-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <input type="text" id="categorySearch" oninput="handleCategorySearchInput(event)"
+                            onkeydown="handleCategorySearchKey(event)" placeholder="Search Product Category..."
+                            class="w-full bg-white border border-neutral-200 rounded-2xl pl-10 pr-24 py-2.5 text-xs sm:text-sm font-semibold text-[#292929] focus:outline-none focus:border-[#f7d060] focus:ring-4 focus:ring-[#f7d060]/20 transition-all shadow-sm placeholder-neutral-400" />
+                        <div class="absolute right-1.5 flex items-center gap-1">
+                            <button id="clearCategorySearchBtn" onclick="clearCategorySearch()"
+                                class="hidden text-neutral-400 hover:text-neutral-600 p-1 rounded-lg transition"
+                                title="Clear Search">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                            <button onclick="applyFilter()"
+                                class="px-3.5 py-1.5 bg-[#f7d060] hover:bg-[#e5be4f] text-[#292929] rounded-xl font-bold text-xs transition shadow-sm flex items-center gap-1">
+                                Search
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-wrap items-center gap-2.5 w-full lg:w-auto justify-end">
+                        <!-- Clear Physical Stock Data Button -->
+                        <button onclick="clearPhysicalData()" title="Clear all entered physical stock data"
+                            class="flex items-center justify-center px-4 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200/80 rounded-2xl font-bold transition shadow-sm text-xs sm:text-sm gap-2">
+                            <svg class="w-4 h-4 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                </path>
+                            </svg>
+                            Clear Physical Data
+                        </button>
+
+                        <!-- Export CSV Report Button -->
+                        <button onclick="exportReconciliation()"
+                            class="flex items-center justify-center px-5 py-2.5 bg-[#292929] hover:bg-black text-white rounded-2xl font-bold transition shadow-md text-xs sm:text-sm">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                            Export CSV Report
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Table Block -->
                 <div class="bg-white rounded-3xl p-4 sm:p-6 shadow-sm border border-neutral-100">
-                    <div class="overflow-x-auto rounded-2xl max-h-[600px] table-scroll">
+                    <div class="overflow-x-auto rounded-2xl">
                         <table class="w-full text-left border-collapse table-fixed min-w-[1200px]">
                             <thead class="sticky top-0 z-20 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.05)]">
                                 <tr
                                     class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest border-b border-neutral-100 whitespace-nowrap bg-[#f9f9f9]">
                                     <th class="py-4 px-2 w-[4%] text-center rounded-tl-2xl">#</th>
                                     <th class="py-4 px-2 w-[18%]">Product Category</th>
-                                    <th class="py-4 px-2 w-[9%] text-center">System<br>Stock</th>
+                                    <th class="py-4 px-2 w-[10%] text-center">
+                                        <div class="inline-flex items-center justify-center gap-1.5">
+                                            <button onclick="toggleSystemStock()" id="toggleSystemStockBtn"
+                                                title="Hide/Show System Stock Details"
+                                                class="p-1 hover:bg-neutral-200/80 rounded-lg text-neutral-400 hover:text-[#292929] transition-all cursor-pointer">
+                                                <svg id="eyeIconOpen" class="w-4 h-4" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                                    </path>
+                                                </svg>
+                                                <svg id="eyeIconClosed" class="w-4 h-4 hidden text-rose-500" fill="none"
+                                                    stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858-5.908a10.025 10.025 0 014.122-.963c4.478 0 8.268 2.943 9.542 7a9.97 9.97 0 01-2.43 3.978M15 12a3 3 0 11-6 0 3 3 0 016 0z">
+                                                    </path>
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M3 3l18 18"></path>
+                                                </svg>
+                                            </button>
+                                            <span>System<br>Stock</span>
+                                        </div>
+                                    </th>
                                     <th class="py-4 px-2 w-[10%] text-center">Physical<br>Stock</th>
                                     <th class="py-4 px-2 w-[10%] text-center">System Adv<br>Stock</th>
                                     <th class="py-4 px-2 w-[10%] text-center">Manual<br>Bills</th>
@@ -557,19 +625,123 @@
             select.appendChild(frag);
         }
 
+        function handleCategorySearchInput(event) {
+            const clearBtn = document.getElementById('clearCategorySearchBtn');
+            if (event.target.value.length > 0) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+            applyFilter();
+        }
+
+        function handleCategorySearchKey(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                applyFilter();
+            }
+        }
+
+        function clearCategorySearch() {
+            const input = document.getElementById('categorySearch');
+            input.value = '';
+            document.getElementById('clearCategorySearchBtn').classList.add('hidden');
+            applyFilter();
+            input.focus();
+        }
+
         function applyFilter() {
             const selectedSite = document.getElementById('siteFilter').value;
+            const searchInput = document.getElementById('categorySearch');
+            const searchTerm = searchInput ? searchInput.value.trim().toLowerCase() : '';
+
             let arr = Object.values(aggregatedData);
             if (selectedSite !== 'ALL') {
                 arr = arr.filter(item => item.site === selectedSite);
+            }
+            if (searchTerm) {
+                arr = arr.filter(item => item.category.toLowerCase().includes(searchTerm));
             }
             currentViewData = arr.sort((a, b) => a.category.localeCompare(b.category));
             renderTable();
         }
 
+        let hideSystemStock = false;
+
+        function toggleSystemStock() {
+            hideSystemStock = !hideSystemStock;
+            const openIcon = document.getElementById('eyeIconOpen');
+            const closedIcon = document.getElementById('eyeIconClosed');
+            const btn = document.getElementById('toggleSystemStockBtn');
+
+            if (hideSystemStock) {
+                openIcon.classList.add('hidden');
+                closedIcon.classList.remove('hidden');
+                btn.classList.add('bg-rose-50', 'text-rose-500');
+                btn.title = "Show System Stock Details";
+            } else {
+                openIcon.classList.remove('hidden');
+                closedIcon.classList.add('hidden');
+                btn.classList.remove('bg-rose-50', 'text-rose-500');
+                btn.title = "Hide System Stock Details";
+            }
+
+            renderTable();
+        }
+
+        function hasEnteredPhysicalData() {
+            return Object.values(aggregatedData).some(item => item.physicalQty !== null || (item.remarks && item.remarks.trim() !== ""));
+        }
+
+        // Intercept keyboard refresh shortcuts (Ctrl+R, Cmd+R, F5, Ctrl+F5)
+        window.addEventListener('keydown', (e) => {
+            if (((e.ctrlKey || e.metaKey) && (e.key === 'r' || e.key === 'R')) || e.key === 'F5') {
+                if (hasEnteredPhysicalData()) {
+                    if (!confirm("You have unsaved physical stock data! Are you sure you want to refresh the page? Your entered counts will be lost.")) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                }
+            }
+        });
+
+        // Intercept browser refresh button / page unload
+        window.addEventListener('beforeunload', (e) => {
+            if (hasEnteredPhysicalData()) {
+                e.preventDefault();
+                e.returnValue = 'You have unsaved physical stock data. Are you sure you want to leave or refresh?';
+                return e.returnValue;
+            }
+        });
+
+        function clearPhysicalData() {
+            if (!hasEnteredPhysicalData()) {
+                alert("No physical stock data to clear.");
+                return;
+            }
+            if (confirm("Are you sure you want to clear all entered physical stock quantities, advance stock, manual bills, and remarks?")) {
+                for (let key in aggregatedData) {
+                    aggregatedData[key].physicalQty = null;
+                    aggregatedData[key].advStock = null;
+                    aggregatedData[key].manualBills = null;
+                    aggregatedData[key].finalQty = null;
+                    aggregatedData[key].variance = null;
+                    aggregatedData[key].remarks = "";
+                }
+                renderTable();
+            }
+        }
+
         function renderTable() {
             const tbody = document.getElementById('dataTableBody');
             const frag = document.createDocumentFragment();
+
+            if (currentViewData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="py-12 text-center text-neutral-400 font-bold text-xs sm:text-sm tracking-wide">NO MATCHING PRODUCT CATEGORIES FOUND</td></tr>`;
+                document.getElementById('tableFooter').classList.add('hidden');
+                updateKPIs();
+                return;
+            }
 
             for (let index = 0; index < currentViewData.length; index++) {
                 const item = currentViewData[index];
@@ -578,7 +750,7 @@
                 // New Bento table row styling
                 tr.className = index % 2 === 0 ? "border-b border-neutral-50 group hover:bg-neutral-50/40 transition-colors bg-white relative z-10" : "border-b border-neutral-50 group hover:bg-neutral-50/40 transition-colors bg-[#fafafa] relative z-10";
 
-                const sysQtyDisplay = Number.isInteger(item.systemQty) ? item.systemQty : item.systemQty.toFixed(2);
+                const sysQtyDisplay = hideSystemStock ? '•••' : (Number.isInteger(item.systemQty) ? item.systemQty : item.systemQty.toFixed(2));
 
                 const physVal = item.physicalQty !== null ? item.physicalQty : '';
                 const advVal = item.advStock !== null ? item.advStock : '';
@@ -712,7 +884,7 @@
             const formatNum = (num) => Number.isInteger(num) ? num : num.toFixed(2);
 
             document.getElementById('kpiCategories').innerText = currentViewData.length;
-            document.getElementById('kpiSystemStock').innerText = formatNum(totalSys);
+            document.getElementById('kpiSystemStock').innerText = hideSystemStock ? '•••' : formatNum(totalSys);
             document.getElementById('kpiPhysicalStock').innerText = formatNum(totalQty);
 
             const varEl = document.getElementById('kpiVariance');
@@ -721,7 +893,7 @@
             varEl.className = `text-3xl sm:text-4xl font-light ${totalVar > 0 ? 'text-emerald-400' : (totalVar < 0 ? 'text-rose-400' : 'text-white')}`;
 
             // Footer Totals Update
-            document.getElementById('footSystem').innerText = formatNum(totalSys);
+            document.getElementById('footSystem').innerText = hideSystemStock ? '•••' : formatNum(totalSys);
             document.getElementById('footPhysical').innerText = formatNum(totalPhys);
             document.getElementById('footAdv').innerText = formatNum(totalAdv);
             document.getElementById('footBills').innerText = formatNum(totalBills);
@@ -744,16 +916,20 @@
             if (currentViewData.length === 0) return alert("No data to export!");
 
             const csvRows = [];
-            csvRows.push(['SL', 'Product', 'System Stock', 'Physical Stock', 'System Adv Stock', 'Manual Bills', 'Quantity', 'Difference Qty', 'Remarks'].join(','));
+            // Professional headers matching the exact table view
+            const headers = ['#', 'PRODUCT CATEGORY', 'SYSTEM STOCK', 'PHYSICAL STOCK', 'SYSTEM ADV STOCK', 'MANUAL BILLS', 'ADJUSTED QUANTITY', 'DIFFERENCE', 'REMARKS'];
+            csvRows.push(headers.map(h => `"${h}"`).join(','));
 
             let tSys = 0, tPhys = 0, tAdv = 0, tBills = 0, tQty = 0, tVar = 0;
 
+            const formatNum = (num) => Number.isInteger(num) ? num : parseFloat(num.toFixed(2));
+
             currentViewData.forEach((item, index) => {
-                const phys = item.physicalQty !== null ? item.physicalQty : '';
-                const adv = item.advStock !== null ? item.advStock : '';
-                const bills = item.manualBills !== null ? item.manualBills : '';
-                const qty = item.finalQty !== null ? item.finalQty : '';
-                const vari = item.variance !== null ? item.variance : '';
+                const phys = item.physicalQty !== null ? formatNum(item.physicalQty) : '-';
+                const adv = item.advStock !== null ? formatNum(item.advStock) : '-';
+                const bills = item.manualBills !== null ? formatNum(item.manualBills) : '-';
+                const qty = item.finalQty !== null ? formatNum(item.finalQty) : '-';
+                const vari = item.variance !== null ? formatNum(item.variance) : '-';
 
                 tSys += item.systemQty;
                 if (item.physicalQty !== null) {
@@ -766,22 +942,34 @@
 
                 const values = [
                     index + 1,
-                    `"${item.category}"`,
-                    item.systemQty,
+                    `"${item.category.replace(/"/g, '""')}"`,
+                    formatNum(item.systemQty),
                     phys,
                     adv,
                     bills,
                     qty,
                     vari,
-                    `"${item.remarks}"`
+                    `"${(item.remarks || '').replace(/"/g, '""')}"`
                 ];
                 csvRows.push(values.join(','));
             });
 
-            // Grand Total Row
-            csvRows.push(['', '"TOTAL"', tSys, tPhys, tAdv, tBills, tQty, tVar, '""'].join(','));
+            // Professional GRAND TOTAL Row
+            const totalRow = [
+                '""',
+                '"GRAND TOTAL"',
+                formatNum(tSys),
+                formatNum(tPhys),
+                formatNum(tAdv),
+                formatNum(tBills),
+                formatNum(tQty),
+                formatNum(tVar),
+                '""'
+            ];
+            csvRows.push(totalRow.join(','));
 
-            const csvString = csvRows.join('\n');
+            // Include UTF-8 BOM so Excel opens with correct character encoding and layout
+            const csvString = '\uFEFF' + csvRows.join('\n');
             const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
             const url = URL.createObjectURL(blob);
@@ -791,7 +979,7 @@
             const d = new Date();
             const dateStr = `${d.getFullYear()}${(d.getMonth() + 1).toString().padStart(2, '0')}${d.getDate().toString().padStart(2, '0')}`;
 
-            link.setAttribute("download", `GC_Maker_${siteName}_${dateStr}.csv`);
+            link.setAttribute("download", `GC_Reconciliation_${siteName}_${dateStr}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);

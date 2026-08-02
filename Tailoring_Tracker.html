@@ -321,15 +321,69 @@
             color: #f4c74a;
             border-color: #242424;
         }
+
+        /* Tab Switcher */
+        .tab-btn {
+            color: #6b7280;
+            background: transparent;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: #242424;
+            color: #f4c74a;
+        }
+
+        body.dark-mode .tab-btn {
+            color: #94a3b8;
+        }
+
+        body.dark-mode .tab-btn.active {
+            background: #f4c74a;
+            color: #242424;
+        }
+
+        body.dark-mode .tab-switcher-wrap {
+            background: #1e293b;
+            border-color: rgba(148, 163, 184, 0.2);
+        }
+
+        /* Custom Scrollbar */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background-color: rgba(36, 36, 36, 0.2);
+            border-radius: 20px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(36, 36, 36, 0.4);
+        }
+
+        body.dark-mode .custom-scroll::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        body.dark-mode .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
     </style>
 </head>
 
-<body class="py-4 sm:py-6 px-2 sm:px-4 md:px-6">
+<body class="py-3 px-3 sm:px-4">
 
-    <div class="max-w-[1440px] mx-auto relative">
+    <div class="w-full relative">
         <!-- Dashboard Container -->
         <div
-            class="dashboard-container rounded-[2.5rem] sm:rounded-[3rem] p-4 sm:p-8 md:p-10 border border-white/60 min-h-[92vh] flex flex-col">
+            class="dashboard-container rounded-[2rem] sm:rounded-[2.5rem] p-4 sm:p-6 md:p-8 border border-white/60 min-h-[calc(100vh-1.5rem)] flex flex-col">
 
             <!-- Header with Back Button -->
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8 gap-6 relative">
@@ -368,10 +422,12 @@
 
                 <div class="flex flex-wrap items-center justify-end gap-4">
                     <div class="flex items-center gap-2">
-                        <div class="flex items-center bg-white px-4 py-2 rounded-2xl border border-neutral-100 shadow-sm">
+                        <div
+                            class="flex items-center bg-white px-4 py-2 rounded-2xl border border-neutral-100 shadow-sm">
                             <input type="file" id="csv-upload" accept=".csv" class="text-xs font-bold text-neutral-500">
                         </div>
-                        <button onclick="clearTailoringData()" class="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-2xl text-xs font-bold transition shadow-sm border border-red-100">
+                        <button onclick="clearTailoringData()"
+                            class="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-2xl text-xs font-bold transition shadow-sm border border-red-100">
                             Clear Data
                         </button>
                     </div>
@@ -402,85 +458,69 @@
                 </div>
             </div>
 
-            <!-- Content Grid -->
-            <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 flex-grow">
-                <!-- Trials Column -->
+            <!-- Two-column layout: Orders + Future Feature -->
+            <div class="grid grid-cols-1 xl:[grid-template-columns:2fr_3fr] gap-8 flex-grow">
+
+                <!-- Order Follow-ups Panel -->
                 <div
-                    class="flex flex-col h-full bg-white/40 backdrop-blur-md rounded-[2.5rem] p-6 border border-white/50 shadow-sm">
-                    <div class="flex items-center justify-between mb-6 px-2">
+                    class="flex flex-col bg-white/40 backdrop-blur-md rounded-[2.5rem] p-6 border border-white/50 shadow-sm">
+
+                    <!-- Panel Header -->
+                    <div class="flex flex-wrap items-center justify-between mb-6 px-2 gap-4">
                         <div class="flex items-center gap-4">
-                            <div class="status-icon">
+                            <div class="status-icon" id="panel-status-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2.5">
                                     <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
                                     <circle cx="12" cy="10" r="3" />
                                 </svg>
                             </div>
-                            <h2 class="text-2xl font-extrabold text-[#242424]">Trial Follow-ups</h2>
+                            <h2 class="text-2xl font-extrabold text-[#242424]">Order Follow-ups</h2>
                         </div>
-                        <div class="flex items-center gap-3">
-                            <div id="trial-upcoming-toggle" class="filter-toggle" onclick="toggleUpcomingOnly('trial')">
+
+                        <div class="flex flex-wrap items-center gap-3">
+
+                            <div id="orders-upcoming-toggle" class="filter-toggle" onclick="toggleUpcomingOnly()">
                                 Upcoming Only</div>
-                            <button id="sort-trial" onclick="toggleSort('trial')" class="sort-btn active">
-                                <span id="trial-sort-label">ASC</span>
-                                <svg id="trial-sort-icon" class="transition-transform duration-300"
+
+                            <button id="sort-orders" onclick="toggleSort()" class="sort-btn active">
+                                <span id="orders-sort-label">ASC</span>
+                                <svg id="orders-sort-icon" class="transition-transform duration-300"
                                     xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
                                     stroke-linejoin="round">
                                     <path d="m19 12-7 7-7-7M12 19V5" />
                                 </svg>
                             </button>
-                            <span id="trial-count"
+
+                            <span id="orders-count"
                                 class="bg-[#242424] text-[#f4c74a] text-xs font-bold px-3 py-1 rounded-full shadow-sm">0</span>
                         </div>
                     </div>
-                    <div class="flex-grow space-y-4 overflow-y-auto pr-2" id="trials-list" style="max-height: 60vh;">
+
+                    <!-- Cards List (single column) -->
+                    <div class="flex flex-col gap-4 overflow-y-auto pr-2 custom-scroll" id="orders-list" style="max-height: 68vh;">
                         <div class="py-24 text-center text-neutral-400">
-                            <p class="text-sm font-extrabold tracking-widest uppercase">No Trial Orders Found</p>
+                            <p class="text-sm font-extrabold tracking-widest uppercase">No Orders Found</p>
                         </div>
+                    </div>
+
+                </div>
+
+                <!-- Right Panel: Placeholder for upcoming feature -->
+                <div id="future-feature-panel"
+                    class="flex flex-col items-center justify-center bg-white/20 backdrop-blur-md rounded-[2.5rem] p-8 border border-dashed border-white/60 shadow-sm min-h-[300px]">
+                    <div class="flex flex-col items-center gap-4 opacity-30 select-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                            class="text-neutral-400">
+                            <rect x="3" y="3" width="18" height="18" rx="4" />
+                            <path d="M12 8v8M8 12h8" />
+                        </svg>
+                        <p class="text-xs font-black uppercase tracking-widest text-neutral-400">Coming Soon</p>
                     </div>
                 </div>
 
-                <!-- Deliveries Column -->
-                <div
-                    class="flex flex-col h-full bg-white/40 backdrop-blur-md rounded-[2.5rem] p-6 border border-white/50 shadow-sm">
-                    <div class="flex items-center justify-between mb-6 px-2">
-                        <div class="flex items-center gap-4">
-                            <div
-                                class="status-icon bg-emerald-100 text-emerald-700 shadow-none border border-emerald-200">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2.5">
-                                    <path
-                                        d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
-                                    <path d="m3.3 7 8.7 5 8.7-5" />
-                                    <path d="M12 22V12" />
-                                </svg>
-                            </div>
-                            <h2 class="text-2xl font-extrabold text-[#242424]">Delivery Follow-ups</h2>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <div id="delivery-upcoming-toggle" class="filter-toggle"
-                                onclick="toggleUpcomingOnly('delivery')">Upcoming Only</div>
-                            <button id="sort-delivery" onclick="toggleSort('delivery')" class="sort-btn active">
-                                <span id="delivery-sort-label">ASC</span>
-                                <svg id="delivery-sort-icon" class="transition-transform duration-300"
-                                    xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <path d="m19 12-7 7-7-7M12 19V5" />
-                                </svg>
-                            </button>
-                            <span id="delivery-count"
-                                class="bg-[#242424] text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm">0</span>
-                        </div>
-                    </div>
-                    <div class="flex-grow space-y-4 overflow-y-auto pr-2" id="deliveries-list"
-                        style="max-height: 60vh;">
-                        <div class="py-24 text-center text-neutral-400">
-                            <p class="text-sm font-extrabold tracking-widest uppercase">No Delivery Orders Found</p>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <!-- Footer -->
@@ -532,11 +572,9 @@
 
         let trials = [];
         let deliveries = [];
-        let trialSortAsc = true;
-        let deliverySortAsc = true;
+        let ordersSortAsc = true;
+        let ordersUpcomingOnly = false;
         let searchTerm = "";
-        let trialUpcomingOnly = false;
-        let deliveryUpcomingOnly = false;
         let orderToRemove = null;
 
         function loadTailoringOrders() {
@@ -563,9 +601,9 @@
                 console.error("Failed to load tailoring orders", e);
             }
         }
-        
+
         function clearTailoringData() {
-            if(confirm("Are you sure you want to clear all tailoring data?")) {
+            if (confirm("Are you sure you want to clear all tailoring data?")) {
                 localStorage.removeItem('tailoring_orders');
                 trials = [];
                 deliveries = [];
@@ -641,8 +679,11 @@
             if (lines.length < 2) return;
 
             const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+            const headersLower = headers.map(h => h.toLowerCase());
             const idx = {
                 orderNo: headers.indexOf('Order No'),
+                woNo: headersLower.findIndex(h => h === 'wo no' || h === 'work order no' || h === 'work order' || h === 'wo number'),
+                woOrderStatus: headersLower.indexOf('wo order status'),
                 status: headers.indexOf('Wo Status'),
                 deliveryDate: headers.indexOf('Delivery Date'),
                 bookedDate: headers.indexOf('Booked Date'),
@@ -677,14 +718,16 @@
 
                 ordersMap[orderNo].items.push({
                     product: clean(row[idx.product]),
-                    qty: clean(row[idx.qty]) || '1'
+                    qty: clean(row[idx.qty]) || '1',
+                    woNo: idx.woNo > -1 ? clean(row[idx.woNo]) : '',
+                    woOrderStatus: idx.woOrderStatus > -1 ? clean(row[idx.woOrderStatus]) : ''
                 });
             }
 
             const processedOrders = Object.values(ordersMap);
             trials = processedOrders.filter(o => o.trailDate && o.trailDate !== 'null');
             deliveries = processedOrders.filter(o => o.deliveryDate && o.deliveryDate !== 'null');
-            
+
             localStorage.setItem('tailoring_orders', JSON.stringify(processedOrders));
 
             renderLists();
@@ -693,29 +736,164 @@
             if (mobileStatus) mobileStatus.textContent = `Imported ${processedOrders.length} active orders successfully.`;
         }
 
-        function toggleSort(type) {
-            if (type === 'trial') {
-                trialSortAsc = !trialSortAsc;
-                document.getElementById('trial-sort-label').textContent = trialSortAsc ? 'ASC' : 'DESC';
-                document.getElementById('trial-sort-icon').style.transform = trialSortAsc ? 'rotate(0deg)' : 'rotate(180deg)';
-            } else {
-                deliverySortAsc = !deliverySortAsc;
-                document.getElementById('delivery-sort-label').textContent = deliverySortAsc ? 'ASC' : 'DESC';
-                document.getElementById('delivery-sort-icon').style.transform = deliverySortAsc ? 'rotate(0deg)' : 'rotate(180deg)';
-            }
+        function toggleSort() {
+            ordersSortAsc = !ordersSortAsc;
+            document.getElementById('orders-sort-label').textContent = ordersSortAsc ? 'ASC' : 'DESC';
+            document.getElementById('orders-sort-icon').style.transform = ordersSortAsc ? 'rotate(0deg)' : 'rotate(180deg)';
             renderLists();
         }
 
-        function toggleUpcomingOnly(type) {
-            if (type === 'trial') {
-                trialUpcomingOnly = !trialUpcomingOnly;
-                document.getElementById('trial-upcoming-toggle').classList.toggle('active', trialUpcomingOnly);
-            } else {
-                deliveryUpcomingOnly = !deliveryUpcomingOnly;
-                document.getElementById('delivery-upcoming-toggle').classList.toggle('active', deliveryUpcomingOnly);
-            }
+        function toggleUpcomingOnly() {
+            ordersUpcomingOnly = !ordersUpcomingOnly;
+            document.getElementById('orders-upcoming-toggle').classList.toggle('active', ordersUpcomingOnly);
             renderLists();
         }
+
+        function showTrackingPanel(orderNo, itemIndex) {
+            const orders = JSON.parse(localStorage.getItem('tailoring_orders') || '[]');
+            const order = orders.find(o => o.orderNo === orderNo);
+            if (!order) return;
+            const item = order.items[itemIndex];
+
+            const status = (item.woOrderStatus || '').toUpperCase().trim();
+            
+            let currentStep = 1;
+            if (['QC TESTING', 'BOM ISSUING FOR FINISH'].includes(status)) {
+                currentStep = 3;
+            } else if (['CUTTING COMPLETED', 'CUTTING SHIPPED TO FACTORY', 'RE_CUTTING_SHIPPED TO FACTORY'].includes(status)) {
+                currentStep = 2;
+            } else if (['FINISHED SHIPPED TO STORE', 'FINISHED RECEIVED TO STORE'].includes(status)) {
+                currentStep = 4;
+            } else if (['DELIVERED TO CUSTOMER', 'DELVERED TO CUSTOMER'].includes(status)) {
+                currentStep = 5;
+            } else if (['BOM ISSUING', 'CUTTING AT STORE'].includes(status)) {
+                currentStep = 1;
+            } else if (status) {
+                // Default to 1 if status exists but doesn't match
+                currentStep = 1;
+            } else {
+                currentStep = 1;
+            }
+
+            const panel = document.getElementById('future-feature-panel');
+            
+            panel.className = "flex flex-col bg-white/60 backdrop-blur-md rounded-[2.5rem] p-6 lg:p-8 border border-white/80 shadow-sm h-full overflow-y-auto custom-scroll";
+
+            const iconProcessing = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>`;
+            const iconProduction = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>`;
+            const iconQuality = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
+            const iconStore = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`;
+            const iconDelivered = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>`;
+            
+            const steps = [
+                { label: 'Order Processed', icon: iconProcessing },
+                { label: 'In Production', icon: iconProduction },
+                { label: 'Quality Check', icon: iconQuality },
+                { label: 'Ready at Store', icon: iconStore },
+                { label: 'Delivered', icon: iconDelivered }
+            ];
+
+            let html = `
+                <div class="w-full flex justify-between items-start mb-10 border-b border-neutral-200 pb-6">
+                    <div>
+                        <h2 class="text-2xl font-extrabold text-[#242424] mb-1">Track Item</h2>
+                        <div class="flex items-center gap-3">
+                            <span class="text-[10px] font-bold text-neutral-500 bg-neutral-100 px-2 py-1 rounded-md uppercase border border-neutral-200">WO: ${item.woNo || 'NO-WO'}</span>
+                            <span class="text-sm font-semibold text-neutral-600">${item.product}</span>
+                        </div>
+                    </div>
+                    <div class="text-right flex flex-col items-end">
+                        <p class="text-[10px] font-extrabold text-neutral-400 uppercase tracking-widest mb-1">Raw Status</p>
+                        <span class="text-[10px] font-extrabold px-3 py-1 bg-[#242424] text-[#f4c74a] rounded-md shadow-sm uppercase tracking-wider">${status || 'NOT PROVIDED'}</span>
+                    </div>
+                </div>
+            `;
+
+            html += `<div class="relative w-full max-w-lg mx-auto mt-6 mb-12 hidden sm:block">`;
+            
+            const progressPercent = ((currentStep - 1) / (steps.length - 1)) * 100;
+            html += `
+                <div class="absolute top-[22px] left-[10%] right-[10%] h-1 bg-neutral-200/80 rounded-full z-0"></div>
+                <div class="absolute top-[22px] left-[10%] h-1 bg-emerald-500 rounded-full z-0 transition-all duration-1000 ease-in-out" style="width: ${progressPercent * 0.8}%"></div>
+                <div class="flex justify-between relative z-10 w-full">
+            `;
+
+            steps.forEach((step, index) => {
+                const stepNum = index + 1;
+                const isCompleted = stepNum < currentStep;
+                const isActive = stepNum === currentStep;
+                const isPending = stepNum > currentStep;
+                
+                let iconColor = isPending ? 'text-neutral-400' : (isActive ? 'text-white' : 'text-emerald-500');
+                let bgColor = isPending ? 'bg-white border-2 border-neutral-200' : (isActive ? 'bg-emerald-500 border-4 border-emerald-100 shadow-[0_0_15px_rgba(16,185,129,0.4)]' : 'bg-white border-2 border-emerald-500');
+                let textColor = isPending ? 'text-neutral-400' : (isActive ? 'text-emerald-600 font-extrabold' : 'text-emerald-500 font-bold');
+
+                html += `
+                    <div class="flex flex-col items-center w-1/5 group">
+                        <div class="w-12 h-12 rounded-full flex items-center justify-center transition-all duration-500 ${bgColor} ${iconColor} mb-3 relative">
+                            ${isCompleted ? '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>' : step.icon}
+                        </div>
+                        <p class="text-[10px] sm:text-xs text-center leading-tight ${textColor} tracking-wide">${step.label}</p>
+                    </div>
+                `;
+            });
+
+            html += `</div></div>`;
+            
+            // Vertical timeline fallback for mobile
+            html += `<div class="w-full sm:hidden flex flex-col gap-0 relative mb-8">`;
+            html += `<div class="absolute top-4 bottom-4 left-[23px] w-1 bg-neutral-200/80 z-0"></div>`;
+            html += `<div class="absolute top-4 left-[23px] w-1 bg-emerald-500 z-0 transition-all duration-1000" style="height: ${progressPercent}%"></div>`;
+            
+            steps.forEach((step, index) => {
+                const stepNum = index + 1;
+                const isCompleted = stepNum < currentStep;
+                const isActive = stepNum === currentStep;
+                const isPending = stepNum > currentStep;
+                
+                let iconColor = isPending ? 'text-neutral-400' : (isActive ? 'text-white' : 'text-emerald-500');
+                let bgColor = isPending ? 'bg-white border-2 border-neutral-200' : (isActive ? 'bg-emerald-500 border-4 border-emerald-100 shadow-[0_0_15px_rgba(16,185,129,0.4)]' : 'bg-white border-2 border-emerald-500');
+                let textColor = isPending ? 'text-neutral-400' : (isActive ? 'text-emerald-600 font-extrabold' : 'text-emerald-500 font-bold');
+
+                html += `
+                    <div class="flex items-center gap-4 relative z-10 py-4">
+                        <div class="w-12 h-12 shrink-0 rounded-full flex items-center justify-center ${bgColor} ${iconColor}">
+                             ${isCompleted ? '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>' : step.icon}
+                        </div>
+                        <p class="text-sm ${textColor}">${step.label}</p>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+
+            html += `
+                <div class="w-full bg-white/70 rounded-2xl p-6 border border-neutral-100 shadow-sm mt-auto">
+                    <h3 class="text-[10px] font-extrabold text-neutral-400 uppercase tracking-widest mb-4">Item Details</h3>
+                    <div class="grid grid-cols-2 gap-y-4 gap-x-8">
+                        <div>
+                            <p class="text-[9px] text-neutral-400 font-extrabold uppercase tracking-wider">Parent Order</p>
+                            <p class="text-sm font-bold text-[#242424] mt-0.5">${order.orderNo}</p>
+                        </div>
+                        <div>
+                            <p class="text-[9px] text-neutral-400 font-extrabold uppercase tracking-wider">Quantity</p>
+                            <p class="text-sm font-bold text-[#242424] mt-0.5">${item.qty}</p>
+                        </div>
+                        <div>
+                            <p class="text-[9px] text-neutral-400 font-extrabold uppercase tracking-wider">Target Date</p>
+                            <p class="text-sm font-bold text-[#242424] mt-0.5">${formatDate(order.trailDate)}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            panel.innerHTML = html;
+            
+            // Scroll to top on mobile when clicked
+            if (window.innerWidth < 1024) {
+                panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
 
         function handleSearch() {
             searchTerm = document.getElementById('order-search').value.toLowerCase();
@@ -723,33 +901,28 @@
         }
 
         function renderLists() {
-            const trialsList = document.getElementById('trials-list');
-            const deliveriesList = document.getElementById('deliveries-list');
+            const ordersList = document.getElementById('orders-list');
             const today = new Date();
             today.setHours(0, 0, 0, 0);
 
-            const filterAndSort = (data, field, isAsc, type) => {
-                let filtered = [...data];
-                if (searchTerm) filtered = filtered.filter(o => o.orderNo.toLowerCase().includes(searchTerm));
-                if (type === 'trial' && trialUpcomingOnly) filtered = filtered.filter(o => { const d = parseDate(o[field]); return d && d >= today; });
-                if (type === 'delivery' && deliveryUpcomingOnly) filtered = filtered.filter(o => { const d = parseDate(o[field]); return d && d >= today; });
+            const field = 'trailDate';
+            const data = trials;
 
-                return filtered.sort((a, b) => {
-                    const dateA = parseDate(a[field]) || 0;
-                    const dateB = parseDate(b[field]) || 0;
-                    return isAsc ? (dateA - dateB) : (dateB - dateA);
-                });
-            };
+            let filtered = [...data];
+            if (searchTerm) filtered = filtered.filter(o => o.orderNo.toLowerCase().includes(searchTerm));
+            if (ordersUpcomingOnly) filtered = filtered.filter(o => { const d = parseDate(o[field]); return d && d >= today; });
 
-            const sortedTrials = filterAndSort(trials, 'trailDate', trialSortAsc, 'trial');
-            const sortedDeliveries = filterAndSort(deliveries, 'deliveryDate', deliverySortAsc, 'delivery');
+            filtered.sort((a, b) => {
+                const dateA = parseDate(a[field]) || 0;
+                const dateB = parseDate(b[field]) || 0;
+                return ordersSortAsc ? (dateA - dateB) : (dateB - dateA);
+            });
 
-            document.getElementById('trial-count').textContent = sortedTrials.length;
-            document.getElementById('delivery-count').textContent = sortedDeliveries.length;
+            document.getElementById('orders-count').textContent = filtered.length;
 
             const getHTML = (data, targetField) => {
                 const isDeliveryView = targetField === 'deliveryDate';
-                if (data.length === 0) return `<div class="py-16 text-center text-neutral-400 font-extrabold tracking-widest uppercase text-xs opacity-60">${searchTerm ? 'No Search Matches' : 'Zero Orders'}</div>`;
+                if (data.length === 0) return [`<div class="py-16 text-center text-neutral-400 font-extrabold tracking-widest uppercase text-xs opacity-60">${searchTerm ? 'No Search Matches' : 'Zero Orders'}</div>`];
 
                 return data.map((item) => {
                     const urgencyClass = getUrgencyClass(item[targetField]);
@@ -774,10 +947,13 @@
                                 <div class="space-y-2">
                                     ${item.items.map(it => `
                                         <div class="flex items-center justify-between product-row shadow-sm">
-                                            <span class="product-name-highlight">${it.product}</span>
+                                            <div class="flex items-center gap-3">
+                                                <span class="product-name-highlight">${it.product}</span>
+                                                ${it.woNo ? `<span class="text-[9px] font-extrabold text-neutral-500 bg-neutral-200/50 px-2 py-0.5 rounded-md uppercase border border-neutral-200 border-dashed tracking-wider" title="Work Order">WO: ${it.woNo}</span>` : ''}
+                                            </div>
                                             <div class="flex items-center gap-3">
                                                 <span class="text-[10px] font-extrabold text-neutral-400 uppercase">Qty: ${it.qty}</span>
-                                                <span class="item-badge ${getBadgeClass(it.product)}">Details</span>
+                                                <button onclick="showTrackingPanel('${item.orderNo}', ${item.items.indexOf(it)})" class="item-badge cursor-pointer hover:scale-105 hover:shadow-md transition-all ${getBadgeClass(it.product)}">Track</button>
                                             </div>
                                         </div>
                                     `).join('')}
@@ -812,8 +988,7 @@
                 `});
             };
 
-            trialsList.innerHTML = getHTML(sortedTrials, 'trailDate').join('');
-            deliveriesList.innerHTML = getHTML(sortedDeliveries, 'deliveryDate').join('');
+            ordersList.innerHTML = getHTML(filtered, field).join('');
         }
 
         function copyWhatsAppReport() {
@@ -909,8 +1084,9 @@
         setInterval(updateClock, 1000);
         updateClock();
         renderLists();
+
     </script>
-<script src="assets/notifications.js"></script>
+    <script src="assets/notifications.js"></script>
 </body>
 
 </html>

@@ -1,49 +1,55 @@
-// theme.js
-// Handles loading, persisting, and toggling the dark theme across all dashboard tools.
+/**
+ * theme.js
+ * Handles loading, persisting, and toggling the dark theme across all dashboard tools.
+ * Wraps internals in an IIFE to avoid polluting the global scope.
+ * Exposes only the functions that HTML onclick attributes need.
+ */
+(function () {
+  'use strict';
 
-function getThemeFromStorage() {
+  function getThemeFromStorage() {
     try {
-        return localStorage.getItem('theme');
+      return localStorage.getItem('theme');
     } catch (e) {
-        return null;
+      return null;
     }
-}
+  }
 
-function saveThemeToStorage(theme) {
+  function saveThemeToStorage(theme) {
     try {
-        localStorage.setItem('theme', theme);
+      localStorage.setItem('theme', theme);
     } catch (e) {
-        console.warn('localStorage not accessible:', e);
+      // Silent fail — localStorage may be blocked in private mode
     }
-}
+  }
 
-function applyTheme(theme) {
+  function applyTheme(theme) {
     if (theme === 'dark') {
-        document.body.classList.add('dark-mode');
+      document.documentElement.classList.add('dark-mode');
+      document.body.classList.add('dark-mode');
     } else {
-        document.body.classList.remove('dark-mode');
+      document.documentElement.classList.remove('dark-mode');
+      document.body.classList.remove('dark-mode');
     }
-}
+  }
 
-function loadTheme() {
+  function loadTheme() {
     const saved = getThemeFromStorage();
-    if (saved === 'dark') {
-        applyTheme('dark');
-    } else {
-        applyTheme('light');
-    }
-}
+    applyTheme(saved === 'dark' ? 'dark' : 'light');
+  }
 
-function toggleTheme() {
+  function toggleTheme() {
     const isDark = document.body.classList.contains('dark-mode');
-    if (isDark) {
-        document.body.classList.remove('dark-mode');
-        saveThemeToStorage('light');
-    } else {
-        document.body.classList.add('dark-mode');
-        saveThemeToStorage('dark');
-    }
-}
+    const next = isDark ? 'light' : 'dark';
+    applyTheme(next);
+    saveThemeToStorage(next);
+  }
 
-// Execute immediately to prevent FOUC (Flash of Unstyled Content)
-loadTheme();
+  // Expose to global scope for HTML onclick attributes
+  window.loadTheme = loadTheme;
+  window.toggleTheme = toggleTheme;
+
+  // Execute immediately to prevent FOUC (Flash of Unstyled Content)
+  loadTheme();
+})();
+

@@ -1,4 +1,147 @@
+/* ============================================================
+   Design Tokens — shared CSS custom properties
+   ============================================================ */
+:root {
+  /* Brand */
+  --color-primary: #f4c74a;
+  --color-primary-dark: #ca9e2b;
+  --color-primary-glow: rgba(244, 199, 74, 0.25);
+
+  /* Light mode surfaces */
+  --color-bg-light: linear-gradient(135deg, #fefbf6 0%, #fdf5e1 50%, #fae5ac 100%);
+  --color-card-light: rgba(255, 255, 255, 0.4);
+
+  /* Dark mode surfaces */
+  --color-bg-dark: linear-gradient(135deg, #09090b 0%, #141417 50%, #1c1c21 100%);
+  --color-card-dark: rgba(24, 24, 27, 0.65);
+  --color-surface-dark: #18181b;
+  --color-surface-alt-dark: #27272a;
+  --color-border-dark: rgba(255, 255, 255, 0.07);
+
+  /* Text */
+  --color-text-primary: #242424;
+  --color-text-muted: #525252;
+  --color-text-light: #f4f4f5;
+  --color-text-muted-dark: #a1a1aa;
+
+  /* Semantic */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-info: #6366f1;
+
+  /* Spacing scale */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+
+  /* Border radii */
+  --radius-sm: 0.5rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 2rem;
+  --radius-2xl: 3rem;
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.25s ease;
+  --transition-slow: 0.4s ease;
+}
+
+/* ============================================================
+   Base Reset / Cross-browser Consistency
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+img, svg {
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* ============================================================
+   Responsive Layout Helpers
+   ============================================================ */
+
+/* Stack dashboard cards vertically on small screens */
+@media (max-width: 600px) {
+  .bento-grid,
+  .tools-grid,
+  .upload-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Give the KPI header more breathing room on mobile */
+  .kpi-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  /* Pill nav scrolls horizontally without showing scrollbar */
+  .pill-nav-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Ensure the dashboard container has sensible mobile padding */
+  .dashboard-container {
+    padding: 1rem !important;
+    border-radius: 1.5rem !important;
+  }
+
+  /* Calendar grid: single column on mobile */
+  .calendar-grid {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 4px !important;
+  }
+
+  .calendar-day {
+    min-height: 60px !important;
+    padding: 4px !important;
+    border-radius: 0.5rem !important;
+  }
+
+  .date-num {
+    font-size: 0.7rem !important;
+  }
+}
+
+/* Two-column layout for tablet */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .bento-grid,
+  .tools-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* ============================================================
+   KPI / Count wrap fix (prevent overflow on large numbers)
+   ============================================================ */
+.kpi-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+/* ============================================================
+   Dark Theme Styles - Refined & Visually Friendly Aesthetic
+   ============================================================ */
 /* Dark Theme Styles - Refined & Visually Friendly Aesthetic */
+
 body.dark-mode {
     color-scheme: dark;
     color: #f8fafc !important;

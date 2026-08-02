@@ -6,7 +6,11 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendar - Manager</title>
+    <meta name="description" content="Business calendar with tailoring schedules and store routine events.">
+    <title>Calendar — Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="assets/normalize.css">
     <link rel="stylesheet" href="assets/theme.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="assets/theme.js"></script>
@@ -269,8 +273,10 @@
                     window.location.href = 'index.html';
                 } else if (pageId === 'tools') {
                     window.location.href = 'index.html?panel=tools';
+                } else if (pageId === 'reports') {
+                    window.location.href = 'reports.html';
                 } else {
-                    window.location.href = pageId + '.html'; // simple fallback
+                    window.location.href = pageId + '.html';
                 }
             }, 250);
         }
