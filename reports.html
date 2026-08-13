@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Upload and sync CSV datasets across all Smart Business Dashboard tools.">
-    <title>Reports &amp; Data Sync — Manager</title>
+    <title>Reports &amp; Data Sync â€” Manager</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="assets/normalize.css">
@@ -173,6 +173,84 @@
 
         .toast-close:hover {
             color: #475569;
+        }
+        /* ===========================================
+           DARK THEME - Reports & Data Sync
+           html.dark-mode: set immediately by theme.js in <head> (body is null then).
+           body.dark-mode: synced on DOMContentLoaded.
+           =========================================== */
+        html.dark-mode, body.dark-mode {
+            color-scheme: dark;
+            color: #f4f4f5 !important;
+            background: linear-gradient(135deg, #09090b 0%, #141417 50%, #1c1c21 100%) !important;
+        }
+        html.dark-mode .dashboard-container, body.dark-mode .dashboard-container {
+            background: rgba(24,24,27,0.65) !important;
+            border-color: rgba(255,255,255,0.05) !important;
+            box-shadow: 0 0 40px rgba(0,0,0,0.5) !important;
+        }
+        html.dark-mode .bg-white, body.dark-mode .bg-white {
+            background: #18181b !important; color: #f4f4f5 !important;
+            border-color: rgba(255,255,255,0.06) !important;
+        }
+        html.dark-mode .bg-white\/60, body.dark-mode .bg-white\/60 {
+            background: rgba(24,24,27,0.6) !important;
+            border-color: rgba(255,255,255,0.06) !important;
+        }
+        html.dark-mode .pill-nav-active, body.dark-mode .pill-nav-active {
+            background: #f4c74a !important; color: #18181b !important;
+            box-shadow: 0 0 15px rgba(244,199,74,0.25) !important;
+        }
+        html.dark-mode .pill-nav, body.dark-mode .pill-nav { color: #a1a1aa !important; }
+        html.dark-mode .pill-nav:hover, body.dark-mode .pill-nav:hover {
+            background: rgba(255,255,255,0.08) !important; color: #fff !important;
+        }
+        html.dark-mode h1, html.dark-mode h2, html.dark-mode h3, html.dark-mode h4,
+        body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4 {
+            color: #f1f5f9 !important;
+        }
+        html.dark-mode .text-neutral-500, body.dark-mode .text-neutral-500 { color: #a1a1aa !important; }
+        html.dark-mode .text-neutral-400, body.dark-mode .text-neutral-400 { color: #d4d4d8 !important; }
+        html.dark-mode .text-neutral-700, body.dark-mode .text-neutral-700 { color: #e2e8f0 !important; }
+        html.dark-mode .text-4xl, body.dark-mode .text-4xl { color: #f1f5f9 !important; }
+        html.dark-mode .upload-card, body.dark-mode .upload-card {
+            background: #18181b !important;
+            border-color: rgba(255,255,255,0.07) !important;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.4) !important;
+        }
+        html.dark-mode .upload-card:hover, body.dark-mode .upload-card:hover {
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.6), 0 0 0 1px rgba(244,199,74,0.2) !important;
+        }
+        html.dark-mode .upload-zone, body.dark-mode .upload-zone {
+            border-color: rgba(255,255,255,0.12) !important; background: #09090b !important;
+        }
+        html.dark-mode .upload-zone.dragover, body.dark-mode .upload-zone.dragover {
+            border-color: #6366f1 !important; background: rgba(99,102,241,0.1) !important;
+        }
+        html.dark-mode .upload-zone.success, body.dark-mode .upload-zone.success {
+            border-color: #10b981 !important; background: rgba(16,185,129,0.08) !important;
+        }
+        html.dark-mode .status-icon, body.dark-mode .status-icon {
+            background: rgba(99,102,241,0.15) !important; color: #818cf8 !important;
+        }
+        html.dark-mode .bg-amber-50,  body.dark-mode .bg-amber-50  { background: rgba(245,158,11,0.12) !important; }
+        html.dark-mode .bg-blue-50,   body.dark-mode .bg-blue-50   { background: rgba(59,130,246,0.12)  !important; }
+        html.dark-mode .bg-rose-50,   body.dark-mode .bg-rose-50   { background: rgba(244,63,94,0.12)   !important; }
+        html.dark-mode .bg-emerald-50, body.dark-mode .bg-emerald-50 { background: rgba(16,185,129,0.12) !important; }
+        html.dark-mode .bg-purple-50, body.dark-mode .bg-purple-50 { background: rgba(168,85,247,0.12)  !important; }
+        html.dark-mode .bg-indigo-50, body.dark-mode .bg-indigo-50 { background: rgba(99,102,241,0.12)  !important; }
+        html.dark-mode .toast, body.dark-mode .toast {
+            background: #1e293b !important; color: #f1f5f9 !important;
+            border-color: rgba(255,255,255,0.07) !important;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6) !important;
+        }
+        html.dark-mode .toast-message, body.dark-mode .toast-message { color: #94a3b8 !important; }
+        html.dark-mode .toast-close,   body.dark-mode .toast-close   { color: #64748b !important; }
+        html.dark-mode .toast-close:hover, body.dark-mode .toast-close:hover { color: #cbd5e1 !important; }
+        html.dark-mode [fill="none"], body.dark-mode [fill="none"] { stroke: #f1f5f9 !important; }
+        html.dark-mode input, html.dark-mode textarea, html.dark-mode select,
+        body.dark-mode input, body.dark-mode textarea, body.dark-mode select {
+            background: #09090b !important; color: #f4f4f5 !important; border-color: #3f3f46 !important;
         }
     </style>
 </head>

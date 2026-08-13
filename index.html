@@ -206,7 +206,7 @@
         .tool-card {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
+
         .tool-dimmed {
             opacity: 0.3;
             transform: scale(0.98);
@@ -970,6 +970,37 @@
             animation: taskComplete 0.4s ease-out;
         }
 
+        /* Add Task round button pulse */
+        @keyframes addTaskPulse {
+            0%   { box-shadow: 0 0 0 0 rgba(250,204,21,0.5); }
+            60%  { box-shadow: 0 0 0 10px rgba(250,204,21,0); }
+            100% { box-shadow: 0 0 0 0 rgba(250,204,21,0); }
+        }
+
+        /* Custom scrollbar for dark Tasks panel */
+        .tasks-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .tasks-scroll::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .tasks-scroll::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        .tasks-scroll::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        .tasks-scroll {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.05);
+        }
+
         /* Mobile: show action buttons on touch devices */
         @media (hover: none) {
             .action-btn {
@@ -1047,10 +1078,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255,255,255,0.85);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
             opacity: 0;
             transform: scale(0.85);
             transition: opacity 0.2s ease, transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
@@ -1060,7 +1091,7 @@
         .pin-btn svg {
             width: 0.875rem;
             height: 0.875rem;
-            transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
             color: #71717a;
         }
 
@@ -1074,7 +1105,7 @@
             opacity: 1;
             transform: scale(1);
             background: #f4c74a;
-            box-shadow: 0 2px 12px rgba(244,199,74,0.45);
+            box-shadow: 0 2px 12px rgba(244, 199, 74, 0.45);
         }
 
         .pin-btn.pinned svg {
@@ -1103,8 +1134,8 @@
 
         /* Dark mode overrides for pin button */
         body.dark-mode .pin-btn {
-            background: rgba(24,24,27,0.9);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            background: rgba(24, 24, 27, 0.9);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
 
         body.dark-mode .pin-btn svg {
@@ -1113,7 +1144,7 @@
 
         body.dark-mode .pin-btn.pinned {
             background: #f4c74a;
-            box-shadow: 0 2px 12px rgba(244,199,74,0.4);
+            box-shadow: 0 2px 12px rgba(244, 199, 74, 0.4);
         }
 
         body.dark-mode .pin-btn.pinned svg {
@@ -1137,12 +1168,12 @@
 
         /* Pinned card glow ring */
         .bento-card.is-pinned {
-            outline: 2px solid rgba(244,199,74,0.5);
+            outline: 2px solid rgba(244, 199, 74, 0.5);
             outline-offset: 2px;
         }
 
         body.dark-mode .bento-card.is-pinned {
-            outline-color: rgba(244,199,74,0.35);
+            outline-color: rgba(244, 199, 74, 0.35);
         }
     </style>
 </head>
@@ -1257,9 +1288,12 @@
                             <div class="flex items-center gap-2">
                                 <span
                                     class="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Reports</span>
-                                <div class="w-16 h-6 rounded-full bg-[#f4c74a] flex items-center px-2 relative overflow-hidden" id="reports-progress-bar-container">
-                                    <div id="reports-progress-fill" class="absolute left-0 top-0 bottom-0 bg-[#e0b43c]" style="width: 82%; z-index: 0;"></div>
-                                    <span class="text-[9px] font-bold text-[#242424] relative z-10" id="reports-percentage">82%</span>
+                                <div class="w-16 h-6 rounded-full bg-[#f4c74a] flex items-center px-2 relative overflow-hidden"
+                                    id="reports-progress-bar-container">
+                                    <div id="reports-progress-fill" class="absolute left-0 top-0 bottom-0 bg-[#e0b43c]"
+                                        style="width: 82%; z-index: 0;"></div>
+                                    <span class="text-[9px] font-bold text-[#242424] relative z-10"
+                                        id="reports-percentage">82%</span>
                                 </div>
                             </div>
                             <div class="flex items-center gap-2">
@@ -1301,7 +1335,8 @@
                     </div>
                 </div>
 
-                <div id="dashboardGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 flex-grow">
+                <div id="dashboardGrid"
+                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 flex-grow">
 
                     <!-- TOOL 7: Glass Window Block (Barcode Scanning Routine) -->
                     <div
@@ -1340,15 +1375,24 @@
                                 </div>
                             </div>
                             <div class="relative" onclick="event.stopPropagation()">
-                                <button onclick="toggleStoreRoutineDropdown(event)" class="w-8 h-8 rounded-full bg-neutral-50 flex items-center justify-center hover:bg-neutral-200 transition-colors">
-                                    <svg class="w-5 h-5 text-[#242424]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                <button onclick="toggleStoreRoutineDropdown(event)"
+                                    class="w-8 h-8 rounded-full bg-neutral-50 flex items-center justify-center hover:bg-neutral-200 transition-colors">
+                                    <svg class="w-5 h-5 text-[#242424]" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z">
+                                        </path>
                                     </svg>
                                 </button>
-                                <div id="storeRoutineDropdown" class="hidden absolute right-0 top-10 w-48 bg-white rounded-xl shadow-lg border border-neutral-100 z-50 overflow-hidden">
-                                    <button onclick="openEditRoutineModal(event)" class="w-full text-left px-4 py-3 text-sm font-semibold text-[#242424] hover:bg-neutral-50 transition-colors flex items-center gap-2">
-                                        <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                                <div id="storeRoutineDropdown"
+                                    class="hidden absolute right-0 top-10 w-48 bg-white rounded-xl shadow-lg border border-neutral-100 z-50 overflow-hidden">
+                                    <button onclick="openEditRoutineModal(event)"
+                                        class="w-full text-left px-4 py-3 text-sm font-semibold text-[#242424] hover:bg-neutral-50 transition-colors flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
+                                            </path>
                                         </svg>
                                         Edit Routine
                                     </button>
@@ -1362,27 +1406,36 @@
                     </div>
 
                     <!-- TOOL 3: Daily Tasks (Charcoal Dark Card matching Onboarding Task in Crextio) -->
-                    <div
-                        class="bento-card bento-dark bg-[#242424] rounded-[2rem] p-6 flex flex-col shadow-xl shadow-neutral-900/10 relative overflow-hidden group col-span-1 lg:row-span-2">
+                    <div class="bento-card bento-dark bg-[#242424] rounded-[2rem] p-6 flex flex-col shadow-xl shadow-neutral-900/10 relative overflow-hidden group col-span-1 lg:row-span-2"
+                        style="min-height:0;">
                         <div
                             class="absolute -right-8 -top-8 w-32 h-32 bg-white/5 rounded-full blur-2xl pointer-events-none">
                         </div>
 
-                        <div class="flex justify-between items-start mb-6 relative z-10">
+                        <div class="flex justify-between items-center mb-6 relative z-10">
                             <h3 class="text-lg font-extrabold text-white">Daily Tasks</h3>
-                            <span class="text-2xl font-light text-white"><span id="completed-count">0</span><span
-                                    class="text-neutral-500 text-lg" id="total-count">/4</span></span>
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl font-light text-white"><span id="completed-count">0</span><span
+                                        class="text-neutral-500 text-lg" id="total-count">/4</span></span>
+                                <button onclick="openAddTaskModal()"
+                                    id="addTaskBtn"
+                                    title="Add Task"
+                                    style="width:36px;height:36px;border-radius:50%;background:#FACC15;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 0 rgba(250,204,21,0.5);animation:addTaskPulse 2s infinite;transition:transform 0.18s,box-shadow 0.18s;flex-shrink:0;"
+                                    onmouseover="this.style.transform='scale(1.15)';this.style.boxShadow='0 4px 18px rgba(250,204,21,0.6)'"
+                                    onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 0 0 0 rgba(250,204,21,0.5)'">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
 
-                        <div class="flex-grow flex flex-col gap-3 relative z-10" id="tasks-container">
+                        <div class="flex flex-col gap-3 relative z-10 overflow-y-auto tasks-scroll" id="tasks-container"
+                            style="flex: 1 1 0; min-height: 0; padding-right: 2px;">
                             <!-- Tasks rendered here -->
                         </div>
 
-                        <!-- Add Task Button -->
-                        <button onclick="openAddTaskModal()"
-                            class="mt-4 w-full py-2 px-4 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition-colors border border-white/20">
-                            + Add Task
-                        </button>
+
                     </div>
 
                     <!-- Task Management Modal -->
@@ -1435,7 +1488,8 @@
                         class="hidden col-span-1 md:col-span-2 lg:col-span-3 xl:col-span-4 flex flex-col items-center justify-center py-12 gap-3 rounded-[2rem] border-2 border-dashed border-neutral-200 text-center">
                         <div class="text-4xl mb-1">📌</div>
                         <p class="text-sm font-bold text-neutral-500">No apps pinned to home</p>
-                        <p class="text-xs text-neutral-400 font-medium">Go to <strong>Tools</strong> and pin your favourite apps to see them here.</p>
+                        <p class="text-xs text-neutral-400 font-medium">Go to <strong>Tools</strong> and pin your
+                            favourite apps to see them here.</p>
                     </div>
 
                 </div>
@@ -1449,15 +1503,17 @@
                         <h1 class="text-4xl sm:text-[2.75rem] font-light text-[#1a1a1a] tracking-tight mb-3">
                             Your <span class="font-bold">Tools</span>
                         </h1>
-                        <p class="text-neutral-500 font-medium text-sm sm:text-base">Quick access to all your business management tools.</p>
+                        <p class="text-neutral-500 font-medium text-sm sm:text-base">Quick access to all your business
+                            management tools.</p>
                     </div>
                     <div class="relative w-full md:w-72">
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <svg class="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
                         </div>
-                        <input type="text" id="toolSearchInput" placeholder="Search tools..." 
+                        <input type="text" id="toolSearchInput" placeholder="Search tools..."
                             class="w-full pl-11 pr-4 py-3 rounded-2xl border border-neutral-200 bg-white/50 backdrop-blur-sm focus:outline-none focus:border-[#f4c74a] focus:ring-4 focus:ring-[#f4c74a]/10 transition-all text-sm font-medium text-[#242424] shadow-sm">
                     </div>
                 </div>
@@ -1469,9 +1525,11 @@
                         class="tool-card bg-white border border-neutral-200 rounded-[2rem] p-8 flex flex-col gap-5 shadow-sm relative overflow-hidden group no-underline"
                         data-app-id="dsrmaker">
                         <!-- Pin Button -->
-                        <button class="pin-btn" id="pin-tools-dsrmaker" onclick="togglePin(event,'dsrmaker')" title="Pin / Unpin">
+                        <button class="pin-btn" id="pin-tools-dsrmaker" onclick="togglePin(event,'dsrmaker')"
+                            title="Pin / Unpin">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                             </svg>
                         </button>
                         <div class="flex justify-between items-start">
@@ -1505,9 +1563,11 @@
                         class="tool-card bg-[#f4c74a] border border-amber-300 rounded-[2rem] p-8 flex flex-col gap-5 shadow-md shadow-amber-500/20 relative overflow-hidden group no-underline"
                         data-app-id="quotation">
                         <!-- Pin Button -->
-                        <button class="pin-btn" id="pin-tools-quotation" onclick="togglePin(event,'quotation')" title="Pin / Unpin">
+                        <button class="pin-btn" id="pin-tools-quotation" onclick="togglePin(event,'quotation')"
+                            title="Pin / Unpin">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                             </svg>
                         </button>
                         <div class="flex justify-between items-start">
@@ -1540,20 +1600,28 @@
                         class="tool-card bg-white border border-neutral-200 rounded-[2rem] p-8 flex flex-col gap-5 shadow-sm relative overflow-hidden group no-underline"
                         data-app-id="reports">
                         <div class="flex justify-between items-start">
-                            <div class="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center border border-blue-100">
-                                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            <div
+                                class="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center border border-blue-100">
+                                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                    </path>
                                 </svg>
                             </div>
-                            <div class="w-10 h-10 rounded-full bg-neutral-50 flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:bg-[#242424] transition-all duration-300">
-                                <svg class="w-5 h-5 text-white transform -rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                            <div
+                                class="w-10 h-10 rounded-full bg-neutral-50 flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:bg-[#242424] transition-all duration-300">
+                                <svg class="w-5 h-5 text-white transform -rotate-45" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                                 </svg>
                             </div>
                         </div>
                         <div>
                             <h3 class="text-lg font-extrabold text-[#242424] mb-1">Reports & Data Sync</h3>
-                            <p class="text-xs font-semibold text-blue-900/70 leading-relaxed">Centralized dashboard to upload and sync datasets.</p>
+                            <p class="text-xs font-semibold text-blue-900/70 leading-relaxed">Centralized dashboard to
+                                upload and sync datasets.</p>
                         </div>
                     </a>
 
@@ -1562,9 +1630,11 @@
                         class="tool-card bg-white border border-neutral-200 rounded-[2rem] p-8 flex flex-col gap-5 shadow-sm relative overflow-hidden group no-underline"
                         data-app-id="global-count">
                         <!-- Pin Button -->
-                        <button class="pin-btn" id="pin-tools-global-count" onclick="togglePin(event,'global-count')" title="Pin / Unpin">
+                        <button class="pin-btn" id="pin-tools-global-count" onclick="togglePin(event,'global-count')"
+                            title="Pin / Unpin">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                             </svg>
                         </button>
                         <div class="flex justify-between items-start">
@@ -1598,9 +1668,11 @@
                         class="tool-card bg-white border border-neutral-200 rounded-[2rem] p-8 flex flex-col gap-5 shadow-sm relative overflow-hidden group no-underline"
                         data-app-id="knockoff">
                         <!-- Pin Button -->
-                        <button class="pin-btn" id="pin-tools-knockoff" onclick="togglePin(event,'knockoff')" title="Pin / Unpin">
+                        <button class="pin-btn" id="pin-tools-knockoff" onclick="togglePin(event,'knockoff')"
+                            title="Pin / Unpin">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                             </svg>
                         </button>
                         <div class="flex justify-between items-start">
@@ -1634,9 +1706,11 @@
                         class="tool-card bg-white border border-neutral-200 rounded-[2rem] p-8 flex flex-col gap-5 shadow-sm relative overflow-hidden group no-underline"
                         data-app-id="unconfirmed">
                         <!-- Pin Button -->
-                        <button class="pin-btn" id="pin-tools-unconfirmed" onclick="togglePin(event,'unconfirmed')" title="Pin / Unpin">
+                        <button class="pin-btn" id="pin-tools-unconfirmed" onclick="togglePin(event,'unconfirmed')"
+                            title="Pin / Unpin">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                             </svg>
                         </button>
                         <div class="flex justify-between items-start">
@@ -1669,9 +1743,11 @@
                         class="tool-card bg-white border border-neutral-200 rounded-[2rem] p-8 flex flex-col gap-5 shadow-sm relative overflow-hidden group no-underline"
                         data-app-id="poMaker">
                         <!-- Pin Button -->
-                        <button class="pin-btn" id="pin-tools-poMaker" onclick="togglePin(event,'poMaker')" title="Pin / Unpin">
+                        <button class="pin-btn" id="pin-tools-poMaker" onclick="togglePin(event,'poMaker')"
+                            title="Pin / Unpin">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                             </svg>
                         </button>
                         <div class="flex justify-between items-start">
@@ -1704,9 +1780,11 @@
                         class="tool-card bg-white border border-neutral-200 rounded-[2rem] p-8 flex flex-col gap-5 shadow-sm relative overflow-hidden group no-underline"
                         data-app-id="tailoring">
                         <!-- Pin Button -->
-                        <button class="pin-btn" id="pin-tools-tailoring" onclick="togglePin(event,'tailoring')" title="Pin / Unpin">
+                        <button class="pin-btn" id="pin-tools-tailoring" onclick="togglePin(event,'tailoring')"
+                            title="Pin / Unpin">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                             </svg>
                         </button>
                         <div class="flex justify-between items-start">
@@ -1715,7 +1793,8 @@
                                 <svg class="w-6 h-6 text-[#242424]" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M14.121 14.121L19 19m-7-7l-7-7m7 7l-2.121 2.121m4.242 4.242a3 3 0 11-4.242-4.242m0 0a3 3 0 10-4.242-4.242m8.484 0a3 3 0 10-4.242-4.242m0 0L5 19"></path>
+                                        d="M14.121 14.121L19 19m-7-7l-7-7m7 7l-2.121 2.121m4.242 4.242a3 3 0 11-4.242-4.242m0 0a3 3 0 10-4.242-4.242m8.484 0a3 3 0 10-4.242-4.242m0 0L5 19">
+                                    </path>
                                 </svg>
                             </div>
                             <div
@@ -1729,7 +1808,8 @@
                         </div>
                         <div>
                             <h3 class="text-lg font-extrabold text-[#242424] mb-1">Tailoring Tracker</h3>
-                            <p class="text-xs font-semibold text-neutral-400 leading-relaxed">Track and manage tailoring jobs.</p>
+                            <p class="text-xs font-semibold text-neutral-400 leading-relaxed">Track and manage tailoring
+                                jobs.</p>
                         </div>
                     </a>
 
@@ -1789,23 +1869,23 @@
 
         // SVG icon paths for each app
         const APP_ICONS = {
-            'quotation':    `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>`,
+            'quotation': `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>`,
             'global-count': `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/>`,
-            'dsrmaker':     `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>`,
-            'knockoff':     `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>`,
-            'unconfirmed':  `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>`,
-            'poMaker':      `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>`,
-            'tailoring':    `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l-7-7m7 7l-2.121 2.121m4.242 4.242a3 3 0 11-4.242-4.242m0 0a3 3 0 10-4.242-4.242m8.484 0a3 3 0 10-4.242-4.242m0 0L5 19"/>`,
+            'dsrmaker': `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>`,
+            'knockoff': `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>`,
+            'unconfirmed': `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>`,
+            'poMaker': `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>`,
+            'tailoring': `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l-7-7m7 7l-2.121 2.121m4.242 4.242a3 3 0 11-4.242-4.242m0 0a3 3 0 10-4.242-4.242m8.484 0a3 3 0 10-4.242-4.242m0 0L5 19"/>`,
         };
 
         const APP_META = {
-            'quotation':    { label: 'Quotation Generator', desc: 'Create tailored garment quotes.',   nav: 'quotation',    bg: 'bg-[#f4c74a]', iconColor: 'text-amber-950', iconBg: 'bg-white/40', descColor: 'text-amber-950/70' },
-            'global-count': { label: 'Global Count',        desc: 'Compile raw stock report data.',    nav: 'global-count', bg: 'bg-white border border-neutral-200', iconColor: 'text-[#242424]', iconBg: 'bg-neutral-50 border border-neutral-100', descColor: 'text-neutral-400' },
-            'dsrmaker':     { label: 'DSR Maker',           desc: 'Daily Sales Report formatter.',     nav: 'dsrmaker',     bg: 'bg-white border border-neutral-200', iconColor: 'text-[#242424]', iconBg: 'bg-neutral-50 border border-neutral-100', descColor: 'text-neutral-400' },
-            'knockoff':     { label: 'Knockoff System',     desc: 'Sales Order Reconciliation.',       nav: 'knockoff',     bg: 'bg-white border border-neutral-200', iconColor: 'text-[#242424]', iconBg: 'bg-neutral-50 border border-neutral-100', descColor: 'text-neutral-400' },
-            'unconfirmed':  { label: 'Unconfirmed Stock',   desc: 'Pending stock inwarding tracker.',  nav: 'unconfirmed',  bg: 'bg-white border border-neutral-200', iconColor: 'text-[#242424]', iconBg: 'bg-neutral-50 border border-neutral-100', descColor: 'text-neutral-400' },
-            'poMaker':      { label: 'Know DO or PO',       desc: 'Search purchase, transfer orders.', nav: 'poMaker',      bg: 'bg-white border border-neutral-200', iconColor: 'text-[#242424]', iconBg: 'bg-neutral-50 border border-neutral-100', descColor: 'text-neutral-400' },
-            'tailoring':    { label: 'Tailoring Tracker',   desc: 'Track and manage tailoring jobs.',  nav: 'tailoring',    bg: 'bg-white border border-neutral-200', iconColor: 'text-[#242424]', iconBg: 'bg-neutral-50 border border-neutral-100', descColor: 'text-neutral-400' },
+            'quotation': { label: 'Quotation Generator', desc: 'Create tailored garment quotes.', nav: 'quotation', bg: 'bg-[#f4c74a]', iconColor: 'text-amber-950', iconBg: 'bg-white/40', descColor: 'text-amber-950/70' },
+            'global-count': { label: 'Global Count', desc: 'Compile raw stock report data.', nav: 'global-count', bg: 'bg-white border border-neutral-200', iconColor: 'text-[#242424]', iconBg: 'bg-neutral-50 border border-neutral-100', descColor: 'text-neutral-400' },
+            'dsrmaker': { label: 'DSR Maker', desc: 'Daily Sales Report formatter.', nav: 'dsrmaker', bg: 'bg-white border border-neutral-200', iconColor: 'text-[#242424]', iconBg: 'bg-neutral-50 border border-neutral-100', descColor: 'text-neutral-400' },
+            'knockoff': { label: 'Knockoff System', desc: 'Sales Order Reconciliation.', nav: 'knockoff', bg: 'bg-white border border-neutral-200', iconColor: 'text-[#242424]', iconBg: 'bg-neutral-50 border border-neutral-100', descColor: 'text-neutral-400' },
+            'unconfirmed': { label: 'Unconfirmed Stock', desc: 'Pending stock inwarding tracker.', nav: 'unconfirmed', bg: 'bg-white border border-neutral-200', iconColor: 'text-[#242424]', iconBg: 'bg-neutral-50 border border-neutral-100', descColor: 'text-neutral-400' },
+            'poMaker': { label: 'Know DO or PO', desc: 'Search purchase, transfer orders.', nav: 'poMaker', bg: 'bg-white border border-neutral-200', iconColor: 'text-[#242424]', iconBg: 'bg-neutral-50 border border-neutral-100', descColor: 'text-neutral-400' },
+            'tailoring': { label: 'Tailoring Tracker', desc: 'Track and manage tailoring jobs.', nav: 'tailoring', bg: 'bg-white border border-neutral-200', iconColor: 'text-[#242424]', iconBg: 'bg-neutral-50 border border-neutral-100', descColor: 'text-neutral-400' },
         };
 
         // ---- Storage helpers ----
@@ -2049,7 +2129,7 @@
             try {
                 const saved = localStorage.getItem('storeWeeklyRoutine');
                 if (saved) return JSON.parse(saved);
-            } catch(e) { console.error('Error loading routine', e); }
+            } catch (e) { console.error('Error loading routine', e); }
             return JSON.parse(JSON.stringify(DEFAULT_STORE_ROUTINE));
         }
 
@@ -2070,13 +2150,13 @@
         });
 
         function openEditRoutineModal(e) {
-            if(e) e.stopPropagation();
+            if (e) e.stopPropagation();
             const dropdown = document.getElementById('storeRoutineDropdown');
-            if(dropdown) dropdown.classList.add('hidden');
-            
+            if (dropdown) dropdown.classList.add('hidden');
+
             const formContainer = document.getElementById('editRoutineForm');
             const currentRoutine = loadStoreRoutine();
-            
+
             formContainer.innerHTML = currentRoutine.map((day, idx) => `
                 <div class="mb-4 last:mb-0">
                     <label class="block text-xs font-bold text-neutral-500 mb-1">${day.dayId}</label>
@@ -2105,10 +2185,10 @@
                 const label = document.getElementById(`routine-label-${idx}`).value;
                 const type = document.getElementById(`routine-type-${idx}`).value;
                 let weight = 50;
-                if(type === 'event-yellow') weight = 100;
-                if(type === 'event-blue') weight = 80;
-                if(type === 'event-gray') weight = 60;
-                if(type === 'event-red') weight = 30;
+                if (type === 'event-yellow') weight = 100;
+                if (type === 'event-blue') weight = 80;
+                if (type === 'event-gray') weight = 60;
+                if (type === 'event-red') weight = 30;
                 return { ...day, label, type, weight };
             });
             localStorage.setItem('storeWeeklyRoutine', JSON.stringify(updated));
@@ -2522,7 +2602,7 @@
                 'raw_csv_poMaker',
                 'raw_csv_knockoffMaker'
             ];
-            
+
             let uploadedCount = 0;
             reportKeys.forEach(key => {
                 if (localStorage.getItem(key)) {
@@ -2531,10 +2611,10 @@
             });
 
             const percentage = Math.round((uploadedCount / reportKeys.length) * 100);
-            
+
             const fillEl = document.getElementById('reports-progress-fill');
             const textEl = document.getElementById('reports-percentage');
-            
+
             if (fillEl) fillEl.style.width = `${percentage}%`;
             if (textEl) textEl.textContent = `${percentage}%`;
         }
@@ -2589,13 +2669,13 @@
                 searchInput.addEventListener('input', (e) => {
                     const query = e.target.value.toLowerCase().trim();
                     const tools = document.querySelectorAll('#tools-grid .tool-card');
-                    
+
                     tools.forEach(tool => {
                         const titleEl = tool.querySelector('h3');
                         const descEl = tool.querySelector('p');
                         const title = titleEl ? titleEl.textContent.toLowerCase() : '';
                         const desc = descEl ? descEl.textContent.toLowerCase() : '';
-                        
+
                         if (query === '') {
                             // Reset state
                             tool.classList.remove('tool-dimmed', 'tool-highlight');
@@ -2619,16 +2699,23 @@
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md relative z-10 flex flex-col max-h-[90vh]">
             <div class="p-6 border-b border-neutral-100 flex justify-between items-center">
                 <h3 class="text-xl font-bold text-[#242424]">Edit Store Routine</h3>
-                <button onclick="closeEditRoutineModal()" class="w-8 h-8 rounded-full bg-neutral-50 flex items-center justify-center hover:bg-neutral-200 transition-colors">
-                    <svg class="w-5 h-5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <button onclick="closeEditRoutineModal()"
+                    class="w-8 h-8 rounded-full bg-neutral-50 flex items-center justify-center hover:bg-neutral-200 transition-colors">
+                    <svg class="w-5 h-5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
                 </button>
             </div>
             <div class="p-6 overflow-y-auto" id="editRoutineForm">
                 <!-- Dynamically populated rows will go here -->
             </div>
             <div class="p-6 border-t border-neutral-100 flex justify-end gap-3">
-                <button onclick="closeEditRoutineModal()" class="px-5 py-2.5 rounded-full text-sm font-bold text-neutral-600 bg-neutral-100 hover:bg-neutral-200 transition-colors">Cancel</button>
-                <button onclick="saveStoreRoutine()" class="px-5 py-2.5 rounded-full text-sm font-bold text-[#242424] bg-[#f4c74a] hover:bg-[#f0b929] transition-colors shadow-sm">Save Changes</button>
+                <button onclick="closeEditRoutineModal()"
+                    class="px-5 py-2.5 rounded-full text-sm font-bold text-neutral-600 bg-neutral-100 hover:bg-neutral-200 transition-colors">Cancel</button>
+                <button onclick="saveStoreRoutine()"
+                    class="px-5 py-2.5 rounded-full text-sm font-bold text-[#242424] bg-[#f4c74a] hover:bg-[#f0b929] transition-colors shadow-sm">Save
+                    Changes</button>
             </div>
         </div>
     </div>

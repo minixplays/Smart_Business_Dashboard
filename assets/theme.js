@@ -1,8 +1,12 @@
 /**
  * theme.js
  * Handles loading, persisting, and toggling the dark theme across all dashboard tools.
- * Wraps internals in an IIFE to avoid polluting the global scope.
- * Exposes only the functions that HTML onclick attributes need.
+ *
+ * FIX: When this script runs inside <head>, document.body is null.
+ *      We apply 'dark-mode' to document.documentElement (<html>) immediately
+ *      to prevent FOUC, then sync to document.body once DOM is ready.
+ *      All CSS selectors use both `html.dark-mode` and `body.dark-mode` so
+ *      either target works depending on parse stage.
  */
 (function () {
   'use strict';
@@ -23,13 +27,17 @@
     }
   }
 
+  /**
+   * Apply theme to both <html> and <body>.
+   * <html> is always safe; <body> may be null during head execution.
+   */
   function applyTheme(theme) {
     if (theme === 'dark') {
       document.documentElement.classList.add('dark-mode');
-      document.body.classList.add('dark-mode');
+      if (document.body) document.body.classList.add('dark-mode');
     } else {
       document.documentElement.classList.remove('dark-mode');
-      document.body.classList.remove('dark-mode');
+      if (document.body) document.body.classList.remove('dark-mode');
     }
   }
 
@@ -39,17 +47,25 @@
   }
 
   function toggleTheme() {
-    const isDark = document.body.classList.contains('dark-mode');
+    // Check both sources — documentElement is always reliable
+    const isDark = document.documentElement.classList.contains('dark-mode');
     const next = isDark ? 'light' : 'dark';
     applyTheme(next);
     saveThemeToStorage(next);
   }
 
   // Expose to global scope for HTML onclick attributes
-  window.loadTheme = loadTheme;
+  window.loadTheme  = loadTheme;
   window.toggleTheme = toggleTheme;
 
-  // Execute immediately to prevent FOUC (Flash of Unstyled Content)
+  // ─── Immediate: apply to <html> right now to prevent FOUC ───────────────
   loadTheme();
-})();
 
+  // ─── Sync to <body> once DOM is parsed (body was null during head exec) ──
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () {
+      const saved = getThemeFromStorage();
+      applyTheme(saved === 'dark' ? 'dark' : 'light');
+    });
+  }
+})();

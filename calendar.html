@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Business calendar with tailoring schedules and store routine events.">
-    <title>Calendar — Manager</title>
+    <title>Calendar â€” Manager</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="assets/normalize.css">
@@ -161,7 +161,91 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
-
+        /* ===========================================
+           DARK THEME - Calendar
+           html.dark-mode: set immediately by theme.js in <head>.
+           body.dark-mode: synced on DOMContentLoaded.
+           =========================================== */
+        html.dark-mode, body.dark-mode { color-scheme: dark; color: #f4f4f5 !important; }
+        html.dark-mode .theme-bg, body.dark-mode .theme-bg {
+            background: linear-gradient(135deg, #09090b 0%, #141417 50%, #1c1c21 100%) !important;
+        }
+        html.dark-mode .dashboard-container, body.dark-mode .dashboard-container {
+            background: rgba(24,24,27,0.65) !important;
+            border-color: rgba(255,255,255,0.05) !important;
+            box-shadow: 0 0 40px rgba(0,0,0,0.5) !important;
+        }
+        html.dark-mode .bg-white, body.dark-mode .bg-white {
+            background: #18181b !important; color: #f4f4f5 !important;
+            border-color: rgba(255,255,255,0.06) !important;
+        }
+        html.dark-mode .bg-white\/60, body.dark-mode .bg-white\/60 {
+            background: rgba(24,24,27,0.6) !important;
+            border-color: rgba(255,255,255,0.06) !important;
+        }
+        html.dark-mode .pill-nav-active, body.dark-mode .pill-nav-active {
+            background: #f4c74a !important; color: #18181b !important;
+            box-shadow: 0 0 15px rgba(244,199,74,0.25) !important;
+        }
+        html.dark-mode .pill-nav, body.dark-mode .pill-nav { color: #a1a1aa !important; }
+        html.dark-mode .pill-nav:hover, body.dark-mode .pill-nav:hover {
+            background: rgba(255,255,255,0.08) !important; color: #fff !important;
+        }
+        html.dark-mode h1, html.dark-mode h2, html.dark-mode h3, html.dark-mode h4,
+        body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4 {
+            color: #f1f5f9 !important;
+        }
+        html.dark-mode .text-neutral-400, body.dark-mode .text-neutral-400 { color: #71717a !important; }
+        html.dark-mode .text-neutral-500, body.dark-mode .text-neutral-500 { color: #a1a1aa !important; }
+        html.dark-mode .calendar-day, body.dark-mode .calendar-day {
+            background: rgba(24,24,27,0.7) !important;
+            border-color: rgba(255,255,255,0.07) !important;
+            color: #f1f5f9 !important;
+        }
+        html.dark-mode .calendar-day:hover, body.dark-mode .calendar-day:hover {
+            background: rgba(39,39,42,0.95) !important;
+            box-shadow: 0 15px 30px -10px rgba(0,0,0,0.5) !important;
+            border-color: rgba(244,199,74,0.25) !important;
+        }
+        html.dark-mode .calendar-day.today, body.dark-mode .calendar-day.today {
+            background: linear-gradient(135deg, #1c1c21 0%, #27271a 100%) !important;
+            border-color: #f4c74a !important;
+            box-shadow: 0 10px 25px -5px rgba(244,199,74,0.2) !important;
+        }
+        html.dark-mode .date-num, body.dark-mode .date-num { color: #f1f5f9 !important; }
+        html.dark-mode .today .date-num, body.dark-mode .today .date-num { color: #f4c74a !important; }
+        html.dark-mode .event-yellow, body.dark-mode .event-yellow {
+            background: rgba(244,199,74,0.15) !important; color: #fde68a !important;
+            border-color: rgba(244,199,74,0.25) !important;
+        }
+        html.dark-mode .event-blue, body.dark-mode .event-blue {
+            background: rgba(59,130,246,0.15) !important; color: #93c5fd !important;
+            border-color: rgba(59,130,246,0.25) !important;
+        }
+        html.dark-mode .event-gray, body.dark-mode .event-gray {
+            background: rgba(255,255,255,0.07) !important; color: #d4d4d8 !important;
+            border-color: rgba(255,255,255,0.1) !important;
+        }
+        html.dark-mode .event-red, body.dark-mode .event-red {
+            background: rgba(239,68,68,0.15) !important; color: #fca5a5 !important;
+            border-color: rgba(239,68,68,0.25) !important;
+        }
+        html.dark-mode .side-panel, body.dark-mode .side-panel {
+            background: rgba(24,24,27,0.65) !important;
+            border-color: rgba(255,255,255,0.06) !important;
+        }
+        html.dark-mode .glass-btn, body.dark-mode .glass-btn {
+            background: rgba(39,39,42,0.8) !important;
+            border-color: rgba(255,255,255,0.08) !important;
+            color: #f1f5f9 !important;
+        }
+        html.dark-mode .glass-btn:hover, body.dark-mode .glass-btn:hover {
+            background: rgba(63,63,70,0.9) !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4) !important;
+        }
+        html.dark-mode [fill="none"], body.dark-mode [fill="none"] { stroke: #f1f5f9 !important; }
+        html.dark-mode .border-neutral-100, body.dark-mode .border-neutral-100 { border-color: #3f3f46 !important; }
+        html.dark-mode .bg-neutral-200, body.dark-mode .bg-neutral-200 { background: #3f3f46 !important; }
     </style>
 </head>
 
@@ -544,3 +628,4 @@
     <script src="assets/notifications.js"></script>
 </body>
 </html>
+
