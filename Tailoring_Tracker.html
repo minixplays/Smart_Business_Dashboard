@@ -739,7 +739,8 @@
                 trailDate: headers.indexOf('Trail Date'),
                 product: headers.indexOf('Product'),
                 qty: headers.indexOf('Qty'),
-                customerName: headersLower.findIndex(h => h.includes('customer name') || h.includes('customer') || h.includes('client name'))
+                customerName: headersLower.findIndex(h => h.includes('customer name') || h.includes('customer') || h.includes('client name')),
+                orderKind: headersLower.findIndex(h => h.includes('order kind') || h === 'order type')
             };
 
             const ordersMap = {};
@@ -773,7 +774,8 @@
                     product: clean(row[idx.product]),
                     qty: clean(row[idx.qty]) || '1',
                     woNo: idx.woNo > -1 ? clean(row[idx.woNo]) : '',
-                    woOrderStatus: idx.woOrderStatus > -1 ? clean(row[idx.woOrderStatus]) : ''
+                    woOrderStatus: idx.woOrderStatus > -1 ? clean(row[idx.woOrderStatus]) : '',
+                    orderKind: idx.orderKind > -1 ? clean(row[idx.orderKind]) : ''
                 });
             }
 
@@ -809,50 +811,38 @@
             const item = order.items[itemIndex];
 
             const status = (item.woOrderStatus || '').toUpperCase().trim();
+            const orderKind = (item.orderKind || '').toUpperCase().trim();
             
-            let currentStep = 1;
-            if (['QC TESTING', 'BOM ISSUING FOR FINISH'].includes(status)) {
-                currentStep = 3;
-            } else if (['CUTTING COMPLETED', 'CUTTING SHIPPED TO FACTORY', 'RE_CUTTING_SHIPPED TO FACTORY'].includes(status)) {
-                currentStep = 2;
-            } else if (['FINISHED SHIPPED TO STORE', 'FINISHED RECEIVED TO STORE'].includes(status)) {
-                currentStep = 4;
-            } else if (['DELIVERED TO CUSTOMER', 'DELVERED TO CUSTOMER'].includes(status)) {
-                currentStep = 5;
-            } else if (['BOM ISSUING', 'CUTTING AT STORE'].includes(status)) {
-                currentStep = 1;
-            } else if (status) {
-                // Default to 1 if status exists but doesn't match
-                currentStep = 1;
-            } else {
-                currentStep = 1;
-            }
+            const trialStages = [
+                "FABRIC RECEIVED", "CUTTING COMPLETED", "CUTTING SHIPPED TO FACTORY", 
+                "BOM ISSUING", "TRIAL TAILOR ALLOCATION", "TRIAL GARMENT READY STORE", 
+                "TRIAL COMPLETED AT STORE", "RECUTTING", "RE_CUTTING_SHIPPED TO FACTORY", 
+                "BOM ISSUING FOR FINISH", "ALLOCATED_FINSISH_TAILOR", "QC TESTING", 
+                "FINISHED GARMENT READY AT STORE", "DELVERED TO CUSTOMER"
+            ];
+            
+            const fullFinishStages = [
+                "FABRIC RECEIVED", "CUTTING COMPLETED", "CUTTING SHIPPED TO FACTORY", 
+                "BOM ISSUING FOR FINISH", "ALLOCATED_FINSISH_TAILOR", "QC TESTING", 
+                "FINISHED GARMENT READY AT STORE", "DELVERED TO CUSTOMER"
+            ];
+            
+            const stages = orderKind === 'FULL FINISH' ? fullFinishStages : trialStages;
+            
+            let currentStep = stages.indexOf(status) + 1;
+            if (currentStep === 0) currentStep = 1;
 
             const panel = document.getElementById('future-feature-panel');
             
             panel.className = "flex flex-col bg-white/60 backdrop-blur-md rounded-[2.5rem] p-6 lg:p-8 border border-white/80 shadow-sm h-full overflow-y-auto custom-scroll";
 
-            const iconProcessing = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>`;
-            const iconProduction = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>`;
-            const iconQuality = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
-            const iconStore = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`;
-            const iconDelivered = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>`;
-            
-            const steps = [
-                { label: 'Order Processed', icon: iconProcessing },
-                { label: 'In Production', icon: iconProduction },
-                { label: 'Quality Check', icon: iconQuality },
-                { label: 'Ready at Store', icon: iconStore },
-                { label: 'Delivered', icon: iconDelivered }
-            ];
-
             let html = `
-                <div class="w-full flex justify-between items-start mb-10 border-b border-neutral-200 pb-6">
+                <div class="w-full flex justify-between items-start mb-6 border-b border-neutral-200 pb-6">
                     <div>
                         <h2 class="text-2xl font-extrabold text-[#242424] mb-1">Track Item</h2>
                         <div class="flex items-center gap-3">
                             <span class="text-[10px] font-bold text-neutral-500 bg-neutral-100 px-2 py-1 rounded-md uppercase border border-neutral-200">WO: ${item.woNo || 'NO-WO'}</span>
-                            <span class="text-sm font-semibold text-neutral-600">${item.product}</span>
+                            <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md uppercase border border-emerald-200">${orderKind || 'TRIAL'}</span>
                         </div>
                         ${order.customerName ? `<p class="text-xs font-bold text-indigo-600 mt-2 flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg> Customer: ${escapeHtml(order.customerName)}</p>` : ''}
                     </div>
@@ -862,62 +852,53 @@
                     </div>
                 </div>
             `;
-
-            html += `<div class="relative w-full max-w-lg mx-auto mt-6 mb-12 hidden sm:block">`;
+            html += `<div class="w-full flex items-start overflow-x-auto custom-scroll pb-6 pt-4 px-2 select-none">`;
             
-            const progressPercent = ((currentStep - 1) / (steps.length - 1)) * 100;
-            html += `
-                <div class="absolute top-[22px] left-[10%] right-[10%] h-1 bg-neutral-200/80 rounded-full z-0"></div>
-                <div class="absolute top-[22px] left-[10%] h-1 bg-emerald-500 rounded-full z-0 transition-all duration-1000 ease-in-out" style="width: ${progressPercent * 0.8}%"></div>
-                <div class="flex justify-between relative z-10 w-full">
-            `;
-
-            steps.forEach((step, index) => {
+            stages.forEach((stageLabel, index) => {
                 const stepNum = index + 1;
                 const isCompleted = stepNum < currentStep;
                 const isActive = stepNum === currentStep;
                 const isPending = stepNum > currentStep;
+                const isLast = index === stages.length - 1;
                 
-                let iconColor = isPending ? 'text-neutral-400' : (isActive ? 'text-white' : 'text-emerald-500');
-                let bgColor = isPending ? 'bg-white border-2 border-neutral-200' : (isActive ? 'bg-emerald-500 border-4 border-emerald-100 shadow-[0_0_15px_rgba(16,185,129,0.4)]' : 'bg-white border-2 border-emerald-500');
-                let textColor = isPending ? 'text-neutral-400' : (isActive ? 'text-emerald-600 font-extrabold' : 'text-emerald-500 font-bold');
+                let circleClass = "";
+                let iconHTML = "";
+                let labelClass = "";
+                let lineClass = "";
 
+                if (isCompleted) {
+                    circleClass = "bg-teal-400 text-white ring-[3px] ring-white ring-inset outline outline-2 outline-teal-400";
+                    iconHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>`;
+                    labelClass = "text-teal-600 font-bold";
+                    lineClass = "bg-teal-400";
+                } else if (isActive) {
+                    circleClass = "bg-amber-400 text-white ring-[3px] ring-white ring-inset outline outline-2 outline-amber-400 shadow-lg shadow-amber-400/30";
+                    iconHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
+                    labelClass = "text-amber-600 font-extrabold";
+                    lineClass = "bg-gradient-to-r from-amber-400 to-neutral-200";
+                } else {
+                    circleClass = "bg-neutral-100 text-neutral-300 border-2 border-neutral-200";
+                    iconHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>`; // light checkmark
+                    labelClass = "text-neutral-400 font-medium";
+                    lineClass = "bg-neutral-200";
+                }
+                
                 html += `
-                    <div class="flex flex-col items-center w-1/5 group">
-                        <div class="w-12 h-12 rounded-full flex items-center justify-center transition-all duration-500 ${bgColor} ${iconColor} mb-3 relative">
-                            ${isCompleted ? '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>' : step.icon}
+                    <div class="flex flex-col items-center shrink-0 w-28 relative group">
+                        <div class="h-12 flex items-center justify-center w-full relative">
+                            <!-- Connecting Line -->
+                            ${!isLast ? `<div class="absolute top-1/2 left-[50%] right-[-50%] h-[3px] -translate-y-1/2 ${lineClass} z-0 transition-colors duration-500"></div>` : ''}
+                            
+                            <!-- Circle Node -->
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center relative z-10 transition-all duration-300 ${circleClass}">
+                                ${iconHTML}
+                            </div>
                         </div>
-                        <p class="text-[10px] sm:text-xs text-center leading-tight ${textColor} tracking-wide">${step.label}</p>
+                        <p class="text-[10px] text-center leading-tight mt-3 px-2 ${labelClass}">${stageLabel}</p>
                     </div>
                 `;
             });
 
-            html += `</div></div>`;
-            
-            // Vertical timeline fallback for mobile
-            html += `<div class="w-full sm:hidden flex flex-col gap-0 relative mb-8">`;
-            html += `<div class="absolute top-4 bottom-4 left-[23px] w-1 bg-neutral-200/80 z-0"></div>`;
-            html += `<div class="absolute top-4 left-[23px] w-1 bg-emerald-500 z-0 transition-all duration-1000" style="height: ${progressPercent}%"></div>`;
-            
-            steps.forEach((step, index) => {
-                const stepNum = index + 1;
-                const isCompleted = stepNum < currentStep;
-                const isActive = stepNum === currentStep;
-                const isPending = stepNum > currentStep;
-                
-                let iconColor = isPending ? 'text-neutral-400' : (isActive ? 'text-white' : 'text-emerald-500');
-                let bgColor = isPending ? 'bg-white border-2 border-neutral-200' : (isActive ? 'bg-emerald-500 border-4 border-emerald-100 shadow-[0_0_15px_rgba(16,185,129,0.4)]' : 'bg-white border-2 border-emerald-500');
-                let textColor = isPending ? 'text-neutral-400' : (isActive ? 'text-emerald-600 font-extrabold' : 'text-emerald-500 font-bold');
-
-                html += `
-                    <div class="flex items-center gap-4 relative z-10 py-4">
-                        <div class="w-12 h-12 shrink-0 rounded-full flex items-center justify-center ${bgColor} ${iconColor}">
-                             ${isCompleted ? '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>' : step.icon}
-                        </div>
-                        <p class="text-sm ${textColor}">${step.label}</p>
-                    </div>
-                `;
-            });
             html += `</div>`;
 
             html += `
