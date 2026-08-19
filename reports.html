@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Upload and sync CSV datasets across all Smart Business Dashboard tools.">
-    <title>Reports &amp; Data Sync â€” Manager</title>
+    <title>Reports &amp; Data Sync – Manager</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="assets/normalize.css">
@@ -314,7 +314,7 @@
                                     d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
                                 </path>
                             </svg>
-                            <h3 id="reports-pending-kpi" class="text-4xl font-light text-[#242424] tracking-tight">5
+                            <h3 id="reports-pending-kpi" class="text-4xl font-light text-[#242424] tracking-tight">6
                             </h3>
                         </div>
                         <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Pending</span>
@@ -486,6 +486,36 @@
                     </div>
                 </div>
 
+                <!-- Size Stocks Data -->
+                <div class="upload-card rounded-[2rem] p-6 flex flex-col gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 10h18M3 6h18M3 14h18M3 18h18">
+                                </path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-[#242424]">Size Stocks Data</h3>
+                            <p class="text-xs text-neutral-500 font-medium">For Size Stocks Pivot Analyzer</p>
+                        </div>
+                    </div>
+                    <div class="upload-zone rounded-2xl p-6 text-center cursor-pointer flex-grow flex flex-col justify-center items-center gap-3 relative"
+                        id="dz-sizeStocks" data-key="raw_csv_sizeStocks">
+                        <input type="file" id="fi-sizeStocks" accept=".csv" class="hidden">
+                        <div
+                            class="status-icon w-10 h-10 bg-indigo-50 text-indigo-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                            </svg>
+                        </div>
+                        <p class="text-sm font-bold text-neutral-700 status-text">Drop Size Stocks CSV</p>
+                        <p class="text-xs text-neutral-400 font-medium">or click to browse</p>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -607,7 +637,8 @@
                 'raw_csv_gcMaker',
                 'raw_csv_unconfirmedStock',
                 'raw_csv_poMaker',
-                'raw_csv_knockoffMaker'
+                'raw_csv_knockoffMaker',
+                'raw_csv_sizeStocks'
             ];
             let completed = 0;
             reportKeys.forEach(key => {
@@ -685,6 +716,7 @@
                 else if (id === 'dz-unconfirmedStock') text.textContent = "Drop Unconfirmed CSV";
                 else if (id === 'dz-poMaker') text.textContent = "Drop PO CSV";
                 else if (id === 'dz-knockoffMaker') text.textContent = "Drop Knockoff CSV";
+                else if (id === 'dz-sizeStocks') text.textContent = "Drop Size Stocks CSV";
 
                 const subtext = zone.querySelector('p:last-child');
                 subtext.textContent = "or click to browse";
@@ -700,7 +732,8 @@
                     'raw_csv_gcMaker',
                     'raw_csv_unconfirmedStock',
                     'raw_csv_poMaker',
-                    'raw_csv_knockoffMaker'
+                    'raw_csv_knockoffMaker',
+                    'raw_csv_sizeStocks'
                 ];
 
                 keysToClear.forEach(key => localStorage.removeItem(key));

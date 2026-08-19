@@ -23,10 +23,10 @@
             color: #242424;
         }
 
-        /* Dark Theme */
-        body.dark-mode {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
-            color: #f1f5f9;
+        /* Dark Theme — Zinc palette, synced with theme.css */
+        html.dark-mode, body.dark-mode {
+            background: linear-gradient(135deg, #09090b 0%, #141417 50%, #1c1c21 100%);
+            color: #f4f4f5;
             color-scheme: dark;
         }
 
@@ -37,9 +37,10 @@
             -webkit-backdrop-filter: blur(20px);
         }
 
+        html.dark-mode .dashboard-container,
         body.dark-mode .dashboard-container {
-            background: rgba(30, 41, 59, 0.6);
-            border-color: rgba(148, 163, 184, 0.3);
+            background: rgba(24, 24, 27, 0.7) !important;
+            border-color: rgba(255, 255, 255, 0.06) !important;
         }
 
         .card-item {
@@ -53,21 +54,24 @@
             box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.06);
         }
 
+        html.dark-mode .card-item,
         body.dark-mode .card-item {
-            background: #1e293b;
-            border-color: rgba(148, 163, 184, 0.2);
-            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.3);
+            background: #18181b;
+            border-color: rgba(255, 255, 255, 0.07);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.4);
         }
 
         input, select {
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        html.dark-mode input,
+        html.dark-mode select,
         body.dark-mode input,
         body.dark-mode select {
-            background: #0f172a;
-            color: #f1f5f9;
-            border-color: #475569;
+            background: #09090b;
+            color: #f4f4f5;
+            border-color: #3f3f46;
         }
 
         input:focus, select:focus {
@@ -76,18 +80,22 @@
             box-shadow: 0 0 0 3px rgba(244, 199, 74, 0.1);
         }
 
+        html.dark-mode input:focus,
+        html.dark-mode select:focus,
         body.dark-mode input:focus,
         body.dark-mode select:focus {
             border-color: #f4c74a;
-            box-shadow: 0 0 0 3px rgba(244, 199, 74, 0.2);
+            box-shadow: 0 0 0 4px rgba(244, 199, 74, 0.15);
         }
 
+        html.dark-mode table,
         body.dark-mode table {
-            color: #f1f5f9;
+            color: #f4f4f5;
         }
 
+        html.dark-mode tbody tr,
         body.dark-mode tbody tr {
-            border-color: #475569;
+            border-color: #3f3f46;
         }
 
         .btn-primary {
@@ -107,9 +115,10 @@
             transition: all 0.3s;
         }
 
+        html.dark-mode .btn-secondary,
         body.dark-mode .btn-secondary {
-            background: #f1f5f9;
-            color: #0f172a;
+            background: #f4f4f5;
+            color: #09090b;
         }
 
         .btn-secondary:hover {
@@ -132,9 +141,10 @@
             border: 1px solid rgba(255, 255, 255, 0.4);
         }
 
+        html.dark-mode .summary-stat,
         body.dark-mode .summary-stat {
-            background: #1e293b;
-            border-color: rgba(148, 163, 184, 0.2);
+            background: #18181b;
+            border-color: rgba(255, 255, 255, 0.07);
         }
     </style>
 </head>

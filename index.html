@@ -1813,6 +1813,43 @@
                         </div>
                     </a>
 
+                    <!-- Size Stocks Pivot Analyzer -->
+                    <a href="size_stocks.html"
+                        class="tool-card bg-white border border-neutral-200 rounded-[2rem] p-8 flex flex-col gap-5 shadow-sm relative overflow-hidden group no-underline"
+                        data-app-id="size-stocks">
+                        <!-- Pin Button -->
+                        <button class="pin-btn" id="pin-tools-size-stocks" onclick="togglePin(event,'size-stocks')"
+                            title="Pin / Unpin">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                            </svg>
+                        </button>
+                        <div class="flex justify-between items-start">
+                            <div
+                                class="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center border border-amber-100">
+                                <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 10h18M3 6h18M3 14h18M3 18h18"></path>
+                                </svg>
+                            </div>
+                            <div
+                                class="w-8 h-8 rounded-full bg-neutral-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-extrabold text-[#242424] mb-1">Size Stocks</h3>
+                            <p class="text-xs font-semibold text-neutral-400 leading-relaxed">Pivot stock report by
+                                size, site &amp; series.</p>
+                        </div>
+                    </a>
+
                 </div>
             </div> <!-- end toolsPanel -->
 
@@ -1865,7 +1902,7 @@
         const PINNED_STORAGE_KEY = 'pinned_apps_v2';
 
         // All app IDs that can be pinned/unpinned
-        const ALL_APP_IDS = ['quotation', 'global-count', 'dsrmaker', 'knockoff', 'unconfirmed', 'poMaker', 'tailoring'];
+        const ALL_APP_IDS = ['quotation', 'global-count', 'dsrmaker', 'knockoff', 'unconfirmed', 'poMaker', 'tailoring', 'size-stocks'];
 
         // SVG icon paths for each app
         const APP_ICONS = {
@@ -1876,6 +1913,7 @@
             'unconfirmed': `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>`,
             'poMaker': `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>`,
             'tailoring': `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l-7-7m7 7l-2.121 2.121m4.242 4.242a3 3 0 11-4.242-4.242m0 0a3 3 0 10-4.242-4.242m8.484 0a3 3 0 10-4.242-4.242m0 0L5 19"/>`,
+            'size-stocks': `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 6h18M3 14h18M3 18h18"/>`,
         };
 
         const APP_META = {
@@ -1886,6 +1924,7 @@
             'unconfirmed': { label: 'Unconfirmed Stock', desc: 'Pending stock inwarding tracker.', nav: 'unconfirmed', bg: 'bg-white border border-neutral-200', iconColor: 'text-[#242424]', iconBg: 'bg-neutral-50 border border-neutral-100', descColor: 'text-neutral-400' },
             'poMaker': { label: 'Know DO or PO', desc: 'Search purchase, transfer orders.', nav: 'poMaker', bg: 'bg-white border border-neutral-200', iconColor: 'text-[#242424]', iconBg: 'bg-neutral-50 border border-neutral-100', descColor: 'text-neutral-400' },
             'tailoring': { label: 'Tailoring Tracker', desc: 'Track and manage tailoring jobs.', nav: 'tailoring', bg: 'bg-white border border-neutral-200', iconColor: 'text-[#242424]', iconBg: 'bg-neutral-50 border border-neutral-100', descColor: 'text-neutral-400' },
+            'size-stocks': { label: 'Size Stocks', desc: 'Pivot stock report by size & site.', nav: 'size-stocks', bg: 'bg-white border border-neutral-200', iconColor: 'text-amber-600', iconBg: 'bg-amber-50 border border-amber-100', descColor: 'text-neutral-400' },
         };
 
         // ---- Storage helpers ----
@@ -2353,6 +2392,7 @@
                 'unconfirmed': 'unconfirmedStock.html',
                 'poMaker': 'poMaker.html',
                 'tailoring': 'Tailoring_Tracker.html',
+                'size-stocks': 'size_stocks.html',
                 'calendar': 'calendar.html',
                 'reports': 'reports.html'
             };

@@ -273,15 +273,21 @@
             // Map columns dynamically based on fuzzy matching
             const sampleKeys = Object.keys(rawData[0]);
             const findCol = (keywords) => {
+                // 1. Try exact raw key match first (handles columns like 'order_date')
+                for (let key of sampleKeys) {
+                    const rawLower = key.trim().toLowerCase();
+                    if (keywords.some(kw => rawLower === kw.toLowerCase())) return key;
+                }
+                // 2. Fuzzy match: normalize underscores → spaces, then check includes
                 for (let key of sampleKeys) {
                     const lkey = key.trim().toLowerCase().replace(/_/g, ' ');
-                    if (keywords.some(kw => lkey.includes(kw))) return key;
+                    if (keywords.some(kw => lkey.includes(kw.toLowerCase().replace(/_/g, ' ')))) return key;
                 }
                 return null;
             };
 
             columnMappings = {
-                orderDate: findCol(['order date', 'date']),
+                orderDate: findCol(['order_date', 'order date', 'orderdate', 'date']),
                 saleOrder: findCol(['sale order', 'order no', 'order num']),
                 customerName: findCol(['customer name', 'customer']),
                 fulfillMethod: findCol(['fulfill method', 'fulfillment', 'method']),
