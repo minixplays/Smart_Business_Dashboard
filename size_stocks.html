@@ -36,8 +36,15 @@
         }
 
         @keyframes pageEnter {
-            from { opacity: 0; transform: translateY(10px); }
-            to   { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         body.page-exit {
@@ -45,8 +52,15 @@
         }
 
         @keyframes pageExit {
-            from { opacity: 1; transform: translateY(0); }
-            to   { opacity: 0; transform: translateY(-10px); }
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
         }
 
         /* ── Background ───────────────────────────── */
@@ -99,7 +113,7 @@
             position: sticky;
             top: 0;
             z-index: 10;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
             font-weight: 700;
             color: #3f3f46;
             text-transform: uppercase;
@@ -141,7 +155,7 @@
 
         /* Subtle zebra on size cols */
         .size-col-even {
-            background: rgba(0,0,0,0.01);
+            background: rgba(0, 0, 0, 0.01);
         }
 
         /* ── Filter chip bar ──────────────────────── */
@@ -167,7 +181,7 @@
         .filter-select:focus {
             outline: none;
             border-color: #f4c74a;
-            box-shadow: 0 0 0 4px rgba(244,199,74,0.15);
+            box-shadow: 0 0 0 4px rgba(244, 199, 74, 0.15);
         }
 
         .filter-input {
@@ -186,7 +200,7 @@
         .filter-input:focus {
             outline: none;
             border-color: #f4c74a;
-            box-shadow: 0 0 0 4px rgba(244,199,74,0.15);
+            box-shadow: 0 0 0 4px rgba(244, 199, 74, 0.15);
         }
 
         /* ── Loading Spinner ─────────────────────── */
@@ -200,14 +214,29 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* ── Custom scrollbar ─────────────────────── */
-        .pivot-table-container::-webkit-scrollbar { width: 6px; height: 6px; }
-        .pivot-table-container::-webkit-scrollbar-track { background: transparent; }
-        .pivot-table-container::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 10px; }
-        .pivot-table-container::-webkit-scrollbar-thumb:hover { background: #a1a1aa; }
+        .pivot-table-container::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        .pivot-table-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .pivot-table-container::-webkit-scrollbar-thumb {
+            background: #d4d4d8;
+            border-radius: 10px;
+        }
+
+        .pivot-table-container::-webkit-scrollbar-thumb:hover {
+            background: #a1a1aa;
+        }
 
         /* ── Accent button ───────────────────────── */
         .btn-accent {
@@ -228,7 +257,7 @@
         .btn-accent:hover {
             background: #e8b93d;
             transform: translateY(-1px);
-            box-shadow: 0 6px 18px rgba(244,199,74,0.35);
+            box-shadow: 0 6px 18px rgba(244, 199, 74, 0.35);
         }
 
         .btn-ghost {
@@ -258,19 +287,19 @@
         html.dark-mode .ss-card,
         body.dark-mode .ss-card {
             background: rgba(24, 24, 27, 0.7) !important;
-            border-color: rgba(255,255,255,0.06) !important;
+            border-color: rgba(255, 255, 255, 0.06) !important;
         }
 
         html.dark-mode .drop-zone,
         body.dark-mode .drop-zone {
             border-color: #3f3f46;
-            background: rgba(24,24,27,0.4);
+            background: rgba(24, 24, 27, 0.4);
         }
 
         html.dark-mode .drop-zone.drag-over,
         body.dark-mode .drop-zone.drag-over {
             border-color: #f4c74a;
-            background: rgba(244,199,74,0.07);
+            background: rgba(244, 199, 74, 0.07);
         }
 
         html.dark-mode .filter-select,
@@ -288,7 +317,7 @@
         body.dark-mode .filter-select:focus,
         body.dark-mode .filter-input:focus {
             border-color: #f4c74a;
-            box-shadow: 0 0 0 4px rgba(244,199,74,0.12);
+            box-shadow: 0 0 0 4px rgba(244, 199, 74, 0.12);
         }
 
         html.dark-mode .pivot-table th,
@@ -312,7 +341,7 @@
 
         html.dark-mode .pivot-table tbody tr:hover td,
         body.dark-mode .pivot-table tbody tr:hover td {
-            background: rgba(244,199,74,0.06);
+            background: rgba(244, 199, 74, 0.06);
         }
 
         html.dark-mode .pivot-table .grand-total-col,
@@ -329,7 +358,7 @@
 
         html.dark-mode .size-col-even,
         body.dark-mode .size-col-even {
-            background: rgba(255,255,255,0.02);
+            background: rgba(255, 255, 255, 0.02);
         }
 
         html.dark-mode .btn-ghost,
@@ -352,30 +381,84 @@
 
         /* Dark mode text overrides */
         html.dark-mode .text-\[#242424\],
-        body.dark-mode .text-\[#242424\] { color: #f4f4f5 !important; }
-        html.dark-mode h1, html.dark-mode h2, html.dark-mode h3,
-        body.dark-mode h1, body.dark-mode h2, body.dark-mode h3 { color: #f4f4f5 !important; }
-        html.dark-mode p, body.dark-mode p { color: #a1a1aa !important; }
-        html.dark-mode .text-neutral-500, body.dark-mode .text-neutral-500 { color: #a1a1aa !important; }
-        html.dark-mode .text-neutral-400, body.dark-mode .text-neutral-400 { color: #71717a !important; }
+        body.dark-mode .text-\[#242424\] {
+            color: #f4f4f5 !important;
+        }
+
+        html.dark-mode h1,
+        html.dark-mode h2,
+        html.dark-mode h3,
+        body.dark-mode h1,
+        body.dark-mode h2,
+        body.dark-mode h3 {
+            color: #f4f4f5 !important;
+        }
+
+        html.dark-mode p,
+        body.dark-mode p {
+            color: #a1a1aa !important;
+        }
+
+        html.dark-mode .text-neutral-500,
+        body.dark-mode .text-neutral-500 {
+            color: #a1a1aa !important;
+        }
+
+        html.dark-mode .text-neutral-400,
+        body.dark-mode .text-neutral-400 {
+            color: #71717a !important;
+        }
 
         /* Theme toggle icons */
-        .sun-icon, .moon-icon {
-            position: absolute; width: 100%; height: 100%;
-            display: flex; align-items: center; justify-content: center;
+        .sun-icon,
+        .moon-icon {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .sun-icon  { opacity: 1; transform: rotate(0deg); transition: all 0.3s ease; }
-        .moon-icon { opacity: 0; transform: rotate(180deg); transition: all 0.3s ease; }
-        html.dark-mode .sun-icon,  body.dark-mode .sun-icon  { opacity: 0; transform: rotate(180deg); }
-        html.dark-mode .moon-icon, body.dark-mode .moon-icon { opacity: 1; transform: rotate(0deg); }
+
+        .sun-icon {
+            opacity: 1;
+            transform: rotate(0deg);
+            transition: all 0.3s ease;
+        }
+
+        .moon-icon {
+            opacity: 0;
+            transform: rotate(180deg);
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .sun-icon,
+        body.dark-mode .sun-icon {
+            opacity: 0;
+            transform: rotate(180deg);
+        }
+
+        html.dark-mode .moon-icon,
+        body.dark-mode .moon-icon {
+            opacity: 1;
+            transform: rotate(0deg);
+        }
 
         /* Focus visible */
-        :focus-visible { outline: 2px solid #f4c74a; outline-offset: 2px; }
+        :focus-visible {
+            outline: 2px solid #f4c74a;
+            outline-offset: 2px;
+        }
 
         /* Responsive helper */
         @media (max-width: 640px) {
-            .pivot-table-container { max-height: 55vh; }
-            .filter-select { min-width: 100px; }
+            .pivot-table-container {
+                max-height: 55vh;
+            }
+
+            .filter-select {
+                min-width: 100px;
+            }
         }
     </style>
 </head>
@@ -393,13 +476,13 @@
                         class="w-9 h-9 rounded-full bg-white/70 border border-white flex items-center justify-center text-[#242424] hover:bg-[#f4c74a] transition-colors shrink-0 shadow-sm"
                         title="Back to Dashboard">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                         </svg>
                     </a>
                     <div class="w-9 h-9 rounded-full bg-[#f4c74a] flex items-center justify-center shrink-0">
                         <svg class="w-4 h-4 text-[#242424]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M3 10h18M3 6h18M3 14h18M3 18h18"/>
+                                d="M3 10h18M3 6h18M3 14h18M3 18h18" />
                         </svg>
                     </div>
                     <div class="min-w-0">
@@ -415,7 +498,7 @@
                         class="btn-accent hidden text-xs">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                         </svg>
                         <span class="hidden sm:inline">Upload</span>
                     </button>
@@ -427,12 +510,12 @@
                         <span class="sun-icon">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 1.636l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 1.636l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                             </svg>
                         </span>
                         <span class="moon-icon">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
                             </svg>
                         </span>
                     </button>
@@ -459,10 +542,11 @@
             class="drop-zone ss-card rounded-[2rem] border border-white/60 flex-grow flex flex-col items-center justify-center p-10 sm:p-16 text-center min-h-[65vh]"
             id="drop-zone-area">
 
-            <div class="w-16 h-16 rounded-2xl bg-[#f4c74a]/15 border border-[#f4c74a]/30 flex items-center justify-center mb-5">
+            <div
+                class="w-16 h-16 rounded-2xl bg-[#f4c74a]/15 border border-[#f4c74a]/30 flex items-center justify-center mb-5">
                 <svg class="w-7 h-7 text-[#b38a00]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M3 10h18M3 6h18M3 14h18M3 18h18"/>
+                        d="M3 10h18M3 6h18M3 14h18M3 18h18" />
                 </svg>
             </div>
 
@@ -478,7 +562,7 @@
                 <button onclick="document.getElementById('file-upload').click()" class="btn-accent">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                     </svg>
                     Choose File
                 </button>
@@ -496,25 +580,24 @@
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
                     </div>
                     <input type="text" id="filter-search" oninput="applyFilters()"
-                        placeholder="Search series, type, style…"
-                        class="filter-input">
+                        placeholder="Search series, type, style…" class="filter-input">
                 </div>
 
                 <!-- Selects -->
-                <select id="filter-site"   onchange="applyFilters()" class="filter-select flex-shrink-0">
+                <select id="filter-site" onchange="applyFilters()" class="filter-select flex-shrink-0">
                     <option value="ALL">All Sites</option>
                 </select>
                 <select id="filter-series" onchange="applyFilters()" class="filter-select flex-shrink-0">
                     <option value="ALL">All Series</option>
                 </select>
-                <select id="filter-type"   onchange="applyFilters()" class="filter-select flex-shrink-0">
+                <select id="filter-type" onchange="applyFilters()" class="filter-select flex-shrink-0">
                     <option value="ALL">All Types</option>
                 </select>
-                <select id="filter-style"  onchange="applyFilters()" class="filter-select flex-shrink-0">
+                <select id="filter-style" onchange="applyFilters()" class="filter-select flex-shrink-0">
                     <option value="ALL">All Styles</option>
                 </select>
 
@@ -524,13 +607,14 @@
                 <button onclick="document.getElementById('file-upload').click()" class="btn-accent flex-shrink-0">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                     </svg>
                     <span class="hidden sm:inline">New File</span>
                 </button>
 
                 <div class="ml-auto flex items-center gap-1.5 shrink-0">
-                    <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest" id="record-count">0 rows</span>
+                    <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest" id="record-count">0
+                        rows</span>
                 </div>
             </div>
 
@@ -540,9 +624,11 @@
                 <div class="px-5 py-3 border-b border-[#e4e4e7] flex items-center justify-between gap-4">
                     <div class="flex items-center gap-2.5">
                         <div class="w-2 h-2 rounded-full bg-[#f4c74a]"></div>
-                        <span class="text-xs font-extrabold text-[#242424] uppercase tracking-wide">Stock Pivot Grid</span>
+                        <span class="text-xs font-extrabold text-[#242424] uppercase tracking-wide">Stock Pivot
+                            Grid</span>
                     </div>
-                    <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Count of items by size</span>
+                    <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Count of items by
+                        size</span>
                 </div>
 
                 <!-- Table -->
@@ -570,10 +656,10 @@
         let uniqueSizes = [];
 
         const rowDimensions = [
-            { key: 'item_ser_descr',  label: 'Series' },
+            { key: 'item_ser_descr', label: 'Series' },
             { key: 'item_type_descr', label: 'Type' },
-            { key: 'description',     label: 'Description' },
-            { key: 'style',           label: 'Style' }
+            { key: 'description', label: 'Description' },
+            { key: 'style', label: 'Style' }
         ];
 
         const sizeColumnKey = 's_size';
@@ -675,15 +761,15 @@
         function populateFilters() {
             const sites = new Set(), series = new Set(), types = new Set(), styles = new Set();
             rawData.forEach(r => {
-                if (r.site_descr && r.site_descr !== '(blank)')      sites.add(r.site_descr);
+                if (r.site_descr && r.site_descr !== '(blank)') sites.add(r.site_descr);
                 if (r.item_ser_descr && r.item_ser_descr !== '(blank)') series.add(r.item_ser_descr);
                 if (r.item_type_descr && r.item_type_descr !== '(blank)') types.add(r.item_type_descr);
-                if (r.style && r.style !== '(blank)')                 styles.add(r.style);
+                if (r.style && r.style !== '(blank)') styles.add(r.style);
             });
-            populateSelect('filter-site',   Array.from(sites).sort(),   'All Sites');
-            populateSelect('filter-series', Array.from(series).sort(),  'All Series');
-            populateSelect('filter-type',   Array.from(types).sort(),   'All Types');
-            populateSelect('filter-style',  Array.from(styles).sort(),  'All Styles');
+            populateSelect('filter-site', Array.from(sites).sort(), 'All Sites');
+            populateSelect('filter-series', Array.from(series).sort(), 'All Series');
+            populateSelect('filter-type', Array.from(types).sort(), 'All Types');
+            populateSelect('filter-style', Array.from(styles).sort(), 'All Styles');
         }
 
         function populateSelect(id, values, defaultLabel) {
@@ -700,17 +786,17 @@
         function applyFilters() {
             showLoading('Updating table…');
             setTimeout(() => {
-                const search  = document.getElementById('filter-search').value.toLowerCase().trim();
-                const site    = document.getElementById('filter-site').value;
-                const series  = document.getElementById('filter-series').value;
-                const type    = document.getElementById('filter-type').value;
-                const style   = document.getElementById('filter-style').value;
+                const search = document.getElementById('filter-search').value.toLowerCase().trim();
+                const site = document.getElementById('filter-site').value;
+                const series = document.getElementById('filter-series').value;
+                const type = document.getElementById('filter-type').value;
+                const style = document.getElementById('filter-style').value;
 
                 filteredData = rawData.filter(r => {
-                    if (site   !== 'ALL' && r.site_descr      !== site)   return false;
-                    if (series !== 'ALL' && r.item_ser_descr  !== series) return false;
-                    if (type   !== 'ALL' && r.item_type_descr !== type)   return false;
-                    if (style  !== 'ALL' && r.style           !== style)  return false;
+                    if (site !== 'ALL' && r.site_descr !== site) return false;
+                    if (series !== 'ALL' && r.item_ser_descr !== series) return false;
+                    if (type !== 'ALL' && r.item_type_descr !== type) return false;
+                    if (style !== 'ALL' && r.style !== style) return false;
                     if (search) {
                         const hay = `${r.item_ser_descr} ${r.item_type_descr} ${r.description} ${r.style}`.toLowerCase();
                         if (!hay.includes(search)) return false;
@@ -728,7 +814,7 @@
 
         function resetFilters() {
             document.getElementById('filter-search').value = '';
-            ['filter-site','filter-series','filter-type','filter-style']
+            ['filter-site', 'filter-series', 'filter-type', 'filter-style']
                 .forEach(id => document.getElementById(id).value = 'ALL');
             applyFilters();
         }
@@ -750,8 +836,8 @@
             filteredData.forEach(r => sizeSet.add(r[sizeColumnKey]));
 
             const sizeOrder = {
-                'XXS':1,'XS':2,'S':3,'M':4,'L':5,'XL':6,'XXL':7,
-                '2XL':7,'3XL':8,'4XL':9,'(blank)':999
+                'XXS': 1, 'XS': 2, 'S': 3, 'M': 4, 'L': 5, 'XL': 6, 'XXL': 7,
+                '2XL': 7, '3XL': 8, '4XL': 9, '(blank)': 999
             };
 
             uniqueSizes = Array.from(sizeSet).sort((a, b) => {
@@ -771,9 +857,9 @@
             uniqueSizes.forEach(s => (grandTotals[s] = 0));
 
             filteredData.forEach(row => {
-                const dims    = rowDimensions.map(d => row[d.key]);
-                const rowKey  = dims.join('|||');
-                const size    = row[sizeColumnKey];
+                const dims = rowDimensions.map(d => row[d.key]);
+                const rowKey = dims.join('|||');
+                const size = row[sizeColumnKey];
 
                 if (!rowMap.has(rowKey)) {
                     const entry = { dimensions: dims, sizes: {}, rowTotal: 0 };
