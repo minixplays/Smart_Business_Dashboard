@@ -370,9 +370,18 @@
                 <!-- Table Block -->
                 <div class="bg-white rounded-3xl p-4 sm:p-6 shadow-sm border border-neutral-100">
 
-                    <div class="mb-4 flex items-center justify-between px-2">
-                        <h3 class="text-sm font-bold text-[#292929]">Pending Order Records</h3>
-                        <p class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest"
+                    <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between px-2 gap-4">
+                        <h3 class="text-sm font-bold text-[#292929] whitespace-nowrap">Pending Order Records</h3>
+                        
+                        <div class="flex items-center gap-2 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0" id="categoryFilterButtons">
+                            <button onclick="setCategoryFilter('ALL')" id="btn-filter-ALL" class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-full transition-colors bg-[#292929] text-white whitespace-nowrap">All</button>
+                            <button onclick="setCategoryFilter('Tailoring')" id="btn-filter-Tailoring" class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-full transition-colors bg-neutral-100 text-neutral-500 hover:bg-neutral-200 whitespace-nowrap">Tailoring</button>
+                            <button onclick="setCategoryFilter('Accessories')" id="btn-filter-Accessories" class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-full transition-colors bg-neutral-100 text-neutral-500 hover:bg-neutral-200 whitespace-nowrap">Accessories</button>
+                            <button onclick="setCategoryFilter('Fabric')" id="btn-filter-Fabric" class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-full transition-colors bg-neutral-100 text-neutral-500 hover:bg-neutral-200 whitespace-nowrap">Fabric</button>
+                            <button onclick="setCategoryFilter('Readymade')" id="btn-filter-Readymade" class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-full transition-colors bg-neutral-100 text-neutral-500 hover:bg-neutral-200 whitespace-nowrap">Readymade</button>
+                        </div>
+
+                        <p class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest whitespace-nowrap"
                             id="recordCountText">Showing 0 knockoffs</p>
                     </div>
 
@@ -420,11 +429,30 @@
         let rawData = [];
         let pendingData = [];
         let filteredData = [];
+        let currentCategoryFilter = 'ALL';
+
+        function setCategoryFilter(category) {
+            currentCategoryFilter = category;
+            
+            const buttons = ['ALL', 'Tailoring', 'Accessories', 'Fabric', 'Readymade'];
+            buttons.forEach(btn => {
+                const el = document.getElementById('btn-filter-' + btn);
+                if (el) {
+                    if (btn === category) {
+                        el.className = "px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-full transition-colors bg-[#292929] text-white whitespace-nowrap";
+                    } else {
+                        el.className = "px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-full transition-colors bg-neutral-100 text-neutral-500 hover:bg-neutral-200 whitespace-nowrap";
+                    }
+                }
+            });
+
+            applyFilters();
+        }
 
         const COL_MAPPING = {
             siteCode: ['site_code', 'site_descr', 'site_description', 'site', 'store'],
             saleOrder: ['sale_order', 'invoice_id', 'ord_no', 'order_no', 'document_no'],
-            date: ['ord_date', 'order_date', 'date'],
+            date: ['order_date', 'ord_date', 'order date', 'orderdate', 'date'],
             customer: ['customer_name', 'cust_name', 'party_name'],
             itemType: ['item_type', 'item_type_descr'],
             itemSerDesc: ['itemser_description', 'item_description'],
@@ -524,7 +552,7 @@
                 orderQty: findColumnKey(firstRow, COL_MAPPING.orderQty) || 'order_quantity',
                 invoiceQty: findColumnKey(firstRow, COL_MAPPING.invoiceQty) || 'invoice_quantity',
                 itemTotal: findColumnKey(firstRow, COL_MAPPING.itemTotal) || 'item_total',
-                invAmt: findColumnKey(firstRow, COL_MAPPING.invAmt) || 'inv_amt'
+                invAmt: findColumnKey(firstRow, COL_MAPPING.invAmt) || 'invoice_amt'
             };
 
             rawData = data.map(row => {
@@ -625,6 +653,11 @@
             filteredData = pendingData.filter(row => {
                 if (storeFilter !== 'ALL' && row.siteCode !== storeFilter) return false;
 
+                if (currentCategoryFilter !== 'ALL') {
+                    const rowCategory = categorizeItemType(row.itemSerDesc);
+                    if (rowCategory !== currentCategoryFilter) return false;
+                }
+
                 if (fromDate || toDate) {
                     if (!row.parsedDate) return false;
                     if (fromDate && row.parsedDate < fromDate) return false;
@@ -650,7 +683,7 @@
             document.getElementById('fromDateFilter').value = '';
             document.getElementById('toDateFilter').value = '';
             document.getElementById('searchInput').value = '';
-            applyFilters();
+            setCategoryFilter('ALL');
         }
 
         function categorizeItemType(desc) {
