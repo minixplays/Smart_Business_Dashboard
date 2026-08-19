@@ -372,13 +372,19 @@
 
                     <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between px-2 gap-4">
                         <h3 class="text-sm font-bold text-[#292929] whitespace-nowrap">Pending Order Records</h3>
-                        
-                        <div class="flex items-center gap-2 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0" id="categoryFilterButtons">
-                            <button onclick="setCategoryFilter('ALL')" id="btn-filter-ALL" class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-full transition-colors bg-[#292929] text-white whitespace-nowrap">All</button>
-                            <button onclick="setCategoryFilter('Tailoring')" id="btn-filter-Tailoring" class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-full transition-colors bg-neutral-100 text-neutral-500 hover:bg-neutral-200 whitespace-nowrap">Tailoring</button>
-                            <button onclick="setCategoryFilter('Accessories')" id="btn-filter-Accessories" class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-full transition-colors bg-neutral-100 text-neutral-500 hover:bg-neutral-200 whitespace-nowrap">Accessories</button>
-                            <button onclick="setCategoryFilter('Fabric')" id="btn-filter-Fabric" class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-full transition-colors bg-neutral-100 text-neutral-500 hover:bg-neutral-200 whitespace-nowrap">Fabric</button>
-                            <button onclick="setCategoryFilter('Readymade')" id="btn-filter-Readymade" class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-full transition-colors bg-neutral-100 text-neutral-500 hover:bg-neutral-200 whitespace-nowrap">Readymade</button>
+
+                        <div class="flex items-center gap-2 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0"
+                            id="categoryFilterButtons">
+                            <button onclick="setCategoryFilter('ALL')" id="btn-filter-ALL"
+                                class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-full transition-colors bg-[#292929] text-white whitespace-nowrap">All</button>
+                            <button onclick="setCategoryFilter('Tailoring')" id="btn-filter-Tailoring"
+                                class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-full transition-colors bg-neutral-100 text-neutral-500 hover:bg-neutral-200 whitespace-nowrap">Tailoring</button>
+                            <button onclick="setCategoryFilter('Accessories')" id="btn-filter-Accessories"
+                                class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-full transition-colors bg-neutral-100 text-neutral-500 hover:bg-neutral-200 whitespace-nowrap">Accessories</button>
+                            <button onclick="setCategoryFilter('Fabric')" id="btn-filter-Fabric"
+                                class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-full transition-colors bg-neutral-100 text-neutral-500 hover:bg-neutral-200 whitespace-nowrap">Fabric</button>
+                            <button onclick="setCategoryFilter('Readymade')" id="btn-filter-Readymade"
+                                class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-full transition-colors bg-neutral-100 text-neutral-500 hover:bg-neutral-200 whitespace-nowrap">Readymade</button>
                         </div>
 
                         <p class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest whitespace-nowrap"
@@ -433,7 +439,7 @@
 
         function setCategoryFilter(category) {
             currentCategoryFilter = category;
-            
+
             const buttons = ['ALL', 'Tailoring', 'Accessories', 'Fabric', 'Readymade'];
             buttons.forEach(btn => {
                 const el = document.getElementById('btn-filter-' + btn);
