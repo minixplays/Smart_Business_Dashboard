@@ -482,9 +482,6 @@
                     </svg>
                     Choose File
                 </button>
-                <button onclick="loadSampleData()" class="btn-ghost">
-                    Load Sample Data
-                </button>
             </div>
         </div>
 
@@ -916,45 +913,6 @@
             document.getElementById('loading-overlay').classList.add('hidden');
         }
 
-        // ── Sample Data ───────────────────────────────────────────
-        function loadSampleData() {
-            showLoading('Generating sample data…');
-            setTimeout(() => {
-                const siteInfo = [
-                    { code: 'BLR-01', descr: 'Bangalore Main' },
-                    { code: 'HYD-02', descr: 'Hyderabad City' },
-                    { code: 'MUM-03', descr: 'Mumbai Central' }
-                ];
-                const series  = ['SUITS', 'SHIRTS', 'TROUSERS', 'BLAZERS'];
-                const types   = ['REGULAR', 'SLIM FIT', 'CUSTOM'];
-                const styles  = ['ST-101', 'ST-202', 'ST-303', 'ST-404'];
-                const sizes   = ['S', 'M', 'L', 'XL', 'XXL', '38', '40', '42', '44'];
-
-                const sample = [];
-                for (let i = 0; i < 600; i++) {
-                    const si = siteInfo[Math.floor(Math.random() * siteInfo.length)];
-                    sample.push({
-                        site_code:        si.code,
-                        site_descr:       si.descr,
-                        item_ser_descr:   series[Math.floor(Math.random() * series.length)],
-                        item_type_descr:  types[Math.floor(Math.random() * types.length)],
-                        description:      `Sample Item ${Math.floor(Math.random() * 20) + 1}`,
-                        style:            styles[Math.floor(Math.random() * styles.length)],
-                        s_size:           sizes[Math.floor(Math.random() * sizes.length)]
-                    });
-                }
-
-                rawData = sample;
-
-                document.getElementById('upload-prompt').classList.add('hidden');
-                const dv = document.getElementById('dashboard-view');
-                dv.classList.remove('hidden');
-                dv.classList.add('flex');
-                document.getElementById('header-upload-btn').classList.remove('hidden');
-
-                initializeDashboard();
-            }, 400);
-        }
 
         // ── Utility ──────────────────────────────────────────────
         function escapeHtml(str) {
