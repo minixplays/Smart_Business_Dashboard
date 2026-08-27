@@ -165,7 +165,9 @@ body.dark-mode {
 
 /* Base structural adjustments */
 html.dark-mode .dashboard-container,
-body.dark-mode .dashboard-container {
+body.dark-mode .dashboard-container,
+html.dark-mode .gc-card,
+body.dark-mode .gc-card {
     background: rgba(24, 24, 27, 0.7) !important;
     border-color: rgba(255, 255, 255, 0.06) !important;
     box-shadow: 0 0 40px rgba(0, 0, 0, 0.5) !important;
