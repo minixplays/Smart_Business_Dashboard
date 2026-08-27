@@ -338,7 +338,8 @@
 
                 <!-- Tailoring Data -->
                 <div class="upload-card rounded-[2rem] p-6 flex flex-col gap-4">
-                    <div class="flex items-center gap-3">
+                    <div class="flex items-start justify-between w-full">
+                        <div class="flex items-center gap-3">
                         <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -351,7 +352,12 @@
                             <p class="text-xs text-neutral-500 font-medium">For Tailoring Tracker & Calendar</p>
                         </div>
                     </div>
-                    <div class="upload-zone rounded-2xl p-6 text-center cursor-pointer flex-grow flex flex-col justify-center items-center gap-3 relative"
+                    <div class="text-right hidden timestamp-container mt-1">
+                        <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-0.5">Uploaded</p>
+                        <p class="text-[11px] text-neutral-500 font-semibold timestamp-text"></p>
+                    </div>
+                </div>
+                <div class="upload-zone rounded-2xl p-6 text-center cursor-pointer flex-grow flex flex-col justify-center items-center gap-3 relative"
                         id="dz-tailoring" data-key="raw_csv_tailoring">
                         <input type="file" id="fi-tailoring" accept=".csv" class="hidden">
                         <div
@@ -368,7 +374,8 @@
 
                 <!-- GC Maker Data -->
                 <div class="upload-card rounded-[2rem] p-6 flex flex-col gap-4">
-                    <div class="flex items-center gap-3">
+                    <div class="flex items-start justify-between w-full">
+                        <div class="flex items-center gap-3">
                         <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -381,7 +388,12 @@
                             <p class="text-xs text-neutral-500 font-medium">For GC Maker</p>
                         </div>
                     </div>
-                    <div class="upload-zone rounded-2xl p-6 text-center cursor-pointer flex-grow flex flex-col justify-center items-center gap-3 relative"
+                    <div class="text-right hidden timestamp-container mt-1">
+                        <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-0.5">Uploaded</p>
+                        <p class="text-[11px] text-neutral-500 font-semibold timestamp-text"></p>
+                    </div>
+                </div>
+                <div class="upload-zone rounded-2xl p-6 text-center cursor-pointer flex-grow flex flex-col justify-center items-center gap-3 relative"
                         id="dz-gcMaker" data-key="raw_csv_gcMaker">
                         <input type="file" id="fi-gcMaker" accept=".csv" class="hidden">
                         <div
@@ -398,7 +410,8 @@
 
                 <!-- Unconfirmed Stock Data -->
                 <div class="upload-card rounded-[2rem] p-6 flex flex-col gap-4">
-                    <div class="flex items-center gap-3">
+                    <div class="flex items-start justify-between w-full">
+                        <div class="flex items-center gap-3">
                         <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -410,7 +423,12 @@
                             <p class="text-xs text-neutral-500 font-medium">For Distribution Tracker</p>
                         </div>
                     </div>
-                    <div class="upload-zone rounded-2xl p-6 text-center cursor-pointer flex-grow flex flex-col justify-center items-center gap-3 relative"
+                    <div class="text-right hidden timestamp-container mt-1">
+                        <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-0.5">Uploaded</p>
+                        <p class="text-[11px] text-neutral-500 font-semibold timestamp-text"></p>
+                    </div>
+                </div>
+                <div class="upload-zone rounded-2xl p-6 text-center cursor-pointer flex-grow flex flex-col justify-center items-center gap-3 relative"
                         id="dz-unconfirmedStock" data-key="raw_csv_unconfirmedStock">
                         <input type="file" id="fi-unconfirmedStock" accept=".csv" class="hidden">
                         <div
@@ -427,7 +445,8 @@
 
                 <!-- PO Maker Data -->
                 <div class="upload-card rounded-[2rem] p-6 flex flex-col gap-4">
-                    <div class="flex items-center gap-3">
+                    <div class="flex items-start justify-between w-full">
+                        <div class="flex items-center gap-3">
                         <div
                             class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -441,7 +460,12 @@
                             <p class="text-xs text-neutral-500 font-medium">For PO Maker</p>
                         </div>
                     </div>
-                    <div class="upload-zone rounded-2xl p-6 text-center cursor-pointer flex-grow flex flex-col justify-center items-center gap-3 relative"
+                    <div class="text-right hidden timestamp-container mt-1">
+                        <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-0.5">Uploaded</p>
+                        <p class="text-[11px] text-neutral-500 font-semibold timestamp-text"></p>
+                    </div>
+                </div>
+                <div class="upload-zone rounded-2xl p-6 text-center cursor-pointer flex-grow flex flex-col justify-center items-center gap-3 relative"
                         id="dz-poMaker" data-key="raw_csv_poMaker">
                         <input type="file" id="fi-poMaker" accept=".csv" class="hidden">
                         <div
@@ -458,7 +482,8 @@
 
                 <!-- Knockoff Maker Data -->
                 <div class="upload-card rounded-[2rem] p-6 flex flex-col gap-4">
-                    <div class="flex items-center gap-3">
+                    <div class="flex items-start justify-between w-full">
+                        <div class="flex items-center gap-3">
                         <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -471,7 +496,12 @@
                             <p class="text-xs text-neutral-500 font-medium">For Knockoff Maker</p>
                         </div>
                     </div>
-                    <div class="upload-zone rounded-2xl p-6 text-center cursor-pointer flex-grow flex flex-col justify-center items-center gap-3 relative"
+                    <div class="text-right hidden timestamp-container mt-1">
+                        <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-0.5">Uploaded</p>
+                        <p class="text-[11px] text-neutral-500 font-semibold timestamp-text"></p>
+                    </div>
+                </div>
+                <div class="upload-zone rounded-2xl p-6 text-center cursor-pointer flex-grow flex flex-col justify-center items-center gap-3 relative"
                         id="dz-knockoffMaker" data-key="raw_csv_knockoffMaker">
                         <input type="file" id="fi-knockoffMaker" accept=".csv" class="hidden">
                         <div
@@ -488,7 +518,8 @@
 
                 <!-- Size Stocks Data -->
                 <div class="upload-card rounded-[2rem] p-6 flex flex-col gap-4">
-                    <div class="flex items-center gap-3">
+                    <div class="flex items-start justify-between w-full">
+                        <div class="flex items-center gap-3">
                         <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -501,7 +532,12 @@
                             <p class="text-xs text-neutral-500 font-medium">For Size Stocks Pivot Analyzer</p>
                         </div>
                     </div>
-                    <div class="upload-zone rounded-2xl p-6 text-center cursor-pointer flex-grow flex flex-col justify-center items-center gap-3 relative"
+                    <div class="text-right hidden timestamp-container mt-1">
+                        <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-0.5">Uploaded</p>
+                        <p class="text-[11px] text-neutral-500 font-semibold timestamp-text"></p>
+                    </div>
+                </div>
+                <div class="upload-zone rounded-2xl p-6 text-center cursor-pointer flex-grow flex flex-col justify-center items-center gap-3 relative"
                         id="dz-sizeStocks" data-key="raw_csv_sizeStocks">
                         <input type="file" id="fi-sizeStocks" accept=".csv" class="hidden">
                         <div
@@ -625,7 +661,7 @@
 
                 // Check if already has data on load
                 if (localStorage.getItem(key)) {
-                    setZoneSuccess(zone, "Data loaded");
+                    setZoneSuccess(zone, "Data loaded", localStorage.getItem(key + '_timestamp'));
                 }
             });
             updateReportsKPI();
@@ -664,6 +700,7 @@
                 const text = e.target.result;
                 try {
                     localStorage.setItem(key, text);
+                    localStorage.setItem(key + '_timestamp', new Date().toISOString());
 
                     // Specific logic for tailoring tracker backward compatibility
                     if (key === 'raw_csv_tailoring') {
@@ -672,7 +709,7 @@
                     }
 
                     showToast(`Successfully saved ${file.name}`, 'success');
-                    setZoneSuccess(zone, file.name);
+                    setZoneSuccess(zone, file.name, new Date().toISOString());
                 } catch (err) {
                     console.error("Storage error:", err);
                     showToast('Failed to save data. Local storage might be full.', 'error');
@@ -681,7 +718,18 @@
             reader.readAsText(file);
         }
 
-        function setZoneSuccess(zone, filename) {
+        function setZoneSuccess(zone, filename, timestampStr) {
+            const card = zone.closest('.upload-card');
+            if (card) {
+                const tsContainer = card.querySelector('.timestamp-container');
+                const tsText = card.querySelector('.timestamp-text');
+                if (tsContainer && tsText && timestampStr) {
+                    const d = new Date(timestampStr);
+                    const formatted = d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }) + ', ' + d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+                    tsText.textContent = formatted;
+                    tsContainer.classList.remove('hidden');
+                }
+            }
             zone.classList.add('success');
             const icon = zone.querySelector('.status-icon');
             icon.classList.remove('bg-indigo-50', 'text-indigo-500');
@@ -720,6 +768,11 @@
 
                 const subtext = zone.querySelector('p:last-child');
                 subtext.textContent = "or click to browse";
+                const card = zone.closest('.upload-card');
+                if (card) {
+                    const tsContainer = card.querySelector('.timestamp-container');
+                    if (tsContainer) tsContainer.classList.add('hidden');
+                }
             });
             updateReportsKPI();
         }
@@ -736,12 +789,13 @@
                     'raw_csv_sizeStocks'
                 ];
 
-                keysToClear.forEach(key => localStorage.removeItem(key));
+                keysToClear.forEach(key => { localStorage.removeItem(key); localStorage.removeItem(key + '_timestamp'); });
                 resetZones();
                 showToast("All data successfully cleared.", "success");
             }
         }
     </script>
+    <script src="assets/notifications.js"></script>
 </body>
 
 </html>

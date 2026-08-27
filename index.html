@@ -2202,9 +2202,9 @@
                 const day = now.getDay(); // 0 is Sunday
                 const dateOnly = now.toLocaleDateString();
 
-                // 1. 2-Hour Alert (Even hours at exactly 00 minute)
+                // 1. 2-Hour Alert (Even hours at exactly 00 minute, from 8 AM to 10 PM)
                 const currentHourId = dateOnly + '-' + hour;
-                if (hour % 2 === 0 && minute === 0 && window.lastNotifiedHour2 !== currentHourId) {
+                if (hour >= 8 && hour <= 22 && hour % 2 === 0 && minute === 0 && window.lastNotifiedHour2 !== currentHourId) {
                     triggerNotification('Please check No Stock Fabric 📩');
                     window.lastNotifiedHour2 = currentHourId;
                     localStorage.setItem('last_notified_hour_2', currentHourId);
@@ -2794,11 +2794,11 @@
             if (searchInput) {
                 searchInput.addEventListener('input', (e) => {
                     const query = e.target.value.toLowerCase().trim();
-                    const tools = document.querySelectorAll('#tools-grid .tool-card');
+                    const tools = document.querySelectorAll('#tools-grid .tc-card');
 
                     tools.forEach(tool => {
-                        const titleEl = tool.querySelector('h3');
-                        const descEl = tool.querySelector('p');
+                        const titleEl = tool.querySelector('.tc-title');
+                        const descEl = tool.querySelector('.tc-desc');
                         const title = titleEl ? titleEl.textContent.toLowerCase() : '';
                         const desc = descEl ? descEl.textContent.toLowerCase() : '';
 

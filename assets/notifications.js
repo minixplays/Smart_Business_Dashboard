@@ -188,4 +188,40 @@
         }
     });
 
+    // 6. Check for outdated reports (2 days old)
+    window.checkOutdatedReports = function() {
+        const reportNames = {
+            'raw_csv_tailoring': 'Tailoring Data',
+            'raw_csv_gcMaker': 'Global Count Data',
+            'raw_csv_unconfirmedStock': 'Unconfirmed Stock',
+            'raw_csv_poMaker': 'Purchase Orders',
+            'raw_csv_knockoffMaker': 'Knockoff Data',
+            'raw_csv_sizeStocks': 'Size Stocks Data'
+        };
+
+        const now = new Date().getTime();
+        const twoDaysMs = 2 * 24 * 60 * 60 * 1000;
+        const twelveHoursMs = 12 * 60 * 60 * 1000;
+
+        for (const [key, name] of Object.entries(reportNames)) {
+            const timestampStr = localStorage.getItem(key + '_timestamp');
+            if (timestampStr) {
+                const uploadTime = new Date(timestampStr).getTime();
+                if (now - uploadTime >= twoDaysMs) {
+                    const lastNotifiedStr = localStorage.getItem(key + '_last_notified');
+                    const lastNotified = lastNotifiedStr ? parseInt(lastNotifiedStr, 10) : 0;
+                    
+                    // Throttle notifications to once every 12 hours per report to avoid spamming the user on every page load
+                    if (now - lastNotified >= twelveHoursMs) {
+                        window.triggerNotification(`Time to Update: ${name}`);
+                        localStorage.setItem(key + '_last_notified', now.toString());
+                    }
+                }
+            }
+        }
+    };
+
+    // Run the check after a short delay
+    setTimeout(window.checkOutdatedReports, 2000);
+
 })();

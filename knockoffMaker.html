@@ -820,9 +820,10 @@
             if (exportRows.length === 0) return alert("No pending rows to export!");
 
             const csvRows = [];
-            csvRows.push(['sale_order', 'customer_name', 'item_type', 'order_quantity', 'invoice_quantity', 'item_total', 'inv_amt'].join(','));
+            csvRows.push(['sale_order', 'customer_name', 'item_type', 'order_quantity', 'invoice_quantity', 'item_total', 'INV_AMT'].join(','));
 
             exportRows.forEach(row => {
+                const displayInvAmt = (row.invAmtRaw === null || row.invAmtRaw === undefined || String(row.invAmtRaw).trim() === '') ? '-' : row.invAmtRaw;
                 const values = [
                     `"${row.saleOrder}"`,
                     `"${row.customer}"`,
@@ -830,7 +831,7 @@
                     row.orderQty,
                     row.invoiceQty,
                     row.itemTotal,
-                    `""`
+                    `"${displayInvAmt}"`
                 ];
                 csvRows.push(values.join(','));
             });

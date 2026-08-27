@@ -603,6 +603,13 @@
 
                 <button onclick="resetFilters()" class="btn-ghost flex-shrink-0">Reset</button>
 
+                <!-- Export Data -->
+                <button onclick="exportFilteredData()" class="btn-ghost flex-shrink-0 flex items-center gap-1" title="Export Filtered Data">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg>
+                    <span class="hidden sm:inline">Export</span>
+                </button>
                 <!-- Upload again -->
                 <button onclick="document.getElementById('file-upload').click()" class="btn-accent flex-shrink-0">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -817,6 +824,17 @@
             ['filter-site', 'filter-series', 'filter-type', 'filter-style']
                 .forEach(id => document.getElementById(id).value = 'ALL');
             applyFilters();
+        }
+
+        function exportFilteredData() {
+            if (!filteredData || filteredData.length === 0) {
+                alert("No data available to export.");
+                return;
+            }
+            const ws = XLSX.utils.json_to_sheet(filteredData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Size Stocks");
+            XLSX.writeFile(wb, `Size_Stocks_${new Date().toISOString().slice(0, 10)}.xlsx`);
         }
 
         // ── Pivot Generation ─────────────────────────────────────
@@ -1047,6 +1065,7 @@
             resizeTimer = setTimeout(applyStickyOffsets, 150);
         });
     </script>
+    <script src="assets/notifications.js"></script>
 </body>
 
 </html>
