@@ -827,14 +827,15 @@
         }
 
         function exportFilteredData() {
-            if (!filteredData || filteredData.length === 0) {
-                alert("No data available to export.");
+            const table = document.getElementById('pivot-table');
+            if (!table || table.rows.length <= 1) {
+                alert("No pivot data available to export.");
                 return;
             }
-            const ws = XLSX.utils.json_to_sheet(filteredData);
+            const ws = XLSX.utils.table_to_sheet(table);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Size Stocks");
-            XLSX.writeFile(wb, `Size_Stocks_${new Date().toISOString().slice(0, 10)}.xlsx`);
+            XLSX.writeFile(wb, `Size_Stocks_Pivot_${new Date().toISOString().slice(0, 10)}.xlsx`);
         }
 
         // ── Pivot Generation ─────────────────────────────────────
