@@ -331,6 +331,20 @@
                         </button>
                     </div>
 
+                    <!-- Export Button -->
+                    <div class="flex flex-col gap-1 w-full sm:w-auto">
+                        <label class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Export</label>
+                        <button id="exportBtn" onclick="exportFilteredData()"
+                            class="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-[#242424] hover:bg-black text-[#f4c74a] shadow-sm transition-all cursor-pointer hover:shadow"
+                            title="Export filtered data to CSV">
+                            <svg class="w-4 h-4 text-[#f4c74a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            <span>Export CSV</span>
+                        </button>
+                    </div>
+
                     <!-- Record Count -->
                     <div class="flex flex-col gap-1 w-full sm:w-auto text-right">
                         <label class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Records</label>
@@ -461,6 +475,7 @@
     <script>
         // --- Global State ---
         let rawData = [];
+        let currentFilteredData = [];
         let passwordsVisible = false;
 
         // --- Navigation ---
@@ -595,6 +610,7 @@
             document.getElementById('tableBody').innerHTML = '';
             document.getElementById('siteFromFilter').innerHTML = '<option value="">— Select Source —</option>';
             document.getElementById('siteFromFilter').disabled = true;
+            currentFilteredData = [];
 
             showToast(`Loaded ${rawData.length} records from CSV.`, 'success');
         }
@@ -657,9 +673,12 @@
                 });
             }
 
+            currentFilteredData = filtered;
+
             if (!selectedTo && !selectedFrom && !searchTerm) {
                 document.getElementById('tableArea').classList.add('hidden');
                 document.getElementById('recordCount').textContent = '0';
+                currentFilteredData = [];
                 return;
             }
 
@@ -787,6 +806,90 @@
             }).catch(() => {
                 showToast('Failed to copy. Try again.', 'warning');
             });
+        }
+
+        // --- Export Filtered Data to CSV ---
+        function exportFilteredData() {
+            if (!rawData || rawData.length === 0) {
+                showToast('No data loaded to export.', 'warning');
+                return;
+            }
+
+            const selectedTo = document.getElementById('siteToFilter') ? document.getElementById('siteToFilter').value : '';
+            const selectedFrom = document.getElementById('siteFromFilter') ? document.getElementById('siteFromFilter').value : '';
+            const searchInput = document.getElementById('searchInput');
+            const searchTerm = searchInput ? searchInput.value.trim() : '';
+
+            // If filters are active, use currentFilteredData; if no filters active, export full rawData
+            let dataToExport = currentFilteredData;
+            if ((!dataToExport || dataToExport.length === 0) && !selectedTo && !selectedFrom && !searchTerm) {
+                dataToExport = rawData;
+            }
+
+            if (!dataToExport || dataToExport.length === 0) {
+                showToast('No records match the selected filters to export.', 'warning');
+                return;
+            }
+
+            const { colSiteToName, colSiteFromName, colTranId, colTranDate, colDistOrder, colRemarks, colConfPasswd, colNetAmt } = window._cols || {};
+
+            const csvRows = [];
+
+            // Professional Headers
+            const headers = ['#'];
+            if (colSiteToName) headers.push('SITE TO (DESTINATION)');
+            if (colSiteFromName) headers.push('SITE FROM (SOURCE)');
+            if (colTranId) headers.push('TRAN ID');
+            if (colTranDate) headers.push('TRAN DATE');
+            if (colDistOrder) headers.push('DIST ORDER');
+            if (colRemarks) headers.push('REMARKS');
+            if (colConfPasswd) headers.push('CONF PASSWORD');
+            if (colNetAmt) headers.push('NET AMT');
+
+            csvRows.push(headers.map(h => `"${h}"`).join(','));
+
+            dataToExport.forEach((row, idx) => {
+                const values = [idx + 1];
+                if (colSiteToName) values.push(`"${(row[colSiteToName] || '').replace(/"/g, '""').trim()}"`);
+                if (colSiteFromName) values.push(`"${(row[colSiteFromName] || '').replace(/"/g, '""').trim()}"`);
+                if (colTranId) values.push(`"${(row[colTranId] || '').replace(/"/g, '""').trim()}"`);
+                if (colTranDate) values.push(`"${(row[colTranDate] || '').replace(/"/g, '""').trim()}"`);
+                if (colDistOrder) values.push(`"${(row[colDistOrder] || '').replace(/"/g, '""').trim()}"`);
+                if (colRemarks) values.push(`"${(row[colRemarks] || '').replace(/"/g, '""').trim()}"`);
+                if (colConfPasswd) values.push(`"${(row[colConfPasswd] || '').replace(/"/g, '""').trim()}"`);
+                if (colNetAmt) values.push(`"${(row[colNetAmt] || '').replace(/"/g, '""').trim()}"`);
+
+                csvRows.push(values.join(','));
+            });
+
+            // Include UTF-8 BOM so Excel opens with proper character encoding
+            const csvString = '\uFEFF' + csvRows.join('\n');
+            const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+
+            const d = new Date();
+            const dateStr = `${d.getDate().toString().padStart(2, '0')}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getFullYear()}`;
+
+            let siteSuffix = '';
+            if (selectedTo) {
+                siteSuffix += `_${selectedTo.replace(/\s+/g, '_')}`;
+            }
+            if (selectedFrom) {
+                siteSuffix += `_from_${selectedFrom.replace(/\s+/g, '_')}`;
+            }
+            if (!siteSuffix) {
+                siteSuffix = searchTerm ? `_Search_${searchTerm.replace(/[^a-zA-Z0-9_-]/g, '_')}` : '_All';
+            }
+
+            link.setAttribute("download", `Unconfirmed_Stock_Inward${siteSuffix}_${dateStr}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            showToast(`Exported ${dataToExport.length} records successfully!`, 'success');
         }
 
         // --- Escape HTML ---
