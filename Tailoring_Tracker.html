@@ -375,6 +375,93 @@
         body.dark-mode .custom-scroll::-webkit-scrollbar-thumb:hover {
             background-color: rgba(255, 255, 255, 0.4);
         }
+
+        /* ============================================================
+           WORKFLOW TIMELINE  —  ERP-style production progress tracker
+           Same system as calendar.html tracking panel
+           ============================================================ */
+
+        .tt-wf-stages {
+            padding: 16px 2px 8px 4px;
+            box-sizing: border-box;
+        }
+        .wf-stage {
+            display: flex;
+            align-items: flex-start;
+            box-sizing: border-box;
+        }
+        .wf-track {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 36px;
+            min-width: 36px;
+            flex-shrink: 0;
+            box-sizing: border-box;
+        }
+        .wf-node {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            position: relative;
+            box-sizing: border-box;
+            transition: background 0.4s ease;
+        }
+        .wf-node--completed { background: #14B8A6; color: #fff; }
+        .wf-node--current   { background: #F59E0B; color: #fff; animation: wf-pulse 2s ease-in-out infinite; }
+        .wf-node--upcoming  { background: #F3F4F6; color: #D1D5DB; border: 1.5px solid #E5E7EB; }
+        @keyframes wf-pulse {
+            0%,  100% { box-shadow: 0 0 0 0   rgba(245,158,11,0.40); }
+            50%        { box-shadow: 0 0 0 6px rgba(245,158,11,0.00); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .wf-node--current { animation: none; box-shadow: 0 0 0 3px rgba(245,158,11,0.25); }
+        }
+        .wf-connector            { width: 2px; flex: 1; min-height: 12px; transition: background 0.4s ease; }
+        .wf-connector--completed { background: #14B8A6; }
+        .wf-connector--active    { background: linear-gradient(to bottom, #F59E0B 0%, #E5E7EB 100%); }
+        .wf-connector--pending   { background: #E5E7EB; }
+        .wf-content {
+            flex: 1;
+            min-width: 0;
+            padding-top: 4px;
+            padding-bottom: 12px;
+            padding-left: 8px;
+            box-sizing: border-box;
+        }
+        .wf-stage:last-child .wf-content { padding-bottom: 4px; }
+        .wf-label {
+            font-size: 0.62rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            line-height: 1.35;
+            word-break: break-word;
+        }
+        .wf-label--completed { color: #0D9488; }
+        .wf-label--current   { color: #D97706; font-weight: 800; }
+        .wf-label--upcoming  { color: #9CA3AF; font-weight: 500; }
+        .wf-current-tag {
+            font-size: 0.58rem;
+            font-weight: 700;
+            color: #F59E0B;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 2px;
+        }
+        /* Dark-mode overrides */
+        body.dark-mode .wf-node--upcoming {
+            background: #27272a !important;
+            border-color: #3f3f46 !important;
+            color: #52525b !important;
+        }
+        body.dark-mode .wf-connector--pending { background: #3f3f46 !important; }
+        body.dark-mode .wf-label--upcoming    { color: #52525b !important; }
+
     </style>
 </head>
 
@@ -804,105 +891,128 @@
             renderLists();
         }
 
+        /* ── Stage-specific icons (current stage only) ── */
+        function ttGetStageIcon(label) {
+            const s = label.toUpperCase();
+            if ((s.includes('CUTTING') || s.includes('RECUTTING')) && !s.includes('SHIPPED'))
+                return `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>`;
+            if (s.includes('SHIPPED') || s.includes('DELIVER'))
+                return `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>`;
+            if (s.includes('FABRIC'))
+                return `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`;
+            if (s.includes('BOM'))
+                return `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`;
+            if (s.includes('TAILOR') || s.includes('ALLOCATED') || s.includes('ALLOCATION'))
+                return `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+            if (s.includes('READY') || s.includes('STORE') || s.includes('GARMENT'))
+                return `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`;
+            if (s.includes('QC') || s.includes('TESTING'))
+                return `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`;
+            if (s.includes('FINISHED') || s.includes('COMPLETED'))
+                return `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
+            return `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
+        }
+
+        const TT_CHECK_ICON    = `<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>`;
+        const TT_UPCOMING_ICON = `<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>`;
+
         function showTrackingPanel(orderNo, itemIndex) {
             const orders = JSON.parse(localStorage.getItem('tailoring_orders') || '[]');
             const order = orders.find(o => o.orderNo === orderNo);
             if (!order) return;
             const item = order.items[itemIndex];
 
-            const status = (item.woOrderStatus || '').toUpperCase().trim();
-            const orderKind = (item.orderKind || '').toUpperCase().trim();
-            
+            const status    = (item.woOrderStatus || '').toUpperCase().trim();
+            const orderKind = (item.orderKind     || '').toUpperCase().trim();
+
             const trialStages = [
-                "FABRIC RECEIVED", "CUTTING COMPLETED", "CUTTING SHIPPED TO FACTORY", 
-                "BOM ISSUING", "TRIAL TAILOR ALLOCATION", "TRIAL GARMENT READY STORE", 
-                "TRIAL COMPLETED AT STORE", "RECUTTING", "RE_CUTTING_SHIPPED TO FACTORY", 
-                "BOM ISSUING FOR FINISH", "ALLOCATED_FINSISH_TAILOR", "QC TESTING", 
+                "FABRIC RECEIVED", "CUTTING COMPLETED", "CUTTING SHIPPED TO FACTORY",
+                "BOM ISSUING", "TRIAL TAILOR ALLOCATION", "TRIAL GARMENT READY STORE",
+                "TRIAL COMPLETED AT STORE", "RECUTTING", "RE_CUTTING_SHIPPED TO FACTORY",
+                "BOM ISSUING FOR FINISH", "ALLOCATED_FINSISH_TAILOR", "QC TESTING",
                 "FINISHED GARMENT READY AT STORE", "DELVERED TO CUSTOMER"
             ];
-            
             const fullFinishStages = [
-                "FABRIC RECEIVED", "CUTTING COMPLETED", "CUTTING SHIPPED TO FACTORY", 
-                "BOM ISSUING FOR FINISH", "ALLOCATED_FINSISH_TAILOR", "QC TESTING", 
+                "FABRIC RECEIVED", "CUTTING COMPLETED", "CUTTING SHIPPED TO FACTORY",
+                "BOM ISSUING FOR FINISH", "ALLOCATED_FINSISH_TAILOR", "QC TESTING",
                 "FINISHED GARMENT READY AT STORE", "DELVERED TO CUSTOMER"
             ];
-            
+
             const stages = orderKind === 'FULL FINISH' ? fullFinishStages : trialStages;
-            
             let currentStep = stages.indexOf(status) + 1;
             if (currentStep === 0) currentStep = 1;
 
             const panel = document.getElementById('future-feature-panel');
-            
             panel.className = "flex flex-col bg-white/60 backdrop-blur-md rounded-[2.5rem] p-6 lg:p-8 border border-white/80 shadow-sm h-full overflow-y-auto custom-scroll";
 
+            /* ─ Header ───────────────────────────────────────── */
             let html = `
-                <div class="w-full flex justify-between items-start mb-6 border-b border-neutral-200 pb-6">
+                <div class="w-full flex justify-between items-start mb-5 border-b border-neutral-200 pb-5">
                     <div>
-                        <h2 class="text-2xl font-extrabold text-[#242424] mb-1">Track Item</h2>
-                        <div class="flex items-center gap-3">
+                        <h2 class="text-xl font-extrabold text-[#242424] mb-1">Track Item</h2>
+                        <div class="flex items-center gap-2 flex-wrap">
                             <span class="text-[10px] font-bold text-neutral-500 bg-neutral-100 px-2 py-1 rounded-md uppercase border border-neutral-200">WO: ${item.woNo || 'NO-WO'}</span>
                             <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md uppercase border border-emerald-200">${orderKind || 'TRIAL'}</span>
                         </div>
-                        ${order.customerName ? `<p class="text-xs font-bold text-indigo-600 mt-2 flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg> Customer: ${escapeHtml(order.customerName)}</p>` : ''}
+                        ${order.customerName ? `<p class="text-xs font-bold text-indigo-600 mt-2 flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg> ${escapeHtml(order.customerName)}</p>` : ''}
                     </div>
-                    <div class="text-right flex flex-col items-end">
-                        <p class="text-[10px] font-extrabold text-neutral-400 uppercase tracking-widest mb-1">Raw Status</p>
-                        <span class="text-[10px] font-extrabold px-3 py-1 bg-[#242424] text-[#f4c74a] rounded-md shadow-sm uppercase tracking-wider">${status || 'NOT PROVIDED'}</span>
+                    <div class="text-right flex flex-col items-end ml-3">
+                        <p class="text-[9px] font-extrabold text-neutral-400 uppercase tracking-widest mb-1">Raw Status</p>
+                        <span class="text-[9px] font-extrabold px-2.5 py-1 bg-[#242424] text-[#f4c74a] rounded-md shadow-sm uppercase tracking-wider">${status || 'NOT PROVIDED'}</span>
                     </div>
                 </div>
             `;
-            html += `<div class="w-full flex items-start overflow-x-auto custom-scroll pb-6 pt-4 px-2 select-none">`;
-            
-            stages.forEach((stageLabel, index) => {
-                const stepNum = index + 1;
-                const isCompleted = stepNum < currentStep;
-                const isActive = stepNum === currentStep;
-                const isPending = stepNum > currentStep;
-                const isLast = index === stages.length - 1;
-                
-                let circleClass = "";
-                let iconHTML = "";
-                let labelClass = "";
-                let lineClass = "";
 
+            /* ─ Vertical stage timeline ─────────────────────── */
+            html += `<div class="tt-wf-stages w-full mb-5">`;
+
+            stages.forEach((stageLabel, index) => {
+                const stepNum     = index + 1;
+                const isCompleted = stepNum <  currentStep;
+                const isActive    = stepNum === currentStep;
+                const isLast      = index === stages.length - 1;
+
+                let nodeClass, nodeIcon;
                 if (isCompleted) {
-                    circleClass = "bg-teal-400 text-white ring-[3px] ring-white ring-inset outline outline-2 outline-teal-400";
-                    iconHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>`;
-                    labelClass = "text-teal-600 font-bold";
-                    lineClass = "bg-teal-400";
+                    nodeClass = 'wf-node--completed';
+                    nodeIcon  = TT_CHECK_ICON;
                 } else if (isActive) {
-                    circleClass = "bg-amber-400 text-white ring-[3px] ring-white ring-inset outline outline-2 outline-amber-400 shadow-lg shadow-amber-400/30";
-                    iconHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
-                    labelClass = "text-amber-600 font-extrabold";
-                    lineClass = "bg-gradient-to-r from-amber-400 to-neutral-200";
+                    nodeClass = 'wf-node--current';
+                    nodeIcon  = ttGetStageIcon(stageLabel);
                 } else {
-                    circleClass = "bg-neutral-100 text-neutral-300 border-2 border-neutral-200";
-                    iconHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>`; // light checkmark
-                    labelClass = "text-neutral-400 font-medium";
-                    lineClass = "bg-neutral-200";
+                    nodeClass = 'wf-node--upcoming';
+                    nodeIcon  = TT_UPCOMING_ICON;
                 }
-                
+
+                let connClass;
+                if (isLast)            connClass = '';
+                else if (isCompleted)  connClass = 'wf-connector--completed';
+                else if (isActive)     connClass = 'wf-connector--active';
+                else                   connClass = 'wf-connector--pending';
+
+                const labelClass = isCompleted ? 'wf-label--completed'
+                                 : isActive    ? 'wf-label--current'
+                                 :               'wf-label--upcoming';
+
                 html += `
-                    <div class="flex flex-col items-center shrink-0 w-28 relative group">
-                        <div class="h-12 flex items-center justify-center w-full relative">
-                            <!-- Connecting Line -->
-                            ${!isLast ? `<div class="absolute top-1/2 left-[50%] right-[-50%] h-[3px] -translate-y-1/2 ${lineClass} z-0 transition-colors duration-500"></div>` : ''}
-                            
-                            <!-- Circle Node -->
-                            <div class="w-8 h-8 rounded-full flex items-center justify-center relative z-10 transition-all duration-300 ${circleClass}">
-                                ${iconHTML}
-                            </div>
+                    <div class="wf-stage">
+                        <div class="wf-track">
+                            <div class="wf-node ${nodeClass}">${nodeIcon}</div>
+                            ${!isLast ? `<div class="wf-connector ${connClass}"></div>` : ''}
                         </div>
-                        <p class="text-[10px] text-center leading-tight mt-3 px-2 ${labelClass}">${stageLabel}</p>
+                        <div class="wf-content">
+                            <p class="wf-label ${labelClass}">${stageLabel}</p>
+                            ${isActive ? `<p class="wf-current-tag">&#9679; Current Stage</p>` : ''}
+                        </div>
                     </div>
                 `;
             });
 
             html += `</div>`;
 
+            /* ─ Item details card (preserved from original) ────── */
             html += `
-                <div class="w-full bg-white/70 rounded-2xl p-6 border border-neutral-100 shadow-sm mt-auto">
+                <div class="w-full bg-white/70 rounded-2xl p-5 border border-neutral-100 shadow-sm mt-auto">
                     <h3 class="text-[10px] font-extrabold text-neutral-400 uppercase tracking-widest mb-4">Item Details</h3>
                     <div class="grid grid-cols-2 gap-y-4 gap-x-8">
                         <div>
@@ -926,7 +1036,7 @@
             `;
 
             panel.innerHTML = html;
-            
+
             // Scroll to top on mobile when clicked
             if (window.innerWidth < 1024) {
                 panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
