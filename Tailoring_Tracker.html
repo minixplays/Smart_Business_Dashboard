@@ -385,11 +385,13 @@
             padding: 16px 2px 8px 4px;
             box-sizing: border-box;
         }
+
         .wf-stage {
             display: flex;
             align-items: flex-start;
             box-sizing: border-box;
         }
+
         .wf-track {
             display: flex;
             flex-direction: column;
@@ -399,6 +401,7 @@
             flex-shrink: 0;
             box-sizing: border-box;
         }
+
         .wf-node {
             width: 28px;
             height: 28px;
@@ -411,20 +414,62 @@
             box-sizing: border-box;
             transition: background 0.4s ease;
         }
-        .wf-node--completed { background: #14B8A6; color: #fff; }
-        .wf-node--current   { background: #F59E0B; color: #fff; animation: wf-pulse 2s ease-in-out infinite; }
-        .wf-node--upcoming  { background: #F3F4F6; color: #D1D5DB; border: 1.5px solid #E5E7EB; }
+
+        .wf-node--completed {
+            background: #14B8A6;
+            color: #fff;
+        }
+
+        .wf-node--current {
+            background: #F59E0B;
+            color: #fff;
+            animation: wf-pulse 2s ease-in-out infinite;
+        }
+
+        .wf-node--upcoming {
+            background: #F3F4F6;
+            color: #D1D5DB;
+            border: 1.5px solid #E5E7EB;
+        }
+
         @keyframes wf-pulse {
-            0%,  100% { box-shadow: 0 0 0 0   rgba(245,158,11,0.40); }
-            50%        { box-shadow: 0 0 0 6px rgba(245,158,11,0.00); }
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.40);
+            }
+
+            50% {
+                box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.00);
+            }
         }
+
         @media (prefers-reduced-motion: reduce) {
-            .wf-node--current { animation: none; box-shadow: 0 0 0 3px rgba(245,158,11,0.25); }
+            .wf-node--current {
+                animation: none;
+                box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25);
+            }
         }
-        .wf-connector            { width: 2px; flex: 1; min-height: 12px; transition: background 0.4s ease; }
-        .wf-connector--completed { background: #14B8A6; }
-        .wf-connector--active    { background: linear-gradient(to bottom, #F59E0B 0%, #E5E7EB 100%); }
-        .wf-connector--pending   { background: #E5E7EB; }
+
+        .wf-connector {
+            width: 2px;
+            flex: 1;
+            min-height: 12px;
+            transition: background 0.4s ease;
+        }
+
+        .wf-connector--completed {
+            background: #14B8A6;
+        }
+
+        .wf-connector--active {
+            background: linear-gradient(to bottom, #F59E0B 0%, #E5E7EB 100%);
+        }
+
+        .wf-connector--pending {
+            background: #E5E7EB;
+        }
+
         .wf-content {
             flex: 1;
             min-width: 0;
@@ -433,7 +478,11 @@
             padding-left: 8px;
             box-sizing: border-box;
         }
-        .wf-stage:last-child .wf-content { padding-bottom: 4px; }
+
+        .wf-stage:last-child .wf-content {
+            padding-bottom: 4px;
+        }
+
         .wf-label {
             font-size: 0.62rem;
             font-weight: 700;
@@ -442,9 +491,21 @@
             line-height: 1.35;
             word-break: break-word;
         }
-        .wf-label--completed { color: #0D9488; }
-        .wf-label--current   { color: #D97706; font-weight: 800; }
-        .wf-label--upcoming  { color: #9CA3AF; font-weight: 500; }
+
+        .wf-label--completed {
+            color: #0D9488;
+        }
+
+        .wf-label--current {
+            color: #D97706;
+            font-weight: 800;
+        }
+
+        .wf-label--upcoming {
+            color: #9CA3AF;
+            font-weight: 500;
+        }
+
         .wf-current-tag {
             font-size: 0.58rem;
             font-weight: 700;
@@ -453,15 +514,21 @@
             letter-spacing: 0.05em;
             margin-top: 2px;
         }
+
         /* Dark-mode overrides */
         body.dark-mode .wf-node--upcoming {
             background: #27272a !important;
             border-color: #3f3f46 !important;
             color: #52525b !important;
         }
-        body.dark-mode .wf-connector--pending { background: #3f3f46 !important; }
-        body.dark-mode .wf-label--upcoming    { color: #52525b !important; }
 
+        body.dark-mode .wf-connector--pending {
+            background: #3f3f46 !important;
+        }
+
+        body.dark-mode .wf-label--upcoming {
+            color: #52525b !important;
+        }
     </style>
 </head>
 
@@ -586,7 +653,8 @@
                     </div>
 
                     <!-- Cards List (single column) -->
-                    <div class="flex flex-col gap-4 overflow-y-auto pr-2 custom-scroll" id="orders-list" style="max-height: 68vh;">
+                    <div class="flex flex-col gap-4 overflow-y-auto pr-2 custom-scroll" id="orders-list"
+                        style="max-height: 68vh;">
                         <div class="py-24 text-center text-neutral-400">
                             <p class="text-sm font-extrabold tracking-widest uppercase">No Orders Found</p>
                         </div>
@@ -913,7 +981,7 @@
             return `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
         }
 
-        const TT_CHECK_ICON    = `<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>`;
+        const TT_CHECK_ICON = `<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>`;
         const TT_UPCOMING_ICON = `<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>`;
 
         function showTrackingPanel(orderNo, itemIndex) {
@@ -922,8 +990,8 @@
             if (!order) return;
             const item = order.items[itemIndex];
 
-            const status    = (item.woOrderStatus || '').toUpperCase().trim();
-            const orderKind = (item.orderKind     || '').toUpperCase().trim();
+            const status = (item.woOrderStatus || '').toUpperCase().trim();
+            const orderKind = (item.orderKind || '').toUpperCase().trim();
 
             const trialStages = [
                 "FABRIC RECEIVED", "CUTTING COMPLETED", "CUTTING SHIPPED TO FACTORY",
@@ -967,32 +1035,32 @@
             html += `<div class="tt-wf-stages w-full mb-5">`;
 
             stages.forEach((stageLabel, index) => {
-                const stepNum     = index + 1;
-                const isCompleted = stepNum <  currentStep;
-                const isActive    = stepNum === currentStep;
-                const isLast      = index === stages.length - 1;
+                const stepNum = index + 1;
+                const isCompleted = stepNum < currentStep;
+                const isActive = stepNum === currentStep;
+                const isLast = index === stages.length - 1;
 
                 let nodeClass, nodeIcon;
                 if (isCompleted) {
                     nodeClass = 'wf-node--completed';
-                    nodeIcon  = TT_CHECK_ICON;
+                    nodeIcon = TT_CHECK_ICON;
                 } else if (isActive) {
                     nodeClass = 'wf-node--current';
-                    nodeIcon  = ttGetStageIcon(stageLabel);
+                    nodeIcon = ttGetStageIcon(stageLabel);
                 } else {
                     nodeClass = 'wf-node--upcoming';
-                    nodeIcon  = TT_UPCOMING_ICON;
+                    nodeIcon = TT_UPCOMING_ICON;
                 }
 
                 let connClass;
-                if (isLast)            connClass = '';
-                else if (isCompleted)  connClass = 'wf-connector--completed';
-                else if (isActive)     connClass = 'wf-connector--active';
-                else                   connClass = 'wf-connector--pending';
+                if (isLast) connClass = '';
+                else if (isCompleted) connClass = 'wf-connector--completed';
+                else if (isActive) connClass = 'wf-connector--active';
+                else connClass = 'wf-connector--pending';
 
                 const labelClass = isCompleted ? 'wf-label--completed'
-                                 : isActive    ? 'wf-label--current'
-                                 :               'wf-label--upcoming';
+                    : isActive ? 'wf-label--current'
+                        : 'wf-label--upcoming';
 
                 html += `
                     <div class="wf-stage">
