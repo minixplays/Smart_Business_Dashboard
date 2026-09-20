@@ -640,13 +640,40 @@
         }
 
         /* Dashboard Bento Card Icon Dark Mode Backgrounds */
-        body.dark-mode .bento-card .bg-\[\#ECFDF5\] { background-color: #052e16 !important; border-color: #064e3b !important; }
-        body.dark-mode .bento-card .bg-\[\#EEF2FF\] { background-color: #0f172a !important; border-color: #1e293b !important; }
-        body.dark-mode .bento-card .bg-\[\#FCE7F3\] { background-color: #280b18 !important; border-color: #501530 !important; }
-        body.dark-mode .bento-card .bg-\[\#FFF0F0\] { background-color: #1a0808 !important; border-color: #451010 !important; }
-        body.dark-mode .bento-card .bg-\[\#F3EEFF\] { background-color: #13091f !important; border-color: #2e104e !important; }
-        body.dark-mode .bento-card .bg-\[\#CFFAFE\] { background-color: #061f25 !important; border-color: #0c4352 !important; }
-        body.dark-mode .bento-card .bg-white\/40 { background-color: rgba(0,0,0,0.15) !important; border-color: transparent !important; }
+        body.dark-mode .bento-card .bg-\[\#ECFDF5\] {
+            background-color: #052e16 !important;
+            border-color: #064e3b !important;
+        }
+
+        body.dark-mode .bento-card .bg-\[\#EEF2FF\] {
+            background-color: #0f172a !important;
+            border-color: #1e293b !important;
+        }
+
+        body.dark-mode .bento-card .bg-\[\#FCE7F3\] {
+            background-color: #280b18 !important;
+            border-color: #501530 !important;
+        }
+
+        body.dark-mode .bento-card .bg-\[\#FFF0F0\] {
+            background-color: #1a0808 !important;
+            border-color: #451010 !important;
+        }
+
+        body.dark-mode .bento-card .bg-\[\#F3EEFF\] {
+            background-color: #13091f !important;
+            border-color: #2e104e !important;
+        }
+
+        body.dark-mode .bento-card .bg-\[\#CFFAFE\] {
+            background-color: #061f25 !important;
+            border-color: #0c4352 !important;
+        }
+
+        body.dark-mode .bento-card .bg-white\/40 {
+            background-color: rgba(0, 0, 0, 0.15) !important;
+            border-color: transparent !important;
+        }
 
         /* Badge/label text in dark mode */
         body.dark-mode .bg-\[#f4c74a\] .text-\[#242424\] {
@@ -981,9 +1008,17 @@
 
         /* Add Task round button pulse */
         @keyframes addTaskPulse {
-            0%   { box-shadow: 0 0 0 0 rgba(250,204,21,0.5); }
-            60%  { box-shadow: 0 0 0 10px rgba(250,204,21,0); }
-            100% { box-shadow: 0 0 0 0 rgba(250,204,21,0); }
+            0% {
+                box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.5);
+            }
+
+            60% {
+                box-shadow: 0 0 0 10px rgba(250, 204, 21, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(250, 204, 21, 0);
+            }
         }
 
         /* Custom scrollbar for dark Tasks panel */
@@ -1204,14 +1239,14 @@
             text-decoration: none;
             position: relative;
             overflow: hidden;
-            transition: transform 0.22s cubic-bezier(0.4,0,0.2,1),
-                        box-shadow 0.22s cubic-bezier(0.4,0,0.2,1),
-                        border-color 0.22s ease;
+            transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.22s ease;
         }
 
         .tc-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 16px 40px -12px rgba(0,0,0,0.10);
+            box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.10);
         }
 
         .tc-icon {
@@ -1294,18 +1329,49 @@
         }
 
         body.dark-mode .tc-card:hover {
-            box-shadow: 0 16px 40px -12px rgba(0,0,0,0.6);
+            box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.6);
         }
 
         /* Per-accent border-bottom glow on dark hover */
-        body.dark-mode .tc-card.tc-blue:hover    { border-color: #2563EB; box-shadow: 0 4px 0 0 #2563EB, 0 16px 40px -12px rgba(37,99,235,0.25); }
-        body.dark-mode .tc-card.tc-orange:hover  { border-color: #F59E0B; box-shadow: 0 4px 0 0 #F59E0B, 0 16px 40px -12px rgba(245,158,11,0.25); }
-        body.dark-mode .tc-card.tc-purple:hover  { border-color: #7C3AED; box-shadow: 0 4px 0 0 #7C3AED, 0 16px 40px -12px rgba(124,58,237,0.25); }
-        body.dark-mode .tc-card.tc-green:hover   { border-color: #059669; box-shadow: 0 4px 0 0 #059669, 0 16px 40px -12px rgba(5,150,105,0.25); }
-        body.dark-mode .tc-card.tc-teal:hover    { border-color: #0D9488; box-shadow: 0 4px 0 0 #0D9488, 0 16px 40px -12px rgba(13,148,136,0.25); }
-        body.dark-mode .tc-card.tc-red:hover     { border-color: #DC2626; box-shadow: 0 4px 0 0 #DC2626, 0 16px 40px -12px rgba(220,38,38,0.25); }
-        body.dark-mode .tc-card.tc-pink:hover    { border-color: #DB2777; box-shadow: 0 4px 0 0 #DB2777, 0 16px 40px -12px rgba(219,39,119,0.25); }
-        body.dark-mode .tc-card.tc-cyan:hover    { border-color: #0891B2; box-shadow: 0 4px 0 0 #0891B2, 0 16px 40px -12px rgba(8,145,178,0.25); }
+        body.dark-mode .tc-card.tc-blue:hover {
+            border-color: #2563EB;
+            box-shadow: 0 4px 0 0 #2563EB, 0 16px 40px -12px rgba(37, 99, 235, 0.25);
+        }
+
+        body.dark-mode .tc-card.tc-orange:hover {
+            border-color: #F59E0B;
+            box-shadow: 0 4px 0 0 #F59E0B, 0 16px 40px -12px rgba(245, 158, 11, 0.25);
+        }
+
+        body.dark-mode .tc-card.tc-purple:hover {
+            border-color: #7C3AED;
+            box-shadow: 0 4px 0 0 #7C3AED, 0 16px 40px -12px rgba(124, 58, 237, 0.25);
+        }
+
+        body.dark-mode .tc-card.tc-green:hover {
+            border-color: #059669;
+            box-shadow: 0 4px 0 0 #059669, 0 16px 40px -12px rgba(5, 150, 105, 0.25);
+        }
+
+        body.dark-mode .tc-card.tc-teal:hover {
+            border-color: #0D9488;
+            box-shadow: 0 4px 0 0 #0D9488, 0 16px 40px -12px rgba(13, 148, 136, 0.25);
+        }
+
+        body.dark-mode .tc-card.tc-red:hover {
+            border-color: #DC2626;
+            box-shadow: 0 4px 0 0 #DC2626, 0 16px 40px -12px rgba(220, 38, 38, 0.25);
+        }
+
+        body.dark-mode .tc-card.tc-pink:hover {
+            border-color: #DB2777;
+            box-shadow: 0 4px 0 0 #DB2777, 0 16px 40px -12px rgba(219, 39, 119, 0.25);
+        }
+
+        body.dark-mode .tc-card.tc-cyan:hover {
+            border-color: #0891B2;
+            box-shadow: 0 4px 0 0 #0891B2, 0 16px 40px -12px rgba(8, 145, 178, 0.25);
+        }
 
         body.dark-mode .tc-arrow {
             border-color: #2a2a36;
@@ -1329,14 +1395,37 @@
         }
 
         /* Icon bg per color in dark mode — slightly darker tints */
-        body.dark-mode .tc-icon.tc-bg-blue   { background: #0f172a !important; }
-        body.dark-mode .tc-icon.tc-bg-orange { background: #1c120a !important; }
-        body.dark-mode .tc-icon.tc-bg-purple { background: #13091f !important; }
-        body.dark-mode .tc-icon.tc-bg-green  { background: #052e16 !important; }
-        body.dark-mode .tc-icon.tc-bg-teal   { background: #042f2e !important; }
-        body.dark-mode .tc-icon.tc-bg-red    { background: #1a0808 !important; }
-        body.dark-mode .tc-icon.tc-bg-pink   { background: #280b18 !important; }
-        body.dark-mode .tc-icon.tc-bg-cyan   { background: #061f25 !important; }
+        body.dark-mode .tc-icon.tc-bg-blue {
+            background: #0f172a !important;
+        }
+
+        body.dark-mode .tc-icon.tc-bg-orange {
+            background: #1c120a !important;
+        }
+
+        body.dark-mode .tc-icon.tc-bg-purple {
+            background: #13091f !important;
+        }
+
+        body.dark-mode .tc-icon.tc-bg-green {
+            background: #052e16 !important;
+        }
+
+        body.dark-mode .tc-icon.tc-bg-teal {
+            background: #042f2e !important;
+        }
+
+        body.dark-mode .tc-icon.tc-bg-red {
+            background: #1a0808 !important;
+        }
+
+        body.dark-mode .tc-icon.tc-bg-pink {
+            background: #280b18 !important;
+        }
+
+        body.dark-mode .tc-icon.tc-bg-cyan {
+            background: #061f25 !important;
+        }
 
         body.dark-mode #tools-search-input {
             background: #0e0e12;
@@ -1352,12 +1441,15 @@
         body.dark-mode .tc-icon svg {
             color: unset !important;
         }
+
         body.dark-mode .tc-icon svg path {
             stroke: unset !important;
         }
+
         body.dark-mode .tc-arrow svg {
             color: unset !important;
         }
+
         body.dark-mode .tc-arrow svg path {
             stroke: unset !important;
         }
@@ -1366,15 +1458,36 @@
         body.dark-mode .bento-card .w-12.h-12 svg {
             color: unset !important;
         }
+
         body.dark-mode .bento-card .w-12.h-12 svg path {
             stroke: unset !important;
         }
+
         /* Keep colored icon circle backgrounds in dark mode — darken them slightly */
-        body.dark-mode .bento-card .bg-\[#ECFDF5\] { background: #052e16 !important; border-color: #166534 !important; }
-        body.dark-mode .bento-card .bg-\[#EEF2FF\] { background: #0f172a !important; border-color: #1e3a8a !important; }
-        body.dark-mode .bento-card .bg-\[#ECFFFE\] { background: #042f2e !important; border-color: #115e59 !important; }
-        body.dark-mode .bento-card .bg-\[#FFF0F0\] { background: #1a0808 !important; border-color: #7f1d1d !important; }
-        body.dark-mode .bento-card .bg-\[#F3EEFF\] { background: #13091f !important; border-color: #4c1d95 !important; }
+        body.dark-mode .bento-card .bg-\[#ECFDF5\] {
+            background: #052e16 !important;
+            border-color: #166534 !important;
+        }
+
+        body.dark-mode .bento-card .bg-\[#EEF2FF\] {
+            background: #0f172a !important;
+            border-color: #1e3a8a !important;
+        }
+
+        body.dark-mode .bento-card .bg-\[#ECFFFE\] {
+            background: #042f2e !important;
+            border-color: #115e59 !important;
+        }
+
+        body.dark-mode .bento-card .bg-\[#FFF0F0\] {
+            background: #1a0808 !important;
+            border-color: #7f1d1d !important;
+        }
+
+        body.dark-mode .bento-card .bg-\[#F3EEFF\] {
+            background: #13091f !important;
+            border-color: #4c1d95 !important;
+        }
     </style>
 </head>
 
@@ -1617,14 +1730,14 @@
                             <div class="flex items-center gap-3">
                                 <span class="text-2xl font-light text-white"><span id="completed-count">0</span><span
                                         class="text-neutral-500 text-lg" id="total-count">/4</span></span>
-                                <button onclick="openAddTaskModal()"
-                                    id="addTaskBtn"
-                                    title="Add Task"
+                                <button onclick="openAddTaskModal()" id="addTaskBtn" title="Add Task"
                                     style="width:36px;height:36px;border-radius:50%;background:#FACC15;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 0 rgba(250,204,21,0.5);animation:addTaskPulse 2s infinite;transition:transform 0.18s,box-shadow 0.18s;flex-shrink:0;"
                                     onmouseover="this.style.transform='scale(1.15)';this.style.boxShadow='0 4px 18px rgba(250,204,21,0.6)'"
                                     onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 0 0 0 rgba(250,204,21,0.5)'">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                                        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a"
+                                        stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="12" y1="5" x2="12" y2="19" />
+                                        <line x1="5" y1="12" x2="19" y2="12" />
                                     </svg>
                                 </button>
                             </div>
@@ -1703,13 +1816,15 @@
                         <h1 class="text-4xl sm:text-[2.75rem] font-light text-[#1a1a1a] tracking-tight mb-1">
                             Your <span class="font-bold">Tools</span>
                         </h1>
-                        <p class="text-neutral-500 font-medium text-sm">Quick access to all your business management tools.</p>
+                        <p class="text-neutral-500 font-medium text-sm">Quick access to all your business management
+                            tools.</p>
                     </div>
                     <!-- Search -->
                     <div class="relative w-full md:w-64">
                         <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                             <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
                         </div>
                         <input type="text" id="toolSearchInput" placeholder="Search tools..."
@@ -1722,16 +1837,20 @@
                 <div id="tools-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 
                     <!-- DSR Maker — Blue -->
-                    <a href="dsrMaker.html" data-app-id="dsrmaker"
-                        class="tc-card tc-blue group no-underline">
-                        <button class="pin-btn" id="pin-tools-dsrmaker" onclick="togglePin(event,'dsrmaker')" title="Pin / Unpin">
+                    <a href="dsrMaker.html" data-app-id="dsrmaker" class="tc-card tc-blue group no-underline">
+                        <button class="pin-btn" id="pin-tools-dsrmaker" onclick="togglePin(event,'dsrmaker')"
+                            title="Pin / Unpin">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                             </svg>
                         </button>
                         <div class="tc-icon tc-bg-blue" style="background:#EEF2FF;">
-                            <svg class="w-6 h-6" style="color:#2563EB;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                            <svg class="w-6 h-6" style="color:#2563EB;" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                                </path>
                             </svg>
                         </div>
                         <div class="tc-body">
@@ -1739,23 +1858,29 @@
                             <div class="tc-desc">Daily Sales Report formatter &amp; generator.</div>
                         </div>
                         <div class="tc-arrow">
-                            <svg class="w-3.5 h-3.5" style="color:#2563EB;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
+                            <svg class="w-3.5 h-3.5" style="color:#2563EB;" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M9 5l7 7-7 7"></path>
                             </svg>
                         </div>
                     </a>
 
                     <!-- Quotation Generator — Orange -->
-                    <a href="quotationMaker.html" data-app-id="quotation"
-                        class="tc-card tc-orange group no-underline">
-                        <button class="pin-btn" id="pin-tools-quotation" onclick="togglePin(event,'quotation')" title="Pin / Unpin">
+                    <a href="quotationMaker.html" data-app-id="quotation" class="tc-card tc-orange group no-underline">
+                        <button class="pin-btn" id="pin-tools-quotation" onclick="togglePin(event,'quotation')"
+                            title="Pin / Unpin">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                             </svg>
                         </button>
                         <div class="tc-icon tc-bg-orange" style="background:#FFF3E0;">
-                            <svg class="w-6 h-6" style="color:#F59E0B;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            <svg class="w-6 h-6" style="color:#F59E0B;" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                </path>
                             </svg>
                         </div>
                         <div class="tc-body">
@@ -1763,18 +1888,22 @@
                             <div class="tc-desc">Create tailored garment quotes instantly.</div>
                         </div>
                         <div class="tc-arrow">
-                            <svg class="w-3.5 h-3.5" style="color:#F59E0B;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
+                            <svg class="w-3.5 h-3.5" style="color:#F59E0B;" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M9 5l7 7-7 7"></path>
                             </svg>
                         </div>
                     </a>
 
                     <!-- Reports & Data Sync — Purple -->
-                    <a href="reports.html" data-app-id="reports"
-                        class="tc-card tc-purple group no-underline">
+                    <a href="reports.html" data-app-id="reports" class="tc-card tc-purple group no-underline">
                         <div class="tc-icon tc-bg-purple" style="background:#F3EEFF;">
-                            <svg class="w-6 h-6" style="color:#7C3AED;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            <svg class="w-6 h-6" style="color:#7C3AED;" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                </path>
                             </svg>
                         </div>
                         <div class="tc-body">
@@ -1782,23 +1911,29 @@
                             <div class="tc-desc">Centralized dashboard to upload and sync datasets.</div>
                         </div>
                         <div class="tc-arrow">
-                            <svg class="w-3.5 h-3.5" style="color:#7C3AED;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
+                            <svg class="w-3.5 h-3.5" style="color:#7C3AED;" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M9 5l7 7-7 7"></path>
                             </svg>
                         </div>
                     </a>
 
                     <!-- Global Count — Green -->
-                    <a href="gcMaker.html" data-app-id="global-count"
-                        class="tc-card tc-green group no-underline">
-                        <button class="pin-btn" id="pin-tools-global-count" onclick="togglePin(event,'global-count')" title="Pin / Unpin">
+                    <a href="gcMaker.html" data-app-id="global-count" class="tc-card tc-green group no-underline">
+                        <button class="pin-btn" id="pin-tools-global-count" onclick="togglePin(event,'global-count')"
+                            title="Pin / Unpin">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                             </svg>
                         </button>
                         <div class="tc-icon tc-bg-green" style="background:#ECFDF5;">
-                            <svg class="w-6 h-6" style="color:#059669;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                            <svg class="w-6 h-6" style="color:#059669;" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z">
+                                </path>
                             </svg>
                         </div>
                         <div class="tc-body">
@@ -1806,23 +1941,29 @@
                             <div class="tc-desc">Compile raw stock report data.</div>
                         </div>
                         <div class="tc-arrow">
-                            <svg class="w-3.5 h-3.5" style="color:#059669;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
+                            <svg class="w-3.5 h-3.5" style="color:#059669;" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M9 5l7 7-7 7"></path>
                             </svg>
                         </div>
                     </a>
 
                     <!-- Knockoff System — Pink -->
-                    <a href="knockoffMaker.html" data-app-id="knockoff"
-                        class="tc-card tc-pink group no-underline">
-                        <button class="pin-btn" id="pin-tools-knockoff" onclick="togglePin(event,'knockoff')" title="Pin / Unpin">
+                    <a href="knockoffMaker.html" data-app-id="knockoff" class="tc-card tc-pink group no-underline">
+                        <button class="pin-btn" id="pin-tools-knockoff" onclick="togglePin(event,'knockoff')"
+                            title="Pin / Unpin">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                             </svg>
                         </button>
                         <div class="tc-icon tc-bg-pink" style="background:#FCE7F3;">
-                            <svg class="w-6 h-6" style="color:#DB2777;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                            <svg class="w-6 h-6" style="color:#DB2777;" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+                                </path>
                             </svg>
                         </div>
                         <div class="tc-body">
@@ -1830,23 +1971,28 @@
                             <div class="tc-desc">Sales Order Reconciliation.</div>
                         </div>
                         <div class="tc-arrow">
-                            <svg class="w-3.5 h-3.5" style="color:#DB2777;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
+                            <svg class="w-3.5 h-3.5" style="color:#DB2777;" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M9 5l7 7-7 7"></path>
                             </svg>
                         </div>
                     </a>
 
                     <!-- Unconfirmed Stock — Red -->
-                    <a href="unconfirmedStock.html" data-app-id="unconfirmed"
-                        class="tc-card tc-red group no-underline">
-                        <button class="pin-btn" id="pin-tools-unconfirmed" onclick="togglePin(event,'unconfirmed')" title="Pin / Unpin">
+                    <a href="unconfirmedStock.html" data-app-id="unconfirmed" class="tc-card tc-red group no-underline">
+                        <button class="pin-btn" id="pin-tools-unconfirmed" onclick="togglePin(event,'unconfirmed')"
+                            title="Pin / Unpin">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                             </svg>
                         </button>
                         <div class="tc-icon tc-bg-red" style="background:#FFF0F0;">
-                            <svg class="w-6 h-6" style="color:#DC2626;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                            <svg class="w-6 h-6" style="color:#DC2626;" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
                             </svg>
                         </div>
                         <div class="tc-body">
@@ -1854,23 +2000,28 @@
                             <div class="tc-desc">Pending stock inwarding tracker.</div>
                         </div>
                         <div class="tc-arrow">
-                            <svg class="w-3.5 h-3.5" style="color:#DC2626;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
+                            <svg class="w-3.5 h-3.5" style="color:#DC2626;" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M9 5l7 7-7 7"></path>
                             </svg>
                         </div>
                     </a>
 
                     <!-- Know DO or PO — Blue -->
-                    <a href="poMaker.html" data-app-id="poMaker"
-                        class="tc-card tc-blue group no-underline">
-                        <button class="pin-btn" id="pin-tools-poMaker" onclick="togglePin(event,'poMaker')" title="Pin / Unpin">
+                    <a href="poMaker.html" data-app-id="poMaker" class="tc-card tc-blue group no-underline">
+                        <button class="pin-btn" id="pin-tools-poMaker" onclick="togglePin(event,'poMaker')"
+                            title="Pin / Unpin">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                             </svg>
                         </button>
                         <div class="tc-icon tc-bg-blue" style="background:#EEF2FF;">
-                            <svg class="w-6 h-6" style="color:#2563EB;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            <svg class="w-6 h-6" style="color:#2563EB;" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
                         </div>
                         <div class="tc-body">
@@ -1878,8 +2029,10 @@
                             <div class="tc-desc">Search purchase, transfer, or sale orders.</div>
                         </div>
                         <div class="tc-arrow">
-                            <svg class="w-3.5 h-3.5" style="color:#2563EB;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
+                            <svg class="w-3.5 h-3.5" style="color:#2563EB;" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M9 5l7 7-7 7"></path>
                             </svg>
                         </div>
                     </a>
@@ -1887,14 +2040,19 @@
                     <!-- Tailoring Tracker — Purple -->
                     <a href="Tailoring_Tracker.html" data-app-id="tailoring"
                         class="tc-card tc-purple group no-underline">
-                        <button class="pin-btn" id="pin-tools-tailoring" onclick="togglePin(event,'tailoring')" title="Pin / Unpin">
+                        <button class="pin-btn" id="pin-tools-tailoring" onclick="togglePin(event,'tailoring')"
+                            title="Pin / Unpin">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                             </svg>
                         </button>
                         <div class="tc-icon tc-bg-purple" style="background:#F3EEFF;">
-                            <svg class="w-6 h-6" style="color:#7C3AED;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l-7-7m7 7l-2.121 2.121m4.242 4.242a3 3 0 11-4.242-4.242m0 0a3 3 0 10-4.242-4.242m8.484 0a3 3 0 10-4.242-4.242m0 0L5 19"></path>
+                            <svg class="w-6 h-6" style="color:#7C3AED;" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M14.121 14.121L19 19m-7-7l-7-7m7 7l-2.121 2.121m4.242 4.242a3 3 0 11-4.242-4.242m0 0a3 3 0 10-4.242-4.242m8.484 0a3 3 0 10-4.242-4.242m0 0L5 19">
+                                </path>
                             </svg>
                         </div>
                         <div class="tc-body">
@@ -1902,23 +2060,28 @@
                             <div class="tc-desc">Track and manage tailoring jobs.</div>
                         </div>
                         <div class="tc-arrow">
-                            <svg class="w-3.5 h-3.5" style="color:#7C3AED;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
+                            <svg class="w-3.5 h-3.5" style="color:#7C3AED;" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M9 5l7 7-7 7"></path>
                             </svg>
                         </div>
                     </a>
 
                     <!-- Size Stocks — Cyan -->
-                    <a href="size_stocks.html" data-app-id="size-stocks"
-                        class="tc-card tc-cyan group no-underline">
-                        <button class="pin-btn" id="pin-tools-size-stocks" onclick="togglePin(event,'size-stocks')" title="Pin / Unpin">
+                    <a href="size_stocks.html" data-app-id="size-stocks" class="tc-card tc-cyan group no-underline">
+                        <button class="pin-btn" id="pin-tools-size-stocks" onclick="togglePin(event,'size-stocks')"
+                            title="Pin / Unpin">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                             </svg>
                         </button>
                         <div class="tc-icon tc-bg-cyan" style="background:#CFFAFE;">
-                            <svg class="w-6 h-6" style="color:#0891B2;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 6h18M3 14h18M3 18h18"></path>
+                            <svg class="w-6 h-6" style="color:#0891B2;" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 10h18M3 6h18M3 14h18M3 18h18"></path>
                             </svg>
                         </div>
                         <div class="tc-body">
@@ -1926,8 +2089,10 @@
                             <div class="tc-desc">Pivot stock report by size, site &amp; series.</div>
                         </div>
                         <div class="tc-arrow">
-                            <svg class="w-3.5 h-3.5" style="color:#0891B2;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
+                            <svg class="w-3.5 h-3.5" style="color:#0891B2;" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M9 5l7 7-7 7"></path>
                             </svg>
                         </div>
                     </a>
@@ -2003,14 +2168,14 @@
         };
 
         const APP_META = {
-            'quotation':    { label: 'Quotation Generator',  desc: 'Create tailored garment quotes.',       nav: 'quotation',    bg: 'bg-[#f4c74a]',                         accentColor: '#242424', iconColor: 'text-amber-950',  iconBg: 'bg-white/40',                               descColor: 'text-amber-950/70' },
-            'global-count': { label: 'Global Count',         desc: 'Compile raw stock report data.',        nav: 'global-count', bg: 'bg-white border border-neutral-200',   accentColor: '#059669', iconColor: 'text-[#059669]',  iconBg: 'bg-[#ECFDF5] border border-green-100',      descColor: 'text-neutral-400' },
-            'dsrmaker':     { label: 'DSR Maker',            desc: 'Daily Sales Report formatter.',         nav: 'dsrmaker',     bg: 'bg-white border border-neutral-200',   accentColor: '#2563EB', iconColor: 'text-[#2563EB]',  iconBg: 'bg-[#EEF2FF] border border-blue-100',       descColor: 'text-neutral-400' },
-            'knockoff':     { label: 'Knockoff System',      desc: 'Sales Order Reconciliation.',           nav: 'knockoff',     bg: 'bg-white border border-neutral-200',   accentColor: '#DB2777', iconColor: 'text-[#DB2777]',  iconBg: 'bg-[#FCE7F3] border border-pink-100',       descColor: 'text-neutral-400' },
-            'unconfirmed':  { label: 'Unconfirmed Stock',    desc: 'Pending stock inwarding tracker.',      nav: 'unconfirmed',  bg: 'bg-white border border-neutral-200',   accentColor: '#DC2626', iconColor: 'text-[#DC2626]',  iconBg: 'bg-[#FFF0F0] border border-red-100',        descColor: 'text-neutral-400' },
-            'poMaker':      { label: 'Know DO or PO',        desc: 'Search purchase, transfer orders.',     nav: 'poMaker',      bg: 'bg-white border border-neutral-200',   accentColor: '#2563EB', iconColor: 'text-[#2563EB]',  iconBg: 'bg-[#EEF2FF] border border-blue-100',       descColor: 'text-neutral-400' },
-            'tailoring':    { label: 'Tailoring Tracker',    desc: 'Track and manage tailoring jobs.',      nav: 'tailoring',    bg: 'bg-white border border-neutral-200',   accentColor: '#7C3AED', iconColor: 'text-[#7C3AED]',  iconBg: 'bg-[#F3EEFF] border border-purple-100',     descColor: 'text-neutral-400' },
-            'size-stocks':  { label: 'Size Stocks',          desc: 'Pivot stock report by size & site.',    nav: 'size-stocks',  bg: 'bg-white border border-neutral-200',   accentColor: '#0891B2', iconColor: 'text-[#0891B2]',  iconBg: 'bg-[#CFFAFE] border border-cyan-100',       descColor: 'text-neutral-400' },
+            'quotation': { label: 'Quotation Generator', desc: 'Create tailored garment quotes.', nav: 'quotation', bg: 'bg-[#f4c74a]', accentColor: '#242424', iconColor: 'text-amber-950', iconBg: 'bg-white/40', descColor: 'text-amber-950/70' },
+            'global-count': { label: 'Global Count', desc: 'Compile raw stock report data.', nav: 'global-count', bg: 'bg-white border border-neutral-200', accentColor: '#059669', iconColor: 'text-[#059669]', iconBg: 'bg-[#ECFDF5] border border-green-100', descColor: 'text-neutral-400' },
+            'dsrmaker': { label: 'DSR Maker', desc: 'Daily Sales Report formatter.', nav: 'dsrmaker', bg: 'bg-white border border-neutral-200', accentColor: '#2563EB', iconColor: 'text-[#2563EB]', iconBg: 'bg-[#EEF2FF] border border-blue-100', descColor: 'text-neutral-400' },
+            'knockoff': { label: 'Knockoff System', desc: 'Sales Order Reconciliation.', nav: 'knockoff', bg: 'bg-white border border-neutral-200', accentColor: '#DB2777', iconColor: 'text-[#DB2777]', iconBg: 'bg-[#FCE7F3] border border-pink-100', descColor: 'text-neutral-400' },
+            'unconfirmed': { label: 'Unconfirmed Stock', desc: 'Pending stock inwarding tracker.', nav: 'unconfirmed', bg: 'bg-white border border-neutral-200', accentColor: '#DC2626', iconColor: 'text-[#DC2626]', iconBg: 'bg-[#FFF0F0] border border-red-100', descColor: 'text-neutral-400' },
+            'poMaker': { label: 'Know DO or PO', desc: 'Search purchase, transfer orders.', nav: 'poMaker', bg: 'bg-white border border-neutral-200', accentColor: '#2563EB', iconColor: 'text-[#2563EB]', iconBg: 'bg-[#EEF2FF] border border-blue-100', descColor: 'text-neutral-400' },
+            'tailoring': { label: 'Tailoring Tracker', desc: 'Track and manage tailoring jobs.', nav: 'tailoring', bg: 'bg-white border border-neutral-200', accentColor: '#7C3AED', iconColor: 'text-[#7C3AED]', iconBg: 'bg-[#F3EEFF] border border-purple-100', descColor: 'text-neutral-400' },
+            'size-stocks': { label: 'Size Stocks', desc: 'Pivot stock report by size & site.', nav: 'size-stocks', bg: 'bg-white border border-neutral-200', accentColor: '#0891B2', iconColor: 'text-[#0891B2]', iconBg: 'bg-[#CFFAFE] border border-cyan-100', descColor: 'text-neutral-400' },
         };
 
         // ---- Storage helpers ----

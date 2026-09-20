@@ -326,10 +326,11 @@
                     </div>
                 </div>
 
-                <!-- Tools Row -->
-                <div class="flex flex-col lg:flex-row justify-between items-center gap-4 mb-4">
-                    <!-- Product Category Search Bar -->
-                    <div class="relative flex items-center w-full lg:w-96">
+                <!-- Tools Row: Search | Filter Pills | Action Buttons — all on one line -->
+                <div class="flex flex-col lg:flex-row items-center gap-3 mb-4">
+
+                    <!-- Search Bar -->
+                    <div class="relative flex items-center w-full lg:w-80 flex-shrink-0">
                         <div class="absolute left-3.5 flex items-center pointer-events-none text-neutral-400">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -349,15 +350,35 @@
                                 </svg>
                             </button>
                             <button onclick="applyFilter()"
-                                class="px-3.5 py-1.5 bg-[#f7d060] hover:bg-[#e5be4f] text-[#292929] rounded-xl font-bold text-xs transition shadow-sm flex items-center gap-1">
+                                class="px-3.5 py-1.5 bg-[#f7d060] hover:bg-[#e5be4f] text-[#292929] rounded-xl font-bold text-xs transition shadow-sm">
                                 Search
                             </button>
                         </div>
                     </div>
 
+                    <!-- Category Filter Pills (fills the marked gap area) -->
+                    <div class="flex items-center gap-2 flex-1 flex-wrap">
+                        <button onclick="setCategoryFilter('ALL')" id="gc-btn-ALL"
+                            class="px-3.5 py-2 text-[10px] font-bold uppercase tracking-widest rounded-full transition-colors bg-[#292929] text-white whitespace-nowrap shadow-sm">
+                            All
+                        </button>
+                        <button onclick="setCategoryFilter('Accessories')" id="gc-btn-Accessories"
+                            class="px-3.5 py-2 text-[10px] font-bold uppercase tracking-widest rounded-full transition-colors bg-neutral-100 text-neutral-500 hover:bg-neutral-200 whitespace-nowrap">
+                            Accessories
+                        </button>
+                        <button onclick="setCategoryFilter('Fabric')" id="gc-btn-Fabric"
+                            class="px-3.5 py-2 text-[10px] font-bold uppercase tracking-widest rounded-full transition-colors bg-neutral-100 text-neutral-500 hover:bg-neutral-200 whitespace-nowrap">
+                            Fabric
+                        </button>
+                        <button onclick="setCategoryFilter('Readymade')" id="gc-btn-Readymade"
+                            class="px-3.5 py-2 text-[10px] font-bold uppercase tracking-widest rounded-full transition-colors bg-neutral-100 text-neutral-500 hover:bg-neutral-200 whitespace-nowrap">
+                            Readymade
+                        </button>
+                        <span id="gc-filter-count" class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest"></span>
+                    </div>
+
                     <!-- Action Buttons -->
-                    <div class="flex flex-wrap items-center gap-2.5 w-full lg:w-auto justify-end">
-                        <!-- Clear Physical Stock Data Button -->
+                    <div class="flex items-center gap-2.5 flex-shrink-0">
                         <button onclick="clearPhysicalData()" title="Clear all entered physical stock data"
                             class="flex items-center justify-center px-4 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200/80 rounded-2xl font-bold transition shadow-sm text-xs sm:text-sm gap-2">
                             <svg class="w-4 h-4 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -367,8 +388,6 @@
                             </svg>
                             Clear Physical Data
                         </button>
-
-                        <!-- Export CSV Report Button -->
                         <button onclick="exportReconciliation()"
                             class="flex items-center justify-center px-5 py-2.5 bg-[#292929] hover:bg-black text-white rounded-2xl font-bold transition shadow-md text-xs sm:text-sm">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -379,6 +398,7 @@
                             Export CSV Report
                         </button>
                     </div>
+
                 </div>
 
                 <!-- Table Block -->
@@ -470,6 +490,7 @@
         let aggregatedData = {};
         let currentViewData = [];
         let sites = new Set();
+        let currentCategoryFilter = 'ALL';
 
         const COL_MAPPING = {
             site: ['site_descr', 'site_description', 'site', 'store'],
@@ -586,6 +607,7 @@
                         id: uniqueKey,
                         site: site,
                         category: category,
+                        itemSer: itemSerDesc,
                         systemQty: 0,
                         physicalQty: null,
                         advStock: null,
@@ -650,6 +672,38 @@
             input.focus();
         }
 
+        function setCategoryFilter(category) {
+            currentCategoryFilter = category;
+            const cats = ['ALL', 'Accessories', 'Fabric', 'Readymade'];
+            cats.forEach(c => {
+                const el = document.getElementById('gc-btn-' + c);
+                if (!el) return;
+                if (c === category) {
+                    el.className = "px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-full transition-colors bg-[#292929] text-white whitespace-nowrap shadow-sm";
+                } else {
+                    el.className = "px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-full transition-colors bg-neutral-100 text-neutral-500 hover:bg-neutral-200 whitespace-nowrap";
+                }
+            });
+            applyFilter();
+        }
+
+        // Determines which filter button category an item_ser_descr value belongs to.
+        // Handles real-world CSV variations: "READY MADE", "READYMADE", "RMG",
+        // "ACCESSORIES", "ACCESS.", "FABRIC", "FABRICS" etc.
+        function matchesItemSer(itemSer, filterKey) {
+            const s = (itemSer || '').toUpperCase().replace(/\s+/g, ' ').trim();
+            if (filterKey === 'Accessories') {
+                return s.includes('ACCESS');
+            }
+            if (filterKey === 'Fabric') {
+                return s.includes('FABRIC') || s.includes('CLOTH') || s.includes('SUIT LENGTH');
+            }
+            if (filterKey === 'Readymade') {
+                return s.includes('READY') || s.includes('RMG') || s.includes('READYMADE');
+            }
+            return true; // 'ALL'
+        }
+
         function applyFilter() {
             const selectedSite = document.getElementById('siteFilter').value;
             const searchInput = document.getElementById('categorySearch');
@@ -659,10 +713,22 @@
             if (selectedSite !== 'ALL') {
                 arr = arr.filter(item => item.site === selectedSite);
             }
+            if (currentCategoryFilter !== 'ALL') {
+                arr = arr.filter(item => matchesItemSer(item.itemSer, currentCategoryFilter));
+            }
             if (searchTerm) {
                 arr = arr.filter(item => item.category.toLowerCase().includes(searchTerm));
             }
             currentViewData = arr.sort((a, b) => a.category.localeCompare(b.category));
+
+            // Update filter count badge
+            const countEl = document.getElementById('gc-filter-count');
+            if (countEl) {
+                countEl.innerText = currentCategoryFilter !== 'ALL'
+                    ? `${currentViewData.length} item${currentViewData.length !== 1 ? 's' : ''}`
+                    : '';
+            }
+
             renderTable();
         }
 

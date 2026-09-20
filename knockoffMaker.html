@@ -425,14 +425,15 @@
                             <thead class="sticky top-0 z-10 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.02)]">
                                 <tr
                                     class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest border-b border-neutral-100 whitespace-nowrap bg-[#f9f9f9]">
-                                    <th class="py-4 px-4 rounded-tl-2xl">SALE_ORDER</th>
+                                    <th class="py-4 px-3 text-center rounded-tl-2xl">DONE</th>
+                                    <th class="py-4 px-4">SALE_ORDER</th>
                                     <th class="py-4 px-4">CUSTOMER_NAME</th>
                                     <th class="py-4 px-4">ITEM_TYPE</th>
                                     <th class="py-4 px-4 text-right">ORDER_QTY</th>
                                     <th class="py-4 px-4 text-right">INVOICE_QTY</th>
                                     <th class="py-4 px-4 text-right">ITEM_TOTAL</th>
                                     <th class="py-4 px-4 text-right">INV_AMT</th>
-                                    <th class="py-4 px-4 text-center rounded-tr-2xl">DONE</th>
+                                    <th class="py-4 px-4 rounded-tr-2xl">REMARKS</th>
                                 </tr>
                             </thead>
                             <tbody id="dataTableBody" class="divide-y divide-neutral-50/80">
@@ -466,7 +467,8 @@
         let pendingData = [];
         let filteredData = [];
         let currentCategoryFilter = 'ALL';
-        // Set of row indices (into filteredData) that have been marked as knocked off
+        // Set of stable row keys (NOT positional indices) for rows marked as done.
+        // Each key is a composite string unique to the actual data row.
         const doneRowKeys = new Set();
 
         function setCategoryFilter(category) {
@@ -497,7 +499,8 @@
             orderQty: ['order_quantity', 'available_qty', 'qty'],
             invoiceQty: ['invoice_quantity', 'inv_qty'],
             itemTotal: ['item_total', 'total amount', 'amount'],
-            invAmt: ['inv_amt', 'invoice_amt']
+            invAmt: ['inv_amt', 'invoice_amt'],
+            remarks: ['remarks', 'remark', 'comments', 'comment', 'notes', 'note']
         };
 
         function navigateBack() {
@@ -590,21 +593,30 @@
                 orderQty: findColumnKey(firstRow, COL_MAPPING.orderQty) || 'order_quantity',
                 invoiceQty: findColumnKey(firstRow, COL_MAPPING.invoiceQty) || 'invoice_quantity',
                 itemTotal: findColumnKey(firstRow, COL_MAPPING.itemTotal) || 'item_total',
-                invAmt: findColumnKey(firstRow, COL_MAPPING.invAmt) || 'invoice_amt'
+                invAmt: findColumnKey(firstRow, COL_MAPPING.invAmt) || 'invoice_amt',
+                remarks: findColumnKey(firstRow, COL_MAPPING.remarks) || 'remarks'
             };
 
-            rawData = data.map(row => {
+            rawData = data.map((row, originalIdx) => {
+                const saleOrder  = (row[keys.saleOrder]  || '').trim();
+                const itemType   = (row[keys.itemType]   || '').trim();
+                const customer   = (row[keys.customer]   || '').trim();
+                const orderQty   = parseFloat(row[keys.orderQty]) || 0;
+                // Stable unique key that survives filter changes
+                const _rowKey = `${originalIdx}|${saleOrder}|${itemType}|${customer}|${orderQty}`;
                 return {
+                    _rowKey,
                     siteCode: (row[keys.siteCode] || '').trim(),
-                    saleOrder: (row[keys.saleOrder] || '').trim(),
+                    saleOrder,
                     date: (row[keys.date] || '').trim(),
-                    customer: (row[keys.customer] || '').trim(),
-                    itemType: (row[keys.itemType] || '').trim(),
+                    customer,
+                    itemType,
                     itemSerDesc: (row[keys.itemSerDesc] || '').trim(),
-                    orderQty: parseFloat(row[keys.orderQty]) || 0,
+                    orderQty,
                     invoiceQty: parseFloat(row[keys.invoiceQty]) || 0,
                     itemTotal: parseFloat(row[keys.itemTotal]) || 0,
                     invAmtRaw: row[keys.invAmt],
+                    remarks: (row[keys.remarks] || '').trim(),
                     parsedDate: parseDate(row[keys.date])
                 };
             });
@@ -686,8 +698,9 @@
                     const orderMatch = (row.saleOrder || '').toLowerCase().includes(searchQuery);
                     const customerMatch = (row.customer || '').toLowerCase().includes(searchQuery);
                     const itemTypeMatch = (row.itemType || '').toLowerCase().includes(searchQuery);
+                    const remarksMatch = (row.remarks || '').toLowerCase().includes(searchQuery);
 
-                    if (!orderMatch && !customerMatch && !itemTypeMatch) return false;
+                    if (!orderMatch && !customerMatch && !itemTypeMatch && !remarksMatch) return false;
                 }
 
                 return true;
@@ -717,8 +730,8 @@
             } else {
                 doneRowKeys.add(rowKey);
             }
-            // Re-render the table rows and KPIs without re-filtering
-            renderTable();
+            // Re-render table and KPIs without re-filtering
+            updateDashboard();
         }
 
         function updateDashboard() {
@@ -729,8 +742,8 @@
             let sumReadymade = 0;
 
             // KPIs only count rows NOT marked as done
-            filteredData.forEach((row, idx) => {
-                if (doneRowKeys.has(idx)) return;
+            filteredData.forEach((row) => {
+                if (doneRowKeys.has(row._rowKey)) return;
 
                 let amt = parseFloat(row.invAmtRaw) || 0;
                 if (amt === 0) amt = row.itemTotal;
@@ -755,6 +768,25 @@
             renderTable();
         }
 
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function updateRowRemark(rowKey, value) {
+            // Find by stable key so remarks survive filter switches
+            const row = filteredData.find(r => r._rowKey === rowKey);
+            if (row) row.remarks = value;
+            // Also update in pendingData so the value persists across re-filters
+            const master = pendingData.find(r => r._rowKey === rowKey);
+            if (master) master.remarks = value;
+        }
+
         function renderTable() {
             const formatINR = (num) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(num);
 
@@ -764,7 +796,7 @@
             const doneCountEl = document.getElementById('doneCountText');
             tbody.innerHTML = '';
 
-            const doneCount = filteredData.filter((_, i) => doneRowKeys.has(i)).length;
+            const doneCount = filteredData.filter(r => doneRowKeys.has(r._rowKey)).length;
             const pendingCount = filteredData.length - doneCount;
 
             recordCountEl.innerText = `Showing ${filteredData.length} knockoffs`;
@@ -782,7 +814,8 @@
                 emptyState.classList.add('hidden');
 
                 filteredData.forEach((row, idx) => {
-                    const isDone = doneRowKeys.has(idx);
+                    const rowKey = row._rowKey;
+                    const isDone = doneRowKeys.has(rowKey);
                     const tr = document.createElement('tr');
                     tr.className = `hover:bg-neutral-50/50 transition-colors bg-white group${isDone ? ' row-done' : ''}`;
                     tr.id = `tr-row-${idx}`;
@@ -795,18 +828,28 @@
                     // Eye-off SVG (crossed out = done)
                     const eyeOff = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>`;
 
+                    // Escape rowKey for safe inline attribute use
+                    const safeRowKey = rowKey.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+
                     tr.innerHTML = `
-                        <td class="py-3 px-4 text-xs font-semibold text-[#292929]">${row.saleOrder || '-'}</td>
-                        <td class="py-3 px-4 text-xs font-bold text-[#292929] truncate max-w-[200px]">${row.customer}</td>
-                        <td class="py-3 px-4 text-xs text-neutral-500 truncate max-w-[250px]">${row.itemType}</td>
+                        <td class="py-3 px-3 text-center no-strike">
+                            <button class="eye-btn no-strike${isDone ? ' is-done' : ''}" onclick="toggleDone('${safeRowKey}')" title="${isDone ? 'Mark as Pending' : 'Mark as Done'}">
+                                ${isDone ? eyeOff : eyeOpen}
+                            </button>
+                        </td>
+                        <td class="py-3 px-4 text-xs font-semibold text-[#292929]">${escapeHtml(row.saleOrder || '-')}</td>
+                        <td class="py-3 px-4 text-xs font-bold text-[#292929] truncate max-w-[200px]">${escapeHtml(row.customer)}</td>
+                        <td class="py-3 px-4 text-xs text-neutral-500 truncate max-w-[250px]">${escapeHtml(row.itemType)}</td>
                         <td class="py-3 px-4 text-xs font-bold text-neutral-600 text-right">${row.orderQty}</td>
                         <td class="py-3 px-4 text-xs font-bold text-neutral-600 text-right">${row.invoiceQty}</td>
                         <td class="py-3 px-4 text-xs font-bold text-indigo-600 text-right bg-indigo-50/50">${formatINR(row.itemTotal)}</td>
-                        <td class="py-3 px-4 text-xs text-rose-500 font-bold text-right bg-rose-50/50 font-mono">${displayInvAmt}</td>
-                        <td class="py-3 px-4 text-center no-strike">
-                            <button class="eye-btn no-strike${isDone ? ' is-done' : ''}" onclick="toggleDone(${idx})" title="${isDone ? 'Mark as Pending' : 'Mark as Done'}">
-                                ${isDone ? eyeOff : eyeOpen}
-                            </button>
+                        <td class="py-3 px-4 text-xs text-rose-500 font-bold text-right bg-rose-50/50 font-mono">${escapeHtml(displayInvAmt)}</td>
+                        <td class="py-2 px-3 no-strike">
+                            <input type="text"
+                                placeholder="Add remark..."
+                                value="${escapeHtml(row.remarks || '')}"
+                                oninput="updateRowRemark('${safeRowKey}', this.value)"
+                                class="w-full bg-neutral-50/80 border border-neutral-200/80 focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 rounded-xl px-3 py-1.5 text-xs font-medium text-[#292929] placeholder-neutral-400 transition-all outline-none min-w-[150px]">
                         </td>
                     `;
                     tbody.appendChild(tr);
@@ -815,15 +858,16 @@
         }
 
         function exportFilteredData() {
-            // Export only rows NOT marked as done
-            const exportRows = filteredData.filter((_, idx) => !doneRowKeys.has(idx));
+            // Export only rows NOT marked as done (uses stable _rowKey, not index)
+            const exportRows = filteredData.filter(row => !doneRowKeys.has(row._rowKey));
             if (exportRows.length === 0) return alert("No pending rows to export!");
 
             const csvRows = [];
-            csvRows.push(['sale_order', 'customer_name', 'item_type', 'order_quantity', 'invoice_quantity', 'item_total', 'INV_AMT'].join(','));
+            csvRows.push(['sale_order', 'customer_name', 'item_type', 'order_quantity', 'invoice_quantity', 'item_total', 'INV_AMT', 'REMARKS'].join(','));
 
             exportRows.forEach(row => {
                 const displayInvAmt = (row.invAmtRaw === null || row.invAmtRaw === undefined || String(row.invAmtRaw).trim() === '') ? '-' : row.invAmtRaw;
+                const safeRemark = (row.remarks || '').replace(/"/g, '""');
                 const values = [
                     `"${row.saleOrder}"`,
                     `"${row.customer}"`,
@@ -831,7 +875,8 @@
                     row.orderQty,
                     row.invoiceQty,
                     row.itemTotal,
-                    `"${displayInvAmt}"`
+                    `"${displayInvAmt}"`,
+                    `"${safeRemark}"`
                 ];
                 csvRows.push(values.join(','));
             });
