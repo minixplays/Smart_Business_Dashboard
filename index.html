@@ -1666,8 +1666,7 @@
                             </div>
                         </div>
 
-                        <p class="text-[10px] font-bold text-neutral-500 uppercase tracking-widest mb-4">July 2026
-                            Schedule</p>
+                        <p class="text-[10px] font-bold text-neutral-500 uppercase tracking-widest mb-4">H2 Stock Audit Schedule</p>
 
                         <div id="barcode-routine-list" class="flex flex-col gap-3 flex-grow relative z-10">
                             <!-- Items injected via JS to dynamically highlight today -->
@@ -2544,37 +2543,101 @@
         }
 
         // --- 1. Barcode Scanning Routine Logic ---
-        const routineCategories = [
-            'RTW - Accessories / Shoes',
-            'Fabrics',
-            'RTW - Suits & Jackets',
-            'RTW - Shirts & Trousers / Selected Brand'
+        const h2Schedule = [
+            { d: '2026-09-16', task: 'Suitlengths / Coatlengths / Ethnic Fabrics' },
+            { d: '2026-09-23', task: 'Shirtings / Suitings' },
+            { d: '2026-09-30', task: 'Accessories / Shoes' },
+            { d: '2026-10-07', task: 'Suits / Jackets / Waistcoats / Longsuits' },
+            { d: '2026-10-14', task: 'Shirts / Trousers / Kurtasets / Dhoty / Track Pant' },
+            { d: '2026-10-21', task: 'Suitlengths / Coatlengths / Ethnic Fabrics' },
+            { d: '2026-10-28', task: 'Shirtings / Suitings / Accessories / Shoes' },
+            { d: '2026-11-04', task: 'Suits / Jackets / Waistcoats / Longsuits' },
+            { d: '2026-11-11', task: 'Shirts / Trousers / Kurtasets / Dhoty / Track Pant' },
+            { d: '2026-11-18', task: 'Suitlengths / Coatlengths / Ethnic Fabrics' },
+            { d: '2026-11-25', task: 'Shirtings / Suitings / Accessories / Shoes' },
+            { d: '2026-12-02', task: 'Suits / Jackets / Waistcoats / Longsuits' },
+            { d: '2026-12-09', task: 'Shirts / Trousers / Kurtasets / Dhoty / Track Pant' },
+            { d: '2026-12-16', task: 'Suitlengths / Coatlengths / Ethnic Fabrics' },
+            { d: '2026-12-23', task: 'Shirtings / Suitings / Accessories / Shoes' },
+            { d: '2026-12-30', task: 'Shirts / Trousers / Kurtasets / Dhoty / Track Pant' },
+            { d: '2027-01-06', task: 'Suits / Jackets / Waistcoats / Longsuits' },
+            { d: '2027-01-13', task: 'Shirts / Trousers / Kurtasets / Dhoty / Track Pant' },
+            { d: '2027-01-20', task: 'Suitlengths / Coatlengths / Ethnic Fabrics' },
+            { d: '2027-01-27', task: 'Shirtings / Suitings / Accessories / Shoes' },
+            { d: '2027-02-03', task: 'Suits / Jackets / Waistcoats / Longsuits' },
+            { d: '2027-02-10', task: 'Shirts / Trousers / Kurtasets / Dhoty / Track Pant' },
+            { d: '2027-02-17', task: 'Suitlengths / Coatlengths / Ethnic Fabrics' },
+            { d: '2027-02-23', task: 'Shirtings / Suitings / Accessories / Shoes' },
+            { d: '2027-03-03', task: 'Suits / Jackets / Waistcoats / Longsuits' },
+            { d: '2027-03-09', task: 'Shirts / Trousers / Kurtasets / Dhoty / Track Pant' },
+            { d: '2027-03-17', task: 'Suitlengths / Coatlengths / Ethnic Fabrics' },
+            { d: '2027-03-24', task: 'Shirtings / Suitings / Accessories / Shoes' }
         ];
-        const anchorDate = new Date(2026, 6, 7); // July 7, 2026
+
+        const fallbackCategories = [
+            'Suits / Jackets / Waistcoats / Longsuits',
+            'Shirts / Trousers / Kurtasets / Dhoty / Track Pant',
+            'Suitlengths / Coatlengths / Ethnic Fabrics',
+            'Shirtings / Suitings / Accessories / Shoes'
+        ];
 
         function getDynamicSchedule() {
             const now = new Date();
-            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            const diffTime = today - anchorDate;
-            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-            // Use ceil to skip past dates and only show the next upcoming (or today's) routines
-            const weeksElapsed = Math.ceil(diffDays / 7);
-
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+            
             const schedule = [];
-            for (let i = 0; i < 4; i++) {
-                const d = new Date(anchorDate.getTime() + (weeksElapsed + i) * 7 * 24 * 60 * 60 * 1000);
-                const cycleIndex = ((weeksElapsed + i) % 4 + 4) % 4;
-                const day = String(d.getDate()).padStart(2, '0');
-                const month = String(d.getMonth() + 1).padStart(2, '0');
-                const year = d.getFullYear();
-                schedule.push({
-                    date: `${day} ${month} ${year} `,
-                    task: routineCategories[cycleIndex],
-                    isToday: (d.getTime() === today.getTime()),
-                    isTomorrow: (d.getTime() - today.getTime() === 86400000),
-                    isUpcoming: (d.getTime() > today.getTime())
-                });
+            
+            // 1. Collect up to 4 items from the explicit H2 schedule
+            let matchIndex = -1;
+            for (let i = 0; i < h2Schedule.length; i++) {
+                const parts = h2Schedule[i].d.split('-');
+                const itemDate = new Date(parts[0], parts[1] - 1, parts[2]).getTime();
+                if (itemDate >= today) {
+                    matchIndex = i;
+                    break;
+                }
             }
+
+            let collected = 0;
+            let lastFoundDate = null;
+            
+            if (matchIndex !== -1) {
+                for (let i = matchIndex; i < h2Schedule.length && collected < 4; i++) {
+                    const parts = h2Schedule[i].d.split('-');
+                    const d = new Date(parts[0], parts[1] - 1, parts[2]);
+                    lastFoundDate = d;
+                    schedule.push({
+                        date: `${String(d.getDate()).padStart(2, '0')} ${String(d.getMonth() + 1).padStart(2, '0')} ${d.getFullYear()}`,
+                        task: h2Schedule[i].task,
+                        isToday: (d.getTime() === today),
+                        isTomorrow: (d.getTime() - today === 86400000),
+                        isUpcoming: (d.getTime() > today)
+                    });
+                    collected++;
+                }
+            }
+            
+            // 2. Fallback mathematical cycle if we ran out of H2 dates
+            if (collected < 4) {
+                if (!lastFoundDate) lastFoundDate = new Date(today);
+                let fallbackStart = new Date(lastFoundDate.getTime() + 7 * 86400000);
+                // Align to Wednesday if it's drifting
+                while (fallbackStart.getDay() !== 3) {
+                    fallbackStart = new Date(fallbackStart.getTime() + 86400000);
+                }
+                
+                for (let i = collected; i < 4; i++) {
+                    const d = new Date(fallbackStart.getTime() + (i - collected) * 7 * 86400000);
+                    schedule.push({
+                        date: `${String(d.getDate()).padStart(2, '0')} ${String(d.getMonth() + 1).padStart(2, '0')} ${d.getFullYear()}`,
+                        task: fallbackCategories[(i - collected) % 4],
+                        isToday: (d.getTime() === today),
+                        isTomorrow: (d.getTime() - today === 86400000),
+                        isUpcoming: (d.getTime() > today)
+                    });
+                }
+            }
+            
             return schedule;
         }
 
