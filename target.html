@@ -109,27 +109,43 @@
 
         /* Group header row */
         
-        .pivot-table thead tr.group-header th {
-            background: #dbeafe;
-            color: #1e3a8a;
+                .pivot-table thead tr.group-header th {
             font-size: 0.75rem;
             text-transform: none;
             letter-spacing: 0;
             font-weight: 700;
+            text-align: center;
         }
 
-        .pivot-table thead tr.group-header th.store-group,
-        .pivot-table thead tr.group-header th.staff-group {
-            background: #dbeafe;
+        .pivot-table thead tr.group-header th.col-cat,
+        .pivot-table thead tr.group-header th.col-type {
+            background: #f1f5f9;
+            color: #334155;
+            border-bottom: 2px solid #cbd5e1;
         }
-
 
         .pivot-table thead tr.group-header th.store-group {
-            background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+            background: #fee2e2;
+            color: #b91c1c;
+            border-bottom: 2px solid #ef4444;
         }
 
         .pivot-table thead tr.group-header th.staff-group {
-            background: linear-gradient(135deg, #6d28d9 0%, #7c3aed 100%);
+            background: #e0e7ff;
+            color: #4338ca;
+            border-bottom: 2px solid #6366f1;
+        }
+        
+        .pivot-table thead tr.group-header th.store-achieve-group {
+            background: #d1fae5;
+            color: #047857;
+            border-bottom: 2px solid #10b981;
+        }
+        
+        .pivot-table thead tr.group-header th.staff-achieve-group {
+            background: #ffedd5;
+            color: #c2410c;
+            border-bottom: 2px solid #f97316;
         }
 
         /* Body cells */
@@ -575,7 +591,7 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-[#242424]">Sales Data CSV</h3>
-                            <p class="text-xs text-neutral-500 font-medium">Requires: itemser_description, item_type, site_descr, sp_name</p>
+                            <p class="text-xs text-neutral-500 font-medium">Requires: itemser_description, item_type, Store Name, Staff Name</p>
                         </div>
                     </div>
                     <div class="upload-zone rounded-2xl p-8 text-center cursor-pointer flex flex-col justify-center items-center gap-3"
@@ -639,8 +655,8 @@
                             Upload a sales CSV with
                             <code class="bg-neutral-100 px-1.5 py-0.5 rounded text-xs font-bold">itemser_description</code>,
                             <code class="bg-neutral-100 px-1.5 py-0.5 rounded text-xs font-bold">item_type</code>,
-                            <code class="bg-neutral-100 px-1.5 py-0.5 rounded text-xs font-bold">site_descr</code>,
-                            <code class="bg-neutral-100 px-1.5 py-0.5 rounded text-xs font-bold">sp_name</code>
+                            <code class="bg-neutral-100 px-1.5 py-0.5 rounded text-xs font-bold">Store Name</code>,
+                            <code class="bg-neutral-100 px-1.5 py-0.5 rounded text-xs font-bold">Staff Name</code>
                             to build the pivot table.
                         </p>
                     </div>
@@ -743,10 +759,16 @@
 
         function validateData(rows) {
             if (!rows.length) { toast('error','Empty File','No data rows found'); return false; }
-            const need = ['itemser_description','item_type','site_descr','sp_name'];
             const keys = Object.keys(rows[0]);
-            const miss = need.filter(n => !keys.includes(n));
-            if (miss.length) { toast('error','Missing Columns', 'Need: ' + miss.join(', ')); return false; }
+            const hasCat = keys.includes('itemser_description') || keys.includes('product category');
+            const hasType = keys.includes('item_type') || keys.includes('product type');
+            const hasSite = keys.includes('site_descr') || keys.includes('store name');
+            const hasSp = keys.includes('sp_name') || keys.includes('staff name');
+            
+            if (!hasCat || !hasType || !hasSite || !hasSp) {
+                toast('error','Missing Columns', 'Please ensure file has required columns');
+                return false;
+            }
             return true;
         }
 
@@ -758,10 +780,14 @@
             const sSet = new Set(), stSet = new Set();
 
             rawData.forEach(r => {
-                const cat  = r['itemser_description'] || 'Unknown';
-                const type = r['item_type'] || '';
-                const site = r['site_descr'] || '';
-                const sp   = r['sp_name'] || '';
+                const cat  = r['itemser_description'] || r['product category'] || 'Unknown';
+                let type = r['item_type'] || r['product type'] || '';
+                const site = r['site_descr'] || r['store name'] || '';
+                const sp   = r['sp_name'] || r['staff name'] || '';
+
+                if (cat.toLowerCase() === 'accessories') {
+                    type = ''; // Group all accessories as a single count
+                }
 
                 if (!structure[cat]) structure[cat] = new Set();
                 if (type) structure[cat].add(type);
@@ -812,13 +838,13 @@
                 h += '<th class="col-cat" rowspan="2" style="text-align:left;">Product Category</th>';
                 h += '<th class="col-type" rowspan="2" style="text-align:left;">Product Type</th>';
                 if (storeCols.length)
-                    h += '<th colspan="' + storeCols.length + '" class="store-group">site_descr</th>';
+                    h += '<th colspan="' + storeCols.length + '" class="store-group">Store Name</th>';
                 if (staffCols.length)
-                    h += '<th colspan="' + staffCols.length + '" class="staff-group">sp_name</th>';
+                    h += '<th colspan="' + staffCols.length + '" class="staff-group">Staff Name</th>';
                 if (storeCols.length)
-                    h += '<th colspan="' + storeCols.length + '" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%);">Store Achivement</th>';
+                    h += '<th colspan="' + storeCols.length + '" class="store-achieve-group">Store Achivement</th>';
                 if (staffCols.length)
-                    h += '<th colspan="' + staffCols.length + '" style="background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);">Staff Achivement</th>';
+                    h += '<th colspan="' + staffCols.length + '" class="staff-achieve-group">Staff Achivement</th>';
                 h += '</tr>';
             }
 
