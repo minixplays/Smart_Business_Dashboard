@@ -152,7 +152,7 @@
         .pivot-table tbody td {
             padding: 0;
             border: 1px solid #d1d5db;
-            text-align: right;
+            text-align: center;
             vertical-align: middle;
             height: 32px;
         }
@@ -193,7 +193,7 @@
             min-height: 32px;
             border: none;
             outline: none;
-            text-align: right;
+            text-align: center;
             padding: 0 0.6rem;
             font-size: 0.8125rem;
             font-weight: 500;
@@ -263,7 +263,7 @@
             font-size: 0.8125rem;
             font-weight: 700;
             color: #0f172a;
-            text-align: right;
+            text-align: center;
             line-height: 32px;
         }
 
@@ -305,7 +305,7 @@
             font-size: 0.8125rem;
             font-weight: 800;
             color: #92400e;
-            text-align: right;
+            text-align: center;
             line-height: 32px;
         }
 
@@ -334,7 +334,7 @@
             font-size: 0.875rem;
             font-weight: 900;
             color: #f4c74a;
-            text-align: right;
+            text-align: center;
             line-height: 32px;
         }
 
@@ -641,7 +641,7 @@
             </div>
 
             <!-- Achievement Cards -->
-            <div id="achievement-cards" style="display:none;" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5"></div>
+            <div id="achievement-cards" style="display:none;" class="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-3 mb-5"></div>
 
             <!-- Pivot Container -->
             <div id="pivot-container" class="flex-grow">
@@ -683,6 +683,7 @@
         let actualStore   = {};
         let actualStaff   = {};
         let currentView   = 'both';
+        let activeFilter  = null;
 
         const STORAGE_KEY  = 'target_achievement_data';
         const TARGETS_KEY  = 'target_achievement_targets';
@@ -779,11 +780,30 @@
             actualStaff = {};
             const sSet = new Set(), stSet = new Set();
 
+            structure['Ready made'] = new Set(['SUITS', 'SHIRTS', 'WAISTCOATS', 'JACKETS', 'TROUSERS', 'LONGSUITS']);
+            structure['Tailoring'] = new Set(['Tailoring coat', 'Tailoring Trousers', 'Tailoring Shirts', 'Tailoring w/coat', 'EMBROIDERY']);
+
             rawData.forEach(r => {
-                const cat  = r['itemser_description'] || r['product category'] || 'Unknown';
-                let type = r['item_type'] || r['product type'] || '';
+                let cat  = (r['itemser_description'] || r['product category'] || 'Unknown').trim();
+                let type = (r['item_type'] || r['product type'] || '').trim();
                 const site = r['site_descr'] || r['store name'] || '';
                 const sp   = r['sp_name'] || r['staff name'] || '';
+
+                if (cat.toLowerCase() === 'raw materials') {
+                    return;
+                }
+
+                if (cat.toLowerCase() === 'tailoring' && type.toUpperCase() === 'ALTERATIONS-STITCHING') {
+                    return;
+                }
+
+                if (cat.toLowerCase().replace(/\s/g, '') === 'readymade') {
+                    cat = 'Ready made';
+                }
+
+                if (cat.toLowerCase() === 'tailoring') {
+                    cat = 'Tailoring';
+                }
 
                 if (cat.toLowerCase() === 'accessories') {
                     type = ''; // Group all accessories as a single count
@@ -804,7 +824,31 @@
             });
 
             // Convert sets to sorted arrays
-            for (const cat in structure) structure[cat] = Array.from(structure[cat]).sort();
+            for (const cat in structure) {
+                if (cat === 'Ready made') {
+                    const order = ['SUITS', 'SHIRTS', 'WAISTCOATS', 'JACKETS', 'TROUSERS', 'LONGSUITS'];
+                    structure[cat] = Array.from(structure[cat]).sort((a, b) => {
+                        let idxA = order.indexOf(a.toUpperCase());
+                        let idxB = order.indexOf(b.toUpperCase());
+                        if (idxA === -1) idxA = 999;
+                        if (idxB === -1) idxB = 999;
+                        if (idxA !== idxB) return idxA - idxB;
+                        return a.localeCompare(b);
+                    });
+                } else if (cat === 'Tailoring') {
+                    const order = ['TAILORING COAT', 'TAILORING TROUSERS', 'TAILORING SHIRTS', 'TAILORING W/COAT', 'EMBROIDERY'];
+                    structure[cat] = Array.from(structure[cat]).sort((a, b) => {
+                        let idxA = order.indexOf(a.toUpperCase());
+                        let idxB = order.indexOf(b.toUpperCase());
+                        if (idxA === -1) idxA = 999;
+                        if (idxB === -1) idxB = 999;
+                        if (idxA !== idxB) return idxA - idxB;
+                        return a.localeCompare(b);
+                    });
+                } else {
+                    structure[cat] = Array.from(structure[cat]).sort();
+                }
+            }
             sites      = Array.from(sSet).sort();
             staffList  = Array.from(stSet).sort();
             categories = Object.keys(structure).sort();
@@ -823,8 +867,19 @@
             const showSt = currentView === 'both' || currentView === 'staff';
 
             // Columns to render
-            const storeCols = showS  ? sites     : [];
-            const staffCols = showSt ? staffList  : [];
+            let storeCols = showS  ? sites     : [];
+            let staffCols = showSt ? staffList  : [];
+            
+            if (activeFilter) {
+                if (activeFilter.type === 'store') {
+                    storeCols = storeCols.includes(activeFilter.name) ? [activeFilter.name] : [];
+                    staffCols = [];
+                } else if (activeFilter.type === 'staff') {
+                    storeCols = [];
+                    staffCols = staffCols.includes(activeFilter.name) ? [activeFilter.name] : [];
+                }
+            }
+
             const totalDataCols = storeCols.length + staffCols.length;
 
             let h = '<table class="pivot-table" id="pivotTable">';
@@ -838,9 +893,9 @@
                 h += '<th class="col-cat" rowspan="2" style="text-align:left;">Product Category</th>';
                 h += '<th class="col-type" rowspan="2" style="text-align:left;">Product Type</th>';
                 if (storeCols.length)
-                    h += '<th colspan="' + storeCols.length + '" class="store-group">Store Name</th>';
+                    h += '<th colspan="' + storeCols.length + '" class="store-group">Store Targets</th>';
                 if (staffCols.length)
-                    h += '<th colspan="' + staffCols.length + '" class="staff-group">Staff Name</th>';
+                    h += '<th colspan="' + staffCols.length + '" class="staff-group">Staff Targets</th>';
                 if (storeCols.length)
                     h += '<th colspan="' + storeCols.length + '" class="store-achieve-group">Store Achivement</th>';
                 if (staffCols.length)
@@ -873,18 +928,36 @@
                     h += '<td class="cell-type"></td>';
                     storeCols.forEach(s => h += inputCell(tKey('store', s, cat, ''), 'store-col'));
                     staffCols.forEach(s => h += inputCell(tKey('staff', s, cat, ''), 'staff-col'));
-                    storeCols.forEach(s => h += '<td class="cell-actual-store"><span class="total-value">' + (actualStore[s + '||' + cat + '||'] || '') + '</span></td>');
-                    staffCols.forEach(s => h += '<td class="cell-actual-staff"><span class="total-value">' + (actualStaff[s + '||' + cat + '||'] || '') + '</span></td>');
+                    storeCols.forEach(s => {
+                        const act = actualStore[s + '||' + cat + '||'] || 0;
+                        const tgt = parseInt(targets[tKey('store', s, cat, '')]) || 0;
+                        h += '<td class="cell-actual-store"><span class="total-value" data-pct-key="store||' + escA(s) + '||' + escA(cat) + '||">' + formatAchievement(act, tgt) + '</span></td>';
+                    });
+                    staffCols.forEach(s => {
+                        const act = actualStaff[s + '||' + cat + '||'] || 0;
+                        const tgt = parseInt(targets[tKey('staff', s, cat, '')]) || 0;
+                        h += '<td class="cell-actual-staff"><span class="total-value" data-pct-key="staff||' + escA(s) + '||' + escA(cat) + '||">' + formatAchievement(act, tgt) + '</span></td>';
+                    });
                     h += '</tr>';
                 } else {
-                    types.forEach(type => {
+                    types.forEach((type, index) => {
                         h += '<tr>';
-                        h += '<td class="cell-cat">' + esc(cat) + '</td>';
+                        if (index === 0) {
+                            h += '<td class="cell-cat" rowspan="' + types.length + '">' + esc(cat) + '</td>';
+                        }
                         h += '<td class="cell-type">' + esc(type) + '</td>';
                         storeCols.forEach(s => h += inputCell(tKey('store', s, cat, type), 'store-col'));
                         staffCols.forEach(s => h += inputCell(tKey('staff', s, cat, type), 'staff-col'));
-                        storeCols.forEach(s => h += '<td class="cell-actual-store"><span class="total-value">' + (actualStore[s + '||' + cat + '||' + type] || '') + '</span></td>');
-                        staffCols.forEach(s => h += '<td class="cell-actual-staff"><span class="total-value">' + (actualStaff[s + '||' + cat + '||' + type] || '') + '</span></td>');
+                        storeCols.forEach(s => {
+                            const act = actualStore[s + '||' + cat + '||' + type] || 0;
+                            const tgt = parseInt(targets[tKey('store', s, cat, type)]) || 0;
+                            h += '<td class="cell-actual-store"><span class="total-value" data-pct-key="store||' + escA(s) + '||' + escA(cat) + '||' + escA(type) + '">' + formatAchievement(act, tgt) + '</span></td>';
+                        });
+                        staffCols.forEach(s => {
+                            const act = actualStaff[s + '||' + cat + '||' + type] || 0;
+                            const tgt = parseInt(targets[tKey('staff', s, cat, type)]) || 0;
+                            h += '<td class="cell-actual-staff"><span class="total-value" data-pct-key="staff||' + escA(s) + '||' + escA(cat) + '||' + escA(type) + '">' + formatAchievement(act, tgt) + '</span></td>';
+                        });
                         h += '</tr>';
                     });
                 }
@@ -894,8 +967,16 @@
                 h += '<td class="cell-cat" colspan="2">Total ' + esc(cat) + '</td>';
                 storeCols.forEach(s => h += '<td class="cell-input store-col"><span class="total-value" data-total-key="store__' + escA(s) + '__cat__' + escA(cat) + '">' + (calcCatTotal('store', s, cat) || '') + '</span></td>');
                 staffCols.forEach(s => h += '<td class="cell-input staff-col"><span class="total-value" data-total-key="staff__' + escA(s) + '__cat__' + escA(cat) + '">' + (calcCatTotal('staff', s, cat) || '') + '</span></td>');
-                storeCols.forEach(s => h += '<td class="cell-actual-store"><span class="total-value" style="color:#b45309;">' + (calcCatActual(actualStore, s, cat) || '') + '</span></td>');
-                staffCols.forEach(s => h += '<td class="cell-actual-staff"><span class="total-value" style="color:#b45309;">' + (calcCatActual(actualStaff, s, cat) || '') + '</span></td>');
+                storeCols.forEach(s => {
+                    const act = calcCatActual(actualStore, s, cat);
+                    const tgt = calcCatTotal('store', s, cat);
+                    h += '<td class="cell-actual-store"><span class="total-value" style="color:#b45309;" data-pct-cat-key="store||' + escA(s) + '||' + escA(cat) + '">' + formatAchievement(act, tgt) + '</span></td>';
+                });
+                staffCols.forEach(s => {
+                    const act = calcCatActual(actualStaff, s, cat);
+                    const tgt = calcCatTotal('staff', s, cat);
+                    h += '<td class="cell-actual-staff"><span class="total-value" style="color:#b45309;" data-pct-cat-key="staff||' + escA(s) + '||' + escA(cat) + '">' + formatAchievement(act, tgt) + '</span></td>';
+                });
                 h += '</tr>';
             });
 
@@ -904,8 +985,16 @@
             h += '<td class="cell-cat" colspan="2">Grand Total</td>';
             storeCols.forEach(s => h += '<td class="cell-input store-col"><span class="total-value">' + (calcGrandTotal('store', s) || '') + '</span></td>');
             staffCols.forEach(s => h += '<td class="cell-input staff-col"><span class="total-value">' + (calcGrandTotal('staff', s) || '') + '</span></td>');
-            storeCols.forEach(s => h += '<td class="cell-actual-store"><span class="total-value" style="color:#f4c74a;">' + (calcGrandActual(actualStore, s) || '') + '</span></td>');
-            staffCols.forEach(s => h += '<td class="cell-actual-staff"><span class="total-value" style="color:#f4c74a;">' + (calcGrandActual(actualStaff, s) || '') + '</span></td>');
+            storeCols.forEach(s => {
+                const act = calcGrandActual(actualStore, s);
+                const tgt = calcGrandTotal('store', s);
+                h += '<td class="cell-actual-store"><span class="total-value" style="color:#f4c74a;" data-pct-grand-key="store||' + escA(s) + '">' + formatAchievement(act, tgt) + '</span></td>';
+            });
+            staffCols.forEach(s => {
+                const act = calcGrandActual(actualStaff, s);
+                const tgt = calcGrandTotal('staff', s);
+                h += '<td class="cell-actual-staff"><span class="total-value" style="color:#f4c74a;" data-pct-grand-key="staff||' + escA(s) + '">' + formatAchievement(act, tgt) + '</span></td>';
+            });
             h += '</tr>';
 
             h += '</tbody></table>';
@@ -929,6 +1018,13 @@
         }
 
         /* ── Calculation ─────────────────────────────────────── */
+        function formatAchievement(act, tgt) {
+            if (!act) return '';
+            if (!tgt) return act;
+            const pct = (act / tgt) * 100;
+            return act + ' ( ' + (Math.round(pct * 10) / 10) + ' % )';
+        }
+
         function calcCatTotal(prefix, colName, cat) {
             const types = structure[cat];
             let sum = 0, hasAny = false;
@@ -981,25 +1077,33 @@
             const c = document.getElementById('achievement-cards');
             let h = '';
 
-            sites.forEach(site => {
-                const total = calcGrandTotal('store', site);
-                h += makeCard(site, 'Store', total, '#3b82f6',
-                    '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>'
-                );
-            });
-            staffList.forEach(sp => {
-                const total = calcGrandTotal('staff', sp);
-                h += makeCard(sp, 'Staff', total, '#7c3aed',
-                    '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>'
-                );
-            });
+            if (currentView === 'both' || currentView === 'store') {
+                sites.forEach(site => {
+                    const total = calcGrandTotal('store', site);
+                    h += makeCard(site, 'Store', total, '#3b82f6',
+                        '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>'
+                    );
+                });
+            }
+            
+            if (currentView === 'both' || currentView === 'staff') {
+                staffList.forEach(sp => {
+                    const total = calcGrandTotal('staff', sp);
+                    h += makeCard(sp, 'Staff', total, '#7c3aed',
+                        '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>'
+                    );
+                });
+            }
 
             c.innerHTML = h;
         }
 
         function makeCard(name, label, total, color, icon) {
             const val = total || '—';
-            return '<div class="stat-card">' +
+            const type = label.toLowerCase();
+            const isActive = activeFilter && activeFilter.type === type && activeFilter.name === name;
+            const ringClass = isActive ? 'ring-2 ring-offset-2 ring-blue-500 shadow-md scale-[1.02] border-blue-200' : 'hover:shadow-md';
+            return '<div class="stat-card cursor-pointer transition-all border border-transparent ' + ringClass + '" onclick="window.toggleFilter(\'' + type + '\', \'' + escA(name) + '\')">' +
                 '<div class="flex items-center gap-2 mb-2">' +
                     '<span style="color:' + color + '">' + icon + '</span>' +
                     '<span class="text-[10px] font-bold uppercase tracking-wider text-neutral-400">' + label + '</span>' +
@@ -1035,9 +1139,19 @@
         /* ── View Tabs ───────────────────────────────────────── */
         window.setView = function(v) {
             currentView = v;
+            activeFilter = null;
             ['both','store','staff'].forEach(t => {
                 document.getElementById('tab-' + t).className = 'view-tab' + (t === v ? ' active-' + t : '');
             });
+            renderTable();
+        };
+
+        window.toggleFilter = function(type, name) {
+            if (activeFilter && activeFilter.type === type && activeFilter.name === name) {
+                activeFilter = null;
+            } else {
+                activeFilter = { type, name };
+            }
             renderTable();
         };
 
@@ -1091,6 +1205,36 @@
                     });
                 }
             }
+
+            // Update percentages for individual items
+            document.querySelectorAll('[data-pct-key]').forEach(span => {
+                const parts = span.getAttribute('data-pct-key').split('||');
+                const pfx = parts[0], s = parts[1], cat = parts[2], type = parts[3];
+                const actDict = pfx === 'store' ? actualStore : actualStaff;
+                const act = actDict[s + '||' + cat + '||' + type] || 0;
+                const tgt = parseInt(targets[tKey(pfx, s, cat, type)]) || 0;
+                span.textContent = formatAchievement(act, tgt);
+            });
+            
+            // Update percentages for category totals
+            document.querySelectorAll('[data-pct-cat-key]').forEach(span => {
+                const parts = span.getAttribute('data-pct-cat-key').split('||');
+                const pfx = parts[0], s = parts[1], cat = parts[2];
+                const actDict = pfx === 'store' ? actualStore : actualStaff;
+                const act = calcCatActual(actDict, s, cat);
+                const tgt = calcCatTotal(pfx, s, cat);
+                span.textContent = formatAchievement(act, tgt);
+            });
+
+            // Update percentages for grand totals
+            document.querySelectorAll('[data-pct-grand-key]').forEach(span => {
+                const parts = span.getAttribute('data-pct-grand-key').split('||');
+                const pfx = parts[0], s = parts[1];
+                const actDict = pfx === 'store' ? actualStore : actualStaff;
+                const act = calcGrandActual(actDict, s);
+                const tgt = calcGrandTotal(pfx, s);
+                span.textContent = formatAchievement(act, tgt);
+            });
         }
 
         /* ── Save / Load ─────────────────────────────────────── */
