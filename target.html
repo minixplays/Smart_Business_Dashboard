@@ -537,11 +537,20 @@
 
             <!-- Header -->
             <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-6 w-full">
-                <div class="flex items-center gap-3 bg-white px-5 py-2.5 rounded-full shadow-sm border border-neutral-100/50 cursor-pointer"
-                    onclick="window.location.href='index.html'">
-                    <div class="w-8 h-8 rounded-full bg-[#f4c74a] flex items-center justify-center text-[#242424] font-extrabold text-sm shadow-inner">PNR</div>
-                    <span class="font-extrabold text-lg tracking-tight">Manager</span>
+                <!-- Left: Logo + Clock -->
+                <div class="flex items-center gap-6">
+                    <div class="flex items-center gap-3 bg-white px-5 py-2.5 rounded-full shadow-sm border border-neutral-100/50 cursor-pointer"
+                        onclick="window.location.href='index.html'">
+                        <div class="w-8 h-8 rounded-full bg-[#f4c74a] flex items-center justify-center text-[#242424] font-extrabold text-sm shadow-inner">PNR</div>
+                        <span class="font-extrabold text-lg tracking-tight">Manager</span>
+                    </div>
+                    <div class="bg-white px-5 py-1.5 rounded-[1.25rem] shadow-sm border border-neutral-100/50 flex flex-col items-center justify-center hidden sm:flex">
+                        <span class="text-base font-extrabold text-[#242424] tracking-tight leading-tight" id="sys-date"></span>
+                        <span class="text-[9px] font-bold text-neutral-400 tracking-widest uppercase leading-tight" id="sys-time"></span>
+                    </div>
                 </div>
+
+                <!-- Center: Navigation -->
                 <div class="flex items-center overflow-x-auto w-full lg:w-auto bg-white/60 backdrop-blur-md p-1.5 rounded-full border border-white shadow-[0_4px_20px_rgba(0,0,0,0.02)] hide-scrollbar">
                     <button class="pill-nav px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap" onclick="window.location.href='index.html'">Dashboard</button>
                     <button class="pill-nav px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap" onclick="window.location.href='index.html?panel=tools'">Tools</button>
@@ -549,38 +558,13 @@
                     <button class="pill-nav px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap" onclick="window.location.href='calendar.html'">Calendar</button>
                     <button class="pill-nav-active px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap">Target</button>
                 </div>
-                <button onclick="toggleTheme()" id="themeToggleBtn"
-                    class="flex items-center gap-2 bg-white px-4 py-2.5 rounded-full shadow-sm border border-neutral-100/50 text-sm font-bold hover:shadow-md transition-all">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-                    Theme
-                </button>
+
+                <!-- Right: Empty spacer to balance center Nav -->
+                <div class="hidden lg:block w-[140px] flex-shrink-0"></div>
             </div>
 
-            <!-- Title & KPIs -->
-            <div class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-                <div>
-                    <h1 class="text-2xl font-bold text-[#242424]">Target Achievement</h1>
-                    <p class="text-sm text-neutral-500 font-medium">Upload sales data CSV · Set targets per store &amp; staff · Auto-calculated totals</p>
-                </div>
-                <div id="kpi-summary" class="flex items-center gap-6" style="display:none;">
-                    <div class="text-right">
-                        <div class="text-2xl font-bold text-[#242424]" id="kpi-categories">0</div>
-                        <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Categories</span>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-2xl font-bold text-[#242424]" id="kpi-products">0</div>
-                        <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Products</span>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-2xl font-bold text-blue-600" id="kpi-stores">0</div>
-                        <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Stores</span>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-2xl font-bold text-violet-600" id="kpi-staff">0</div>
-                        <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Staff</span>
-                    </div>
-                </div>
-            </div>
+
+
 
             <!-- Upload Section -->
             <div id="upload-section" class="mb-8">
@@ -606,10 +590,13 @@
                 </div>
             </div>
 
-            <!-- Controls (shown after data load) -->
-            <div id="controls-section" style="display:none;" class="mb-5">
-                <div class="flex flex-wrap items-center gap-3">
-                    <div class="flex items-center gap-2 bg-white/60 backdrop-blur-md p-1 rounded-full border border-white">
+            <!-- Top Controls Row (After Header & Upload) -->
+            <div id="top-controls-row" class="flex flex-col lg:flex-row justify-between items-start gap-4 w-full mb-4" style="display:none;">
+                
+                <!-- Left Column: View Tabs & Cards -->
+                <div class="flex flex-col gap-4 w-full lg:w-auto flex-grow">
+                    <!-- View Tabs -->
+                    <div id="view-tabs-container" class="flex items-center gap-2 bg-white/60 backdrop-blur-md p-1 rounded-full border border-white shadow-sm w-fit">
                         <button class="view-tab active-both" onclick="setView('both')" id="tab-both">Both</button>
                         <button class="view-tab" onclick="setView('store')" id="tab-store">
                             <span class="flex items-center gap-1">
@@ -624,24 +611,85 @@
                             </span>
                         </button>
                     </div>
-                    <div class="flex-grow"></div>
-                    <button onclick="saveTargets()" class="flex items-center gap-2 bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-bold text-xs shadow-md hover:bg-emerald-600 hover:shadow-lg transition-all">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                        Save Targets
-                    </button>
-                    <button onclick="exportCSV()" class="flex items-center gap-2 bg-white px-5 py-2.5 rounded-xl font-bold text-xs shadow-sm border border-neutral-200 hover:shadow-md transition-all">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                        Export
-                    </button>
-                    <button onclick="resetAll()" class="flex items-center gap-2 bg-red-50 text-red-600 px-5 py-2.5 rounded-xl font-bold text-xs border border-red-100 hover:bg-red-100 transition-all">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                        Reset
-                    </button>
+                    
+                    <!-- Achievement Cards -->
+                    <div id="achievement-cards" class="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-3"></div>
+                </div>
+
+                <!-- Right Column: KPI + Android-style Widget -->
+                <div id="kpi-widget-container" class="relative z-10 lg:-mt-[84px] bg-white/70 backdrop-blur-3xl rounded-[2.5rem] border border-white shadow-[0_8px_30px_rgba(0,0,0,0.04)] p-5 flex flex-col gap-5 min-w-[340px] flex-shrink-0">
+                    
+                    <!-- Widget Header: Theme & Reset -->
+                    <div class="flex items-center justify-between">
+                        <button onclick="toggleTheme()" id="themeToggleBtn" class="flex items-center gap-2 bg-white hover:bg-neutral-50 text-neutral-700 px-4 py-2 rounded-full text-xs font-bold transition-all shadow-sm border border-neutral-100/50">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                            Theme
+                        </button>
+                        
+                        <div class="relative" id="reset-menu-wrapper">
+                            <button onclick="toggleResetMenu()" class="flex items-center justify-center w-9 h-9 bg-red-50 text-red-600 rounded-full hover:bg-red-100 transition-all shadow-sm border border-red-100/50" title="Reset">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                            <div id="reset-dropdown" class="hidden absolute right-0 top-11 z-50 bg-white rounded-[1.5rem] shadow-xl border border-neutral-100 overflow-hidden w-56 p-2">
+                                <div class="px-3 py-2 border-b border-neutral-100/60 mb-1"><p class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Reset Options</p></div>
+                                <button onclick="resetTargets()" class="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-left text-sm font-bold text-amber-700 hover:bg-amber-50 transition-colors">
+                                    <span class="flex items-center justify-center w-8 h-8 rounded-full bg-amber-100/50 text-amber-600"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg></span>
+                                    Reset Targets
+                                </button>
+                                <button onclick="resetAchievement()" class="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-left text-sm font-bold text-blue-700 hover:bg-blue-50 transition-colors">
+                                    <span class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100/50 text-blue-600"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg></span>
+                                    Reset Achievement
+                                </button>
+                                <div class="border-t border-neutral-100/60 mt-1 pt-1">
+                                    <button onclick="resetAll()" class="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-left text-sm font-bold text-red-600 hover:bg-red-50 transition-colors">
+                                        <span class="flex items-center justify-center w-8 h-8 rounded-full bg-red-100/50 text-red-600"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></span>
+                                        Reset All
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Widget Stats Grid -->
+                    <div id="kpi-summary" class="grid grid-cols-4 gap-2">
+                        <div class="flex flex-col items-center bg-white rounded-[1.25rem] p-3 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-neutral-50">
+                            <div class="text-xl font-black text-[#242424]" id="kpi-categories">0</div>
+                            <span class="text-[9px] font-bold text-neutral-400 uppercase tracking-widest mt-1">Cat</span>
+                        </div>
+                        <div class="flex flex-col items-center bg-white rounded-[1.25rem] p-3 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-neutral-50">
+                            <div class="text-xl font-black text-[#242424]" id="kpi-products">0</div>
+                            <span class="text-[9px] font-bold text-neutral-400 uppercase tracking-widest mt-1">Prod</span>
+                        </div>
+                        <div class="flex flex-col items-center bg-[#f0f9ff] rounded-[1.25rem] p-3 shadow-sm border border-blue-50/50">
+                            <div class="text-xl font-black text-blue-600" id="kpi-stores">0</div>
+                            <span class="text-[9px] font-bold text-blue-500 uppercase tracking-widest mt-1">Stores</span>
+                        </div>
+                        <div class="flex flex-col items-center bg-[#f5f3ff] rounded-[1.25rem] p-3 shadow-sm border border-violet-50/50">
+                            <div class="text-xl font-black text-violet-600" id="kpi-staff">0</div>
+                            <span class="text-[9px] font-bold text-violet-500 uppercase tracking-widest mt-1">Staff</span>
+                        </div>
+                    </div>
+
+                    <!-- Widget Action Buttons -->
+                    <div id="controls-section" class="flex flex-col gap-2">
+                        <div class="flex gap-2 w-full">
+                            <button onclick="saveTargets()" class="flex-1 flex flex-col items-center justify-center gap-1 bg-[#dcfce7] text-[#059669] px-2 py-3.5 rounded-[1.25rem] font-bold text-xs hover:bg-[#bbf7d0] transition-all">
+                                <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                                Save
+                            </button>
+                            <button onclick="exportCSV()" class="flex-1 flex flex-col items-center justify-center gap-1 bg-white text-neutral-700 px-2 py-3.5 rounded-[1.25rem] font-bold text-xs hover:bg-neutral-50 transition-all shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-neutral-50">
+                                <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                Export
+                            </button>
+                        </div>
+                        <input type="file" id="fi-update" accept=".csv" class="hidden" onchange="window.saveTargets(); if(this.files[0]) processFile(this.files[0]); this.value='';" />
+                        <button onclick="document.getElementById('fi-update').click()" class="w-full flex items-center justify-center gap-2 bg-[#e0e7ff] text-[#4f46e5] px-4 py-3.5 rounded-[1.25rem] font-bold text-xs hover:bg-[#c7d2fe] transition-all">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                            Update Data From Latest
+                        </button>
+                    </div>
                 </div>
             </div>
-
-            <!-- Achievement Cards -->
-            <div id="achievement-cards" style="display:none;" class="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-3 mb-5"></div>
 
             <!-- Pivot Container -->
             <div id="pivot-container" class="flex-grow">
@@ -692,7 +740,27 @@
         document.addEventListener('DOMContentLoaded', function() {
             setupUpload();
             loadFromStorage();
+            updateSystemClock();
         });
+        
+        setInterval(updateSystemClock, 1000);
+        
+        function updateSystemClock() {
+            const now = new Date();
+            const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+            const dateStr = String(now.getDate()).padStart(2, '0') + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
+            
+            let h = now.getHours();
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12;
+            const timeStr = h + ':' + m + ' ' + ampm;
+
+            const dEl = document.getElementById('sys-date');
+            const tEl = document.getElementById('sys-time');
+            if (dEl) dEl.textContent = dateStr;
+            if (tEl) tEl.textContent = timeStr;
+        }
 
         /* ── Upload ────────────────────────────────────────────── */
         function setupUpload() {
@@ -782,6 +850,7 @@
 
             structure['Ready made'] = new Set(['SUITS', 'SHIRTS', 'WAISTCOATS', 'JACKETS', 'TROUSERS', 'LONGSUITS']);
             structure['Tailoring'] = new Set(['Tailoring coat', 'Tailoring Trousers', 'Tailoring Shirts', 'Tailoring w/coat', 'EMBROIDERY']);
+            structure['FABRIC'] = new Set(['SUITINGS', 'SHIRTINGS', 'SUITLENGTHS', 'COATLENGTHS']);
 
             rawData.forEach(r => {
                 let cat  = (r['itemser_description'] || r['product category'] || 'Unknown').trim();
@@ -803,6 +872,10 @@
 
                 if (cat.toLowerCase() === 'tailoring') {
                     cat = 'Tailoring';
+                }
+
+                if (cat.toLowerCase() === 'fabric') {
+                    cat = 'FABRIC';
                 }
 
                 if (cat.toLowerCase() === 'accessories') {
@@ -837,6 +910,16 @@
                     });
                 } else if (cat === 'Tailoring') {
                     const order = ['TAILORING COAT', 'TAILORING TROUSERS', 'TAILORING SHIRTS', 'TAILORING W/COAT', 'EMBROIDERY'];
+                    structure[cat] = Array.from(structure[cat]).sort((a, b) => {
+                        let idxA = order.indexOf(a.toUpperCase());
+                        let idxB = order.indexOf(b.toUpperCase());
+                        if (idxA === -1) idxA = 999;
+                        if (idxB === -1) idxB = 999;
+                        if (idxA !== idxB) return idxA - idxB;
+                        return a.localeCompare(b);
+                    });
+                } else if (cat === 'FABRIC') {
+                    const order = ['SUITINGS', 'SHIRTINGS', 'SUITLENGTHS', 'COATLENGTHS'];
                     structure[cat] = Array.from(structure[cat]).sort((a, b) => {
                         let idxA = order.indexOf(a.toUpperCase());
                         let idxB = order.indexOf(b.toUpperCase());
@@ -1129,8 +1212,7 @@
         /* ── UI Toggle ───────────────────────────────────────── */
         function showUI(show) {
             document.getElementById('upload-section').style.display    = show ? 'none' : '';
-            document.getElementById('controls-section').style.display  = show ? ''     : 'none';
-            document.getElementById('kpi-summary').style.display       = show ? ''     : 'none';
+            document.getElementById('top-controls-row').style.display  = show ? 'flex' : 'none';
             document.getElementById('empty-state').style.display       = show ? 'none' : '';
             document.getElementById('pivot-table-wrapper').style.display = show ? ''   : 'none';
             document.getElementById('achievement-cards').style.display   = show ? ''   : 'none';
@@ -1321,9 +1403,48 @@
             toast('success','Exported','CSV downloaded');
         };
 
+        /* ── Reset Dropdown ─────────────────────────────────── */
+        window.toggleResetMenu = function() {
+            const dd = document.getElementById('reset-dropdown');
+            dd.classList.toggle('hidden');
+        };
+
+        document.addEventListener('click', function(e) {
+            const wrapper = document.getElementById('reset-menu-wrapper');
+            if (wrapper && !wrapper.contains(e.target)) {
+                const dd = document.getElementById('reset-dropdown');
+                if (dd) dd.classList.add('hidden');
+            }
+        });
+
         /* ── Reset ───────────────────────────────────────────── */
+        window.resetTargets = function() {
+            document.getElementById('reset-dropdown').classList.add('hidden');
+            if (confirm('Reset all Targets? Achievement data will remain unchanged. This cannot be undone.')) {
+                targets = {};
+                try { localStorage.removeItem(TARGETS_KEY); } catch(e) {}
+                renderTable();
+                renderCards();
+                toast('success', 'Targets Reset', 'All target values have been cleared');
+            }
+        };
+
+        window.resetAchievement = function() {
+            document.getElementById('reset-dropdown').classList.add('hidden');
+            if (confirm('Reset Achievement data? Targets will remain unchanged. This cannot be undone.')) {
+                actualStore = {};
+                actualStaff = {};
+                rawData = [];
+                try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
+                renderTable();
+                renderCards();
+                toast('success', 'Achievement Reset', 'All achievement data has been cleared');
+            }
+        };
+
         window.resetAll = function() {
-            if (confirm('Reset all data and targets? This cannot be undone.')) {
+            document.getElementById('reset-dropdown').classList.add('hidden');
+            if (confirm('Reset ALL data and targets? This cannot be undone.')) {
                 try { localStorage.removeItem(STORAGE_KEY); localStorage.removeItem(TARGETS_KEY); } catch(e) {}
                 window.location.reload();
             }
