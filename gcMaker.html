@@ -379,23 +379,32 @@
 
                     <!-- Action Buttons -->
                     <div class="flex items-center gap-2.5 flex-shrink-0">
+                        <button onclick="savePhysicalData()" title="Save Physical Count Data"
+                            class="flex items-center justify-center px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-200/80 rounded-xl font-bold transition shadow-sm text-xs gap-1.5">
+                            <svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4">
+                                </path>
+                            </svg>
+                            Save Data
+                        </button>
                         <button onclick="clearPhysicalData()" title="Clear all entered physical stock data"
-                            class="flex items-center justify-center px-4 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200/80 rounded-2xl font-bold transition shadow-sm text-xs sm:text-sm gap-2">
-                            <svg class="w-4 h-4 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            class="flex items-center justify-center px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200/80 rounded-xl font-bold transition shadow-sm text-xs gap-1.5">
+                            <svg class="w-3.5 h-3.5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
                                 </path>
                             </svg>
-                            Clear Physical Data
+                            Clear Data
                         </button>
                         <button onclick="exportReconciliation()"
-                            class="flex items-center justify-center px-5 py-2.5 bg-[#292929] hover:bg-black text-white rounded-2xl font-bold transition shadow-md text-xs sm:text-sm">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            class="flex items-center justify-center px-4 py-1.5 bg-[#292929] hover:bg-black text-white rounded-xl font-bold transition shadow-sm text-xs">
+                            <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
                                 </path>
                             </svg>
-                            Export CSV Report
+                            Export CSV
                         </button>
                     </div>
 
@@ -621,6 +630,27 @@
             }
 
             populateSiteDropdown();
+            
+            // Restore from cache if available
+            try {
+                const cached = JSON.parse(localStorage.getItem('gcMaker_cache'));
+                if (cached) {
+                    for (let key in aggregatedData) {
+                        if (cached[key]) {
+                            aggregatedData[key].physicalQty = cached[key].physicalQty;
+                            aggregatedData[key].advStock = cached[key].advStock;
+                            aggregatedData[key].manualBills = cached[key].manualBills;
+                            aggregatedData[key].finalQty = cached[key].finalQty;
+                            aggregatedData[key].variance = cached[key].variance;
+                            aggregatedData[key].remarks = cached[key].remarks || "";
+                        }
+                    }
+                    if (window.toast) toast('info', 'Data Restored', 'Saved physical counts were restored.');
+                }
+            } catch(e) {
+                console.error("Error restoring from cache: ", e);
+            }
+
             applyFilter();
             document.getElementById('dashboardArea').classList.remove('hidden');
         }
@@ -780,9 +810,26 @@
             }
         });
 
+        function savePhysicalData() {
+            if (!hasEnteredPhysicalData()) {
+                if (window.toast) toast('error', 'No Data', 'No physical stock data to save.');
+                else alert("No physical stock data to save.");
+                return;
+            }
+            try {
+                localStorage.setItem('gcMaker_cache', JSON.stringify(aggregatedData));
+                if (window.toast) toast('success', 'Data Saved', 'Physical Count Data saved temporarily!');
+                else alert("Physical Count Data saved temporarily!");
+            } catch(e) {
+                if (window.toast) toast('error', 'Error', 'Failed to save data.');
+                else alert("Failed to save data.");
+            }
+        }
+
         function clearPhysicalData() {
             if (!hasEnteredPhysicalData()) {
-                alert("No physical stock data to clear.");
+                if (window.toast) toast('error', 'No Data', 'No physical stock data to clear.');
+                else alert("No physical stock data to clear.");
                 return;
             }
             if (confirm("Are you sure you want to clear all entered physical stock quantities, advance stock, manual bills, and remarks?")) {
@@ -794,7 +841,9 @@
                     aggregatedData[key].variance = null;
                     aggregatedData[key].remarks = "";
                 }
+                localStorage.removeItem('gcMaker_cache');
                 renderTable();
+                if (window.toast) toast('success', 'Cleared', 'All physical stock data has been cleared.');
             }
         }
 

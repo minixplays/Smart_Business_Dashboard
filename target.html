@@ -5,7 +5,8 @@
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Track store target achievement and individual staff performance with pivot table analytics.">
+    <meta name="description"
+        content="Track store target achievement and individual staff performance with pivot table analytics.">
     <title>Target Achievement – Manager</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,8 +28,15 @@
         }
 
         @keyframes pageEnter {
-            from { opacity: 0; transform: translateY(10px); }
-            to   { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .dashboard-container {
@@ -44,8 +52,15 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
-        .pill-nav { color: #525252; transition: all 0.2s; }
-        .pill-nav:hover { background: rgba(36, 36, 36, 0.05); color: #242424; }
+        .pill-nav {
+            color: #525252;
+            transition: all 0.2s;
+        }
+
+        .pill-nav:hover {
+            background: rgba(36, 36, 36, 0.05);
+            color: #242424;
+        }
 
         /* Upload */
         .upload-card {
@@ -53,17 +68,27 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: 1px solid rgba(255, 255, 255, 0.4);
         }
+
         .upload-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.06);
         }
+
         .upload-zone {
             transition: all 0.2s ease-in-out;
             border: 2px dashed #e2e8f0;
             background: #f8fafc;
         }
-        .upload-zone.dragover { border-color: #6366f1; background-color: #eef2ff; }
-        .upload-zone.success  { border-color: #10b981; background-color: #ecfdf5; }
+
+        .upload-zone.dragover {
+            border-color: #6366f1;
+            background-color: #eef2ff;
+        }
+
+        .upload-zone.success {
+            border-color: #10b981;
+            background-color: #ecfdf5;
+        }
 
         /* ─── Pivot Table — Excel-style ─── */
         .pivot-wrapper {
@@ -71,7 +96,7 @@
             border-radius: 0.75rem;
             border: 1px solid #d1d5db;
             background: white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
 
         .pivot-table {
@@ -81,7 +106,7 @@
             white-space: nowrap;
         }
 
-        
+
         /* Header */
         .pivot-table thead th {
             background: #f3f4f6;
@@ -95,7 +120,7 @@
             top: 0;
             z-index: 10;
         }
-        
+
         .pivot-table thead tr:nth-child(2) th {
             top: 31px;
         }
@@ -108,8 +133,8 @@
         }
 
         /* Group header row */
-        
-                .pivot-table thead tr.group-header th {
+
+        .pivot-table thead tr.group-header th {
             font-size: 0.75rem;
             text-transform: none;
             letter-spacing: 0;
@@ -135,13 +160,13 @@
             color: #4338ca;
             border-bottom: 2px solid #6366f1;
         }
-        
+
         .pivot-table thead tr.group-header th.store-achieve-group {
             background: #d1fae5;
             color: #047857;
             border-bottom: 2px solid #10b981;
         }
-        
+
         .pivot-table thead tr.group-header th.staff-achieve-group {
             background: #ffedd5;
             color: #c2410c;
@@ -178,8 +203,16 @@
             position: sticky;
             z-index: 5;
         }
-        .pivot-table tbody td.cell-cat { left: 0; min-width: 150px; }
-        .pivot-table tbody td.cell-type { left: 150px; min-width: 140px; }
+
+        .pivot-table tbody td.cell-cat {
+            left: 0;
+            min-width: 150px;
+        }
+
+        .pivot-table tbody td.cell-type {
+            left: 150px;
+            min-width: 140px;
+        }
 
         /* Target input cell */
         .pivot-table tbody td.cell-input {
@@ -218,6 +251,7 @@
             border-left: 2.5px solid #ef4444;
             border-right: 2.5px solid #ef4444;
         }
+
         .pivot-table thead th.store-col-header {
             border-left: 2.5px solid #ef4444;
             border-right: 2.5px solid #ef4444;
@@ -228,12 +262,13 @@
             border-left: 2.5px solid #6366f1;
             border-right: 2.5px solid #6366f1;
         }
+
         .pivot-table thead th.staff-col-header {
             border-left: 2.5px solid #6366f1;
             border-right: 2.5px solid #6366f1;
         }
 
-        
+
         /* Actuals columns borders & backgrounds */
         .pivot-table tbody td.cell-actual-store {
             border-left: 2.5px solid #10b981;
@@ -241,16 +276,19 @@
             background: #f8fafc;
             padding: 0;
         }
+
         .pivot-table tbody td.cell-actual-staff {
             border-left: 2.5px solid #f97316;
             border-right: 2.5px solid #f97316;
             background: #f8fafc;
             padding: 0;
         }
+
         .pivot-table thead th.actual-store-header {
             border-left: 2.5px solid #10b981;
             border-right: 2.5px solid #10b981;
         }
+
         .pivot-table thead th.actual-staff-header {
             border-left: 2.5px solid #f97316;
             border-right: 2.5px solid #f97316;
@@ -274,12 +312,14 @@
         body.dark-mode .pivot-table tbody td.cell-actual-staff {
             background: #18181b !important;
         }
+
         html.dark-mode .pivot-table tbody td.cell-actual-store .total-value,
         body.dark-mode .pivot-table tbody td.cell-actual-store .total-value,
         html.dark-mode .pivot-table tbody td.cell-actual-staff .total-value,
         body.dark-mode .pivot-table tbody td.cell-actual-staff .total-value {
             color: #e4e4e7 !important;
         }
+
         /* Category total row */
         .pivot-table tbody tr.row-cat-total td {
             background: #fef3c7 !important;
@@ -354,186 +394,432 @@
             border: 1.5px solid transparent;
             color: #525252;
         }
-        .view-tab:hover { background: rgba(0,0,0,0.04); }
-        .view-tab.active-store { background: linear-gradient(135deg, #1e40af, #2563eb); color: #fff; box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
-        .view-tab.active-staff { background: linear-gradient(135deg, #6d28d9, #7c3aed); color: #fff; box-shadow: 0 4px 12px rgba(124,58,237,0.3); }
-        .view-tab.active-both  { background: linear-gradient(135deg, #18181b, #3f3f46); color: #f4c74a; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+
+        .view-tab:hover {
+            background: rgba(0, 0, 0, 0.04);
+        }
+
+        .view-tab.active-store {
+            background: linear-gradient(135deg, #1e40af, #2563eb);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .view-tab.active-staff {
+            background: linear-gradient(135deg, #6d28d9, #7c3aed);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+        }
+
+        .view-tab.active-both {
+            background: linear-gradient(135deg, #18181b, #3f3f46);
+            color: #f4c74a;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
 
         /* Stat cards */
         .stat-card {
             background: white;
             border-radius: 1.25rem;
             padding: 1.25rem 1.5rem;
-            border: 1px solid rgba(0,0,0,0.04);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .stat-card:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,0.06); }
 
-        .progress-ring { transform: rotate(-90deg); transform-origin: center; }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
+        }
+
+        .progress-ring {
+            transform: rotate(-90deg);
+            transform-origin: center;
+        }
 
         /* Empty state */
         .empty-state {
-            display: flex; flex-direction: column; align-items: center;
-            justify-content: center; padding: 4rem 2rem; gap: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            gap: 1.5rem;
         }
+
         .empty-icon {
-            width: 80px; height: 80px; border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
             background: linear-gradient(135deg, #fef3c7, #fde68a);
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             animation: pulse-glow 2s ease-in-out infinite;
         }
+
         @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(244,199,74,0.3); }
-            50%       { box-shadow: 0 0 0 20px rgba(244,199,74,0); }
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(244, 199, 74, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 0 20px rgba(244, 199, 74, 0);
+            }
         }
 
         /* Toast */
         .toast-container {
-            position: fixed; top: 1.5rem; right: 1.5rem; z-index: 9998;
-            display: flex; flex-direction: column; gap: 0.75rem;
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 9998;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
         }
+
         .toast {
-            min-width: 300px; padding: 1rem 1.25rem; border-radius: 1rem;
-            background: white; color: #242424;
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
-            display: flex; align-items: center; gap: 1rem;
-            transform: translateX(120%); opacity: 0;
+            min-width: 300px;
+            padding: 1rem 1.25rem;
+            border-radius: 1rem;
+            background: white;
+            color: #242424;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transform: translateX(120%);
+            opacity: 0;
             transition: all 0.4s cubic-bezier(0.21, 1.02, 0.73, 1);
-            border: 1px solid rgba(0,0,0,0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
-        .toast.show { transform: translateX(0); opacity: 1; }
+
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
         .toast-icon {
-            width: 24px; height: 24px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
-        .toast-success .toast-icon { background: #dcfce7; color: #16a34a; }
-        .toast-warning .toast-icon { background: #fef9c3; color: #ca8a04; }
-        .toast-error   .toast-icon { background: #fee2e2; color: #dc2626; }
-        .toast-content { flex-grow: 1; }
-        .toast-title { font-weight: 700; font-size: 0.875rem; margin-bottom: 0.125rem; }
-        .toast-message { font-size: 0.8125rem; color: #64748b; line-height: 1.4; }
-        .toast-close { color: #94a3b8; cursor: pointer; transition: color 0.2s; padding: 0.25rem; }
-        .toast-close:hover { color: #475569; }
 
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .toast-success .toast-icon {
+            background: #dcfce7;
+            color: #16a34a;
+        }
 
-        .pivot-wrapper::-webkit-scrollbar { height: 8px; width: 8px; }
-        .pivot-wrapper::-webkit-scrollbar-track { background: #f1f5f9; }
-        .pivot-wrapper::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        .pivot-wrapper::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .toast-warning .toast-icon {
+            background: #fef9c3;
+            color: #ca8a04;
+        }
+
+        .toast-error .toast-icon {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .toast-content {
+            flex-grow: 1;
+        }
+
+        .toast-title {
+            font-weight: 700;
+            font-size: 0.875rem;
+            margin-bottom: 0.125rem;
+        }
+
+        .toast-message {
+            font-size: 0.8125rem;
+            color: #64748b;
+            line-height: 1.4;
+        }
+
+        .toast-close {
+            color: #94a3b8;
+            cursor: pointer;
+            transition: color 0.2s;
+            padding: 0.25rem;
+        }
+
+        .toast-close:hover {
+            color: #475569;
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .pivot-wrapper::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+
+        .pivot-wrapper::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        .pivot-wrapper::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .pivot-wrapper::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
 
         /* ─── DARK THEME ─── */
-        html.dark-mode, body.dark-mode {
-            color-scheme: dark; color: #f4f4f5 !important;
+        html.dark-mode,
+        body.dark-mode {
+            color-scheme: dark;
+            color: #f4f4f5 !important;
             background: linear-gradient(135deg, #09090b 0%, #141417 50%, #1c1c21 100%) !important;
         }
-        html.dark-mode .dashboard-container, body.dark-mode .dashboard-container {
-            background: rgba(24,24,27,0.65) !important;
-            border-color: rgba(255,255,255,0.05) !important;
-            box-shadow: 0 0 40px rgba(0,0,0,0.5) !important;
-        }
-        html.dark-mode .pill-nav-active, body.dark-mode .pill-nav-active {
-            background: #f4c74a !important; color: #18181b !important;
-            box-shadow: 0 0 15px rgba(244,199,74,0.25) !important;
-        }
-        html.dark-mode .pill-nav, body.dark-mode .pill-nav { color: #a1a1aa !important; }
-        html.dark-mode .pill-nav:hover, body.dark-mode .pill-nav:hover {
-            background: rgba(255,255,255,0.08) !important; color: #fff !important;
-        }
-        html.dark-mode h1, html.dark-mode h2, html.dark-mode h3,
-        body.dark-mode h1, body.dark-mode h2, body.dark-mode h3 { color: #f1f5f9 !important; }
-        html.dark-mode .text-neutral-500, body.dark-mode .text-neutral-500 { color: #a1a1aa !important; }
-        html.dark-mode .text-neutral-400, body.dark-mode .text-neutral-400 { color: #d4d4d8 !important; }
 
-        html.dark-mode .pivot-wrapper, body.dark-mode .pivot-wrapper {
-            background: #18181b !important; border-color: #3f3f46 !important;
+        html.dark-mode .dashboard-container,
+        body.dark-mode .dashboard-container {
+            background: rgba(24, 24, 27, 0.65) !important;
+            border-color: rgba(255, 255, 255, 0.05) !important;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5) !important;
         }
-        html.dark-mode .pivot-table thead th, body.dark-mode .pivot-table thead th {
-            background: #27272a !important; color: #e4e4e7 !important; border-color: #3f3f46 !important;
+
+        html.dark-mode .pill-nav-active,
+        body.dark-mode .pill-nav-active {
+            background: #f4c74a !important;
+            color: #18181b !important;
+            box-shadow: 0 0 15px rgba(244, 199, 74, 0.25) !important;
         }
+
+        html.dark-mode .pill-nav,
+        body.dark-mode .pill-nav {
+            color: #a1a1aa !important;
+        }
+
+        html.dark-mode .pill-nav:hover,
+        body.dark-mode .pill-nav:hover {
+            background: rgba(255, 255, 255, 0.08) !important;
+            color: #fff !important;
+        }
+
+        html.dark-mode h1,
+        html.dark-mode h2,
+        html.dark-mode h3,
+        body.dark-mode h1,
+        body.dark-mode h2,
+        body.dark-mode h3 {
+            color: #f1f5f9 !important;
+        }
+
+        html.dark-mode .text-neutral-500,
+        body.dark-mode .text-neutral-500 {
+            color: #a1a1aa !important;
+        }
+
+        html.dark-mode .text-neutral-400,
+        body.dark-mode .text-neutral-400 {
+            color: #d4d4d8 !important;
+        }
+
+        html.dark-mode .pivot-wrapper,
+        body.dark-mode .pivot-wrapper {
+            background: #18181b !important;
+            border-color: #3f3f46 !important;
+        }
+
+        html.dark-mode .pivot-table thead th,
+        body.dark-mode .pivot-table thead th {
+            background: #27272a !important;
+            color: #e4e4e7 !important;
+            border-color: #3f3f46 !important;
+        }
+
         html.dark-mode .pivot-table thead th.col-cat,
         html.dark-mode .pivot-table thead th.col-type,
         body.dark-mode .pivot-table thead th.col-cat,
         body.dark-mode .pivot-table thead th.col-type {
             background: #1f1f23 !important;
         }
-        html.dark-mode .pivot-table tbody td, body.dark-mode .pivot-table tbody td {
-            border-color: #3f3f46 !important; color: #d4d4d8;
+
+        html.dark-mode .pivot-table tbody td,
+        body.dark-mode .pivot-table tbody td {
+            border-color: #3f3f46 !important;
+            color: #d4d4d8;
         }
+
         html.dark-mode .pivot-table tbody td.cell-cat,
         html.dark-mode .pivot-table tbody td.cell-type,
         body.dark-mode .pivot-table tbody td.cell-cat,
         body.dark-mode .pivot-table tbody td.cell-type {
-            background: #18181b !important; color: #e4e4e7 !important;
+            background: #18181b !important;
+            color: #e4e4e7 !important;
         }
+
         html.dark-mode .pivot-table tbody td.cell-input,
         body.dark-mode .pivot-table tbody td.cell-input {
             background: #18181b !important;
         }
+
         html.dark-mode .pivot-table tbody td.cell-input input,
         body.dark-mode .pivot-table tbody td.cell-input input {
-            color: #e4e4e7 !important; background: transparent !important;
+            color: #e4e4e7 !important;
+            background: transparent !important;
         }
+
         html.dark-mode .pivot-table tbody td.cell-input input:focus,
         body.dark-mode .pivot-table tbody td.cell-input input:focus {
-            background: rgba(59,130,246,0.1) !important;
+            background: rgba(59, 130, 246, 0.1) !important;
         }
+
         html.dark-mode .pivot-table tbody tr:not(.row-cat-total):not(.row-grand-total):hover td,
         body.dark-mode .pivot-table tbody tr:not(.row-cat-total):not(.row-grand-total):hover td {
-            background: rgba(244,199,74,0.06) !important;
+            background: rgba(244, 199, 74, 0.06) !important;
         }
+
         html.dark-mode .pivot-table tbody tr.row-cat-total td,
         body.dark-mode .pivot-table tbody tr.row-cat-total td {
-            background: rgba(245,158,11,0.12) !important;
-            border-color: rgba(245,158,11,0.3) !important;
+            background: rgba(245, 158, 11, 0.12) !important;
+            border-color: rgba(245, 158, 11, 0.3) !important;
         }
+
         html.dark-mode .pivot-table tbody tr.row-cat-total td.cell-cat,
         body.dark-mode .pivot-table tbody tr.row-cat-total td.cell-cat {
-            background: rgba(245,158,11,0.12) !important; color: #fde68a !important;
+            background: rgba(245, 158, 11, 0.12) !important;
+            color: #fde68a !important;
         }
+
         html.dark-mode .pivot-table tbody tr.row-cat-total .total-value,
-        body.dark-mode .pivot-table tbody tr.row-cat-total .total-value { color: #fde68a !important; }
+        body.dark-mode .pivot-table tbody tr.row-cat-total .total-value {
+            color: #fde68a !important;
+        }
+
         html.dark-mode .pivot-table tbody tr.row-grand-total td,
         body.dark-mode .pivot-table tbody tr.row-grand-total td {
-            background: #09090b !important; border-color: #f4c74a !important;
+            background: #09090b !important;
+            border-color: #f4c74a !important;
         }
-        html.dark-mode .pivot-table tbody tr.row-grand-total td.cell-cat,
-        body.dark-mode .pivot-table tbody tr.row-grand-total td.cell-cat { background: #09090b !important; }
 
-        html.dark-mode .stat-card, body.dark-mode .stat-card {
-            background: #18181b !important; border-color: rgba(255,255,255,0.07) !important;
+        html.dark-mode .pivot-table tbody tr.row-grand-total td.cell-cat,
+        body.dark-mode .pivot-table tbody tr.row-grand-total td.cell-cat {
+            background: #09090b !important;
         }
-        html.dark-mode .upload-card, body.dark-mode .upload-card {
-            background: #18181b !important; border-color: rgba(255,255,255,0.07) !important;
+
+        html.dark-mode .stat-card,
+        body.dark-mode .stat-card {
+            background: #18181b !important;
+            border-color: rgba(255, 255, 255, 0.07) !important;
         }
-        html.dark-mode .upload-zone, body.dark-mode .upload-zone {
-            border-color: rgba(255,255,255,0.12) !important; background: #09090b !important;
+
+        html.dark-mode .upload-card,
+        body.dark-mode .upload-card {
+            background: #18181b !important;
+            border-color: rgba(255, 255, 255, 0.07) !important;
         }
-        html.dark-mode .empty-icon, body.dark-mode .empty-icon {
-            background: linear-gradient(135deg, rgba(244,199,74,0.2), rgba(244,199,74,0.1)) !important;
+
+        html.dark-mode .upload-zone,
+        body.dark-mode .upload-zone {
+            border-color: rgba(255, 255, 255, 0.12) !important;
+            background: #09090b !important;
         }
-        html.dark-mode .view-tab, body.dark-mode .view-tab { color: #a1a1aa; }
-        html.dark-mode .view-tab:hover, body.dark-mode .view-tab:hover { background: rgba(255,255,255,0.06); }
-        html.dark-mode .toast, body.dark-mode .toast {
-            background: #18181b !important; color: #f1f5f9 !important;
-            border-color: rgba(255,255,255,0.07) !important;
+
+        html.dark-mode .empty-icon,
+        body.dark-mode .empty-icon {
+            background: linear-gradient(135deg, rgba(244, 199, 74, 0.2), rgba(244, 199, 74, 0.1)) !important;
         }
-        html.dark-mode .toast-message, body.dark-mode .toast-message { color: #a1a1aa !important; }
-        html.dark-mode .bg-white, body.dark-mode .bg-white {
-            background: #18181b !important; color: #f4f4f5 !important;
+
+        html.dark-mode .view-tab,
+        body.dark-mode .view-tab {
+            color: #a1a1aa;
         }
-        html.dark-mode [fill="none"], body.dark-mode [fill="none"] { stroke: #f1f5f9 !important; }
-        html.dark-mode .pivot-wrapper::-webkit-scrollbar-track { background: #27272a; }
-        html.dark-mode .pivot-wrapper::-webkit-scrollbar-thumb { background: #52525b; }
+
+        html.dark-mode .view-tab:hover,
+        body.dark-mode .view-tab:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        html.dark-mode .toast,
+        body.dark-mode .toast {
+            background: #18181b !important;
+            color: #f1f5f9 !important;
+            border-color: rgba(255, 255, 255, 0.07) !important;
+        }
+
+        html.dark-mode .toast-message,
+        body.dark-mode .toast-message {
+            color: #a1a1aa !important;
+        }
+
+        html.dark-mode .bg-white,
+        body.dark-mode .bg-white {
+            background: #18181b !important;
+            color: #f4f4f5 !important;
+        }
+
+        html.dark-mode [fill="none"],
+        body.dark-mode [fill="none"] {
+            stroke: #f1f5f9 !important;
+        }
+
+        html.dark-mode .pivot-wrapper::-webkit-scrollbar-thumb {
+            background: #52525b;
+        }
+
+        /* Theme Toggle & Notification Animations */
+        .theme-toggle {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(20deg) scale(1.05);
+        }
+
+        .sun-icon,
+        .moon-icon {
+            position: absolute;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sun-icon {
+            opacity: 1;
+            transform: rotate(0) scale(1);
+        }
+
+        .moon-icon {
+            opacity: 0;
+            transform: rotate(-90deg) scale(0.5);
+        }
+
+        html.dark-mode .sun-icon,
+        body.dark-mode .sun-icon {
+            opacity: 0;
+            transform: rotate(90deg) scale(0.5);
+        }
+
+        html.dark-mode .moon-icon,
+        body.dark-mode .moon-icon {
+            opacity: 1;
+            transform: rotate(0) scale(1);
+        }
     </style>
 </head>
 
 <body class="py-4 sm:py-6 px-2 sm:px-4 md:px-6 min-h-screen">
 
     <div class="max-w-[1600px] mx-auto relative">
-        <div class="dashboard-container rounded-[2.5rem] sm:rounded-[3rem] p-4 sm:p-8 md:p-10 border border-white/60 min-h-[92vh] flex flex-col">
+        <div
+            class="dashboard-container rounded-[2.5rem] sm:rounded-[3rem] p-4 sm:p-8 md:p-10 border border-white/60 min-h-[92vh] flex flex-col">
 
             <!-- Header -->
             <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-6 w-full">
@@ -541,26 +827,37 @@
                 <div class="flex items-center gap-6">
                     <div class="flex items-center gap-3 bg-white px-5 py-2.5 rounded-full shadow-sm border border-neutral-100/50 cursor-pointer"
                         onclick="window.location.href='index.html'">
-                        <div class="w-8 h-8 rounded-full bg-[#f4c74a] flex items-center justify-center text-[#242424] font-extrabold text-sm shadow-inner">PNR</div>
+                        <div
+                            class="w-8 h-8 rounded-full bg-[#f4c74a] flex items-center justify-center text-[#242424] font-extrabold text-sm shadow-inner">
+                            PNR</div>
                         <span class="font-extrabold text-lg tracking-tight">Manager</span>
                     </div>
-                    <div class="bg-white px-5 py-1.5 rounded-[1.25rem] shadow-sm border border-neutral-100/50 flex flex-col items-center justify-center hidden sm:flex">
-                        <span class="text-base font-extrabold text-[#242424] tracking-tight leading-tight" id="sys-date"></span>
-                        <span class="text-[9px] font-bold text-neutral-400 tracking-widest uppercase leading-tight" id="sys-time"></span>
+                    <div
+                        class="bg-white px-5 py-1.5 rounded-[1.25rem] shadow-sm border border-neutral-100/50 flex flex-col items-center justify-center hidden sm:flex">
+                        <span class="text-base font-extrabold text-[#242424] tracking-tight leading-tight"
+                            id="sys-date"></span>
+                        <span class="text-[9px] font-bold text-neutral-400 tracking-widest uppercase leading-tight"
+                            id="sys-time"></span>
                     </div>
                 </div>
 
                 <!-- Center: Navigation -->
-                <div class="flex items-center overflow-x-auto w-full lg:w-auto bg-white/60 backdrop-blur-md p-1.5 rounded-full border border-white shadow-[0_4px_20px_rgba(0,0,0,0.02)] hide-scrollbar">
-                    <button class="pill-nav px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap" onclick="window.location.href='index.html'">Dashboard</button>
-                    <button class="pill-nav px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap" onclick="window.location.href='index.html?panel=tools'">Tools</button>
-                    <button class="pill-nav px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap" onclick="window.location.href='reports.html'">Reports</button>
-                    <button class="pill-nav px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap" onclick="window.location.href='calendar.html'">Calendar</button>
-                    <button class="pill-nav-active px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap">Target</button>
+                <div
+                    class="flex items-center overflow-x-auto w-full lg:w-auto bg-white/60 backdrop-blur-md p-1.5 rounded-full border border-white shadow-[0_4px_20px_rgba(0,0,0,0.02)] hide-scrollbar">
+                    <button class="pill-nav px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap"
+                        onclick="window.location.href='index.html'">Dashboard</button>
+                    <button class="pill-nav px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap"
+                        onclick="window.location.href='index.html?panel=tools'">Tools</button>
+                    <button class="pill-nav px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap"
+                        onclick="window.location.href='reports.html'">Reports</button>
+                    <button class="pill-nav px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap"
+                        onclick="window.location.href='calendar.html'">Calendar</button>
+                    <button
+                        class="pill-nav-active px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap">Target</button>
                 </div>
 
-                <!-- Right: Empty spacer to balance center Nav -->
-                <div class="hidden lg:block w-[140px] flex-shrink-0"></div>
+                <!-- Right Placeholder for Widget Overlap -->
+                <div class="hidden lg:block lg:w-[340px]"></div>
             </div>
 
 
@@ -571,18 +868,27 @@
                 <div class="upload-card rounded-[2rem] p-6 flex flex-col gap-4 max-w-lg mx-auto">
                     <div class="flex items-center gap-3">
                         <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                </path>
+                            </svg>
                         </div>
                         <div>
                             <h3 class="font-bold text-[#242424]">Sales Data CSV</h3>
-                            <p class="text-xs text-neutral-500 font-medium">Requires: itemser_description, item_type, Store Name, Staff Name</p>
+                            <p class="text-xs text-neutral-500 font-medium">Requires: itemser_description, item_type,
+                                Store Name, Staff Name</p>
                         </div>
                     </div>
                     <div class="upload-zone rounded-2xl p-8 text-center cursor-pointer flex flex-col justify-center items-center gap-3"
-                         id="dz-target" onclick="document.getElementById('fi-target').click()">
+                        id="dz-target" onclick="document.getElementById('fi-target').click()">
                         <input type="file" id="fi-target" accept=".csv" class="hidden">
-                        <div class="w-12 h-12 bg-indigo-50 text-indigo-500 rounded-full flex items-center justify-center">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                        <div
+                            class="w-12 h-12 bg-indigo-50 text-indigo-500 rounded-full flex items-center justify-center">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                            </svg>
                         </div>
                         <p class="text-sm font-bold text-neutral-700">Drop Sales CSV here</p>
                         <p class="text-xs text-neutral-400 font-medium">or click to browse</p>
@@ -591,58 +897,148 @@
             </div>
 
             <!-- Top Controls Row (After Header & Upload) -->
-            <div id="top-controls-row" class="flex flex-col lg:flex-row justify-between items-start gap-4 w-full mb-4" style="display:none;">
-                
+            <div id="top-controls-row" class="flex flex-col lg:flex-row justify-between items-start gap-4 w-full mb-4"
+                style="display:none;">
+
                 <!-- Left Column: View Tabs & Cards -->
                 <div class="flex flex-col gap-4 w-full lg:w-auto flex-grow">
                     <!-- View Tabs -->
-                    <div id="view-tabs-container" class="flex items-center gap-2 bg-white/60 backdrop-blur-md p-1 rounded-full border border-white shadow-sm w-fit">
+                    <div id="view-tabs-container"
+                        class="flex items-center gap-2 bg-white/60 backdrop-blur-md p-1 rounded-full border border-white shadow-sm w-fit">
                         <button class="view-tab active-both" onclick="setView('both')" id="tab-both">Both</button>
                         <button class="view-tab" onclick="setView('store')" id="tab-store">
                             <span class="flex items-center gap-1">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                                    </path>
+                                </svg>
                                 Store
                             </span>
                         </button>
                         <button class="view-tab" onclick="setView('staff')" id="tab-staff">
                             <span class="flex items-center gap-1">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z">
+                                    </path>
+                                </svg>
                                 Staff
                             </span>
                         </button>
                     </div>
-                    
+
                     <!-- Achievement Cards -->
-                    <div id="achievement-cards" class="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-3"></div>
+                    <div id="achievement-cards" class="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-3">
+                    </div>
                 </div>
 
                 <!-- Right Column: KPI + Android-style Widget -->
-                <div id="kpi-widget-container" class="relative z-10 lg:-mt-[84px] bg-white/70 backdrop-blur-3xl rounded-[2.5rem] border border-white shadow-[0_8px_30px_rgba(0,0,0,0.04)] p-5 flex flex-col gap-5 min-w-[340px] flex-shrink-0">
-                    
-                    <!-- Widget Header: Theme & Reset -->
-                    <div class="flex items-center justify-between">
-                        <button onclick="toggleTheme()" id="themeToggleBtn" class="flex items-center gap-2 bg-white hover:bg-neutral-50 text-neutral-700 px-4 py-2 rounded-full text-xs font-bold transition-all shadow-sm border border-neutral-100/50">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-                            Theme
-                        </button>
-                        
-                        <div class="relative" id="reset-menu-wrapper">
-                            <button onclick="toggleResetMenu()" class="flex items-center justify-center w-9 h-9 bg-red-50 text-red-600 rounded-full hover:bg-red-100 transition-all shadow-sm border border-red-100/50" title="Reset">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                <div id="kpi-widget-container"
+                    class="relative z-10 lg:-mt-[84px] bg-white/70 backdrop-blur-3xl rounded-[2.5rem] border border-white shadow-[0_8px_30px_rgba(0,0,0,0.04)] p-5 flex flex-col gap-5 min-w-[340px] flex-shrink-0">
+
+                    <!-- Widget Header: Actions + Reset -->
+                    <div class="flex items-center justify-between w-full">
+
+                        <!-- Right Action Icons & Profile -->
+                        <div class="flex items-center gap-2">
+                            <!-- Settings -->
+                            <button
+                                class="w-10 h-10 rounded-full bg-white border border-neutral-100 flex items-center justify-center text-neutral-500 hover:text-[#242424] hover:bg-neutral-50 transition shadow-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                                    </path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
                             </button>
-                            <div id="reset-dropdown" class="hidden absolute right-0 top-11 z-50 bg-white rounded-[1.5rem] shadow-xl border border-neutral-100 overflow-hidden w-56 p-2">
-                                <div class="px-3 py-2 border-b border-neutral-100/60 mb-1"><p class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Reset Options</p></div>
-                                <button onclick="resetTargets()" class="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-left text-sm font-bold text-amber-700 hover:bg-amber-50 transition-colors">
-                                    <span class="flex items-center justify-center w-8 h-8 rounded-full bg-amber-100/50 text-amber-600"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg></span>
+                            <!-- Theme Toggle -->
+                            <button onclick="toggleTheme()"
+                                class="w-10 h-10 rounded-full bg-white border border-neutral-100 flex items-center justify-center text-neutral-500 hover:text-[#242424] hover:bg-neutral-50 transition shadow-sm theme-toggle relative"
+                                title="Toggle Theme">
+                                <span class="sun-icon">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 3v1m0 16v1m9-9h-1m-16 0H1m15.364 1.636l.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+                                        </path>
+                                    </svg>
+                                </span>
+                                <span class="moon-icon">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                                    </svg>
+                                </span>
+                            </button>
+                            <!-- Notifications -->
+                            <div class="relative">
+                                <button id="notificationBtn" onclick="toggleNotificationPanel(event)"
+                                    class="w-10 h-10 rounded-full bg-white border border-neutral-100 flex items-center justify-center text-neutral-500 hover:text-[#242424] hover:bg-neutral-50 transition shadow-sm relative">
+                                    <span id="notification-dot"
+                                        class="hidden absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-rose-500 rounded-full"></span>
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
+                                        </path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <!-- User Avatar -->
+                            <div
+                                class="h-10 w-10 rounded-full bg-neutral-200 border-2 border-white shadow-sm overflow-hidden ml-1 cursor-pointer">
+                                <img src="https://ui-avatars.com/api/?name=Admin+User&background=242424&color=fff&font-size=0.35"
+                                    alt="User" class="w-full h-full object-cover" loading="lazy">
+                            </div>
+                        </div>
+
+                        <div class="relative" id="reset-menu-wrapper">
+                            <button onclick="toggleResetMenu()"
+                                class="flex items-center justify-center w-9 h-9 bg-red-50 text-red-600 rounded-full hover:bg-red-100 transition-all shadow-sm border border-red-100/50"
+                                title="Reset">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                    </path>
+                                </svg>
+                            </button>
+                            <div id="reset-dropdown"
+                                class="hidden absolute right-0 top-11 z-50 bg-white rounded-[1.5rem] shadow-xl border border-neutral-100 overflow-hidden w-56 p-2">
+                                <div class="px-3 py-2 border-b border-neutral-100/60 mb-1">
+                                    <p class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Reset
+                                        Options</p>
+                                </div>
+                                <button onclick="resetTargets()"
+                                    class="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-left text-sm font-bold text-amber-700 hover:bg-amber-50 transition-colors">
+                                    <span
+                                        class="flex items-center justify-center w-8 h-8 rounded-full bg-amber-100/50 text-amber-600"><svg
+                                            class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
+                                            </path>
+                                        </svg></span>
                                     Reset Targets
                                 </button>
-                                <button onclick="resetAchievement()" class="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-left text-sm font-bold text-blue-700 hover:bg-blue-50 transition-colors">
-                                    <span class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100/50 text-blue-600"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg></span>
+                                <button onclick="resetAchievement()"
+                                    class="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-left text-sm font-bold text-blue-700 hover:bg-blue-50 transition-colors">
+                                    <span
+                                        class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100/50 text-blue-600"><svg
+                                            class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                                            </path>
+                                        </svg></span>
                                     Reset Achievement
                                 </button>
                                 <div class="border-t border-neutral-100/60 mt-1 pt-1">
-                                    <button onclick="resetAll()" class="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-left text-sm font-bold text-red-600 hover:bg-red-50 transition-colors">
-                                        <span class="flex items-center justify-center w-8 h-8 rounded-full bg-red-100/50 text-red-600"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></span>
+                                    <button onclick="resetAll()"
+                                        class="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-left text-sm font-bold text-red-600 hover:bg-red-50 transition-colors">
+                                        <span
+                                            class="flex items-center justify-center w-8 h-8 rounded-full bg-red-100/50 text-red-600"><svg
+                                                class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                                </path>
+                                            </svg></span>
                                         Reset All
                                     </button>
                                 </div>
@@ -652,39 +1048,62 @@
 
                     <!-- Widget Stats Grid -->
                     <div id="kpi-summary" class="grid grid-cols-4 gap-2">
-                        <div class="flex flex-col items-center bg-white rounded-[1.25rem] p-3 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-neutral-50">
+                        <div
+                            class="flex flex-col items-center bg-white rounded-[1.25rem] p-3 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-neutral-50">
                             <div class="text-xl font-black text-[#242424]" id="kpi-categories">0</div>
-                            <span class="text-[9px] font-bold text-neutral-400 uppercase tracking-widest mt-1">Cat</span>
+                            <span
+                                class="text-[9px] font-bold text-neutral-400 uppercase tracking-widest mt-1">Cat</span>
                         </div>
-                        <div class="flex flex-col items-center bg-white rounded-[1.25rem] p-3 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-neutral-50">
+                        <div
+                            class="flex flex-col items-center bg-white rounded-[1.25rem] p-3 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-neutral-50">
                             <div class="text-xl font-black text-[#242424]" id="kpi-products">0</div>
-                            <span class="text-[9px] font-bold text-neutral-400 uppercase tracking-widest mt-1">Prod</span>
+                            <span
+                                class="text-[9px] font-bold text-neutral-400 uppercase tracking-widest mt-1">Prod</span>
                         </div>
-                        <div class="flex flex-col items-center bg-[#f0f9ff] rounded-[1.25rem] p-3 shadow-sm border border-blue-50/50">
+                        <div
+                            class="flex flex-col items-center bg-[#f0f9ff] rounded-[1.25rem] p-3 shadow-sm border border-blue-50/50">
                             <div class="text-xl font-black text-blue-600" id="kpi-stores">0</div>
-                            <span class="text-[9px] font-bold text-blue-500 uppercase tracking-widest mt-1">Stores</span>
+                            <span
+                                class="text-[9px] font-bold text-blue-500 uppercase tracking-widest mt-1">Stores</span>
                         </div>
-                        <div class="flex flex-col items-center bg-[#f5f3ff] rounded-[1.25rem] p-3 shadow-sm border border-violet-50/50">
+                        <div
+                            class="flex flex-col items-center bg-[#f5f3ff] rounded-[1.25rem] p-3 shadow-sm border border-violet-50/50">
                             <div class="text-xl font-black text-violet-600" id="kpi-staff">0</div>
-                            <span class="text-[9px] font-bold text-violet-500 uppercase tracking-widest mt-1">Staff</span>
+                            <span
+                                class="text-[9px] font-bold text-violet-500 uppercase tracking-widest mt-1">Staff</span>
                         </div>
                     </div>
 
                     <!-- Widget Action Buttons -->
                     <div id="controls-section" class="flex flex-col gap-2">
                         <div class="flex gap-2 w-full">
-                            <button onclick="saveTargets()" class="flex-1 flex flex-col items-center justify-center gap-1 bg-[#dcfce7] text-[#059669] px-2 py-3.5 rounded-[1.25rem] font-bold text-xs hover:bg-[#bbf7d0] transition-all">
-                                <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                            <button onclick="saveTargets()"
+                                class="flex-1 flex flex-col items-center justify-center gap-1 bg-[#dcfce7] text-[#059669] px-2 py-3.5 rounded-[1.25rem] font-bold text-xs hover:bg-[#bbf7d0] transition-all">
+                                <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                        d="M5 13l4 4L19 7"></path>
+                                </svg>
                                 Save
                             </button>
-                            <button onclick="exportCSV()" class="flex-1 flex flex-col items-center justify-center gap-1 bg-white text-neutral-700 px-2 py-3.5 rounded-[1.25rem] font-bold text-xs hover:bg-neutral-50 transition-all shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-neutral-50">
-                                <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            <button onclick="exportCSV()"
+                                class="flex-1 flex flex-col items-center justify-center gap-1 bg-white text-neutral-700 px-2 py-3.5 rounded-[1.25rem] font-bold text-xs hover:bg-neutral-50 transition-all shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-neutral-50">
+                                <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                    </path>
+                                </svg>
                                 Export
                             </button>
                         </div>
-                        <input type="file" id="fi-update" accept=".csv" class="hidden" onchange="window.saveTargets(); if(this.files[0]) processFile(this.files[0]); this.value='';" />
-                        <button onclick="document.getElementById('fi-update').click()" class="w-full flex items-center justify-center gap-2 bg-[#e0e7ff] text-[#4f46e5] px-4 py-3.5 rounded-[1.25rem] font-bold text-xs hover:bg-[#c7d2fe] transition-all">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        <input type="file" id="fi-update" accept=".csv" class="hidden"
+                            onchange="window.saveTargets(); if(this.files[0]) processFile(this.files[0]); this.value='';" />
+                        <button onclick="document.getElementById('fi-update').click()"
+                            class="w-full flex items-center justify-center gap-2 bg-[#e0e7ff] text-[#4f46e5] px-4 py-3.5 rounded-[1.25rem] font-bold text-xs hover:bg-[#c7d2fe] transition-all">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                                </path>
+                            </svg>
                             Update Data From Latest
                         </button>
                     </div>
@@ -695,13 +1114,18 @@
             <div id="pivot-container" class="flex-grow">
                 <div id="empty-state" class="empty-state">
                     <div class="empty-icon">
-                        <svg class="w-10 h-10 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        <svg class="w-10 h-10 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                            </path>
+                        </svg>
                     </div>
                     <div class="text-center">
                         <h3 class="font-bold text-lg text-[#242424] mb-1">No Data Loaded</h3>
                         <p class="text-sm text-neutral-500 font-medium max-w-sm">
                             Upload a sales CSV with
-                            <code class="bg-neutral-100 px-1.5 py-0.5 rounded text-xs font-bold">itemser_description</code>,
+                            <code
+                                class="bg-neutral-100 px-1.5 py-0.5 rounded text-xs font-bold">itemser_description</code>,
                             <code class="bg-neutral-100 px-1.5 py-0.5 rounded text-xs font-bold">item_type</code>,
                             <code class="bg-neutral-100 px-1.5 py-0.5 rounded text-xs font-bold">Store Name</code>,
                             <code class="bg-neutral-100 px-1.5 py-0.5 rounded text-xs font-bold">Staff Name</code>
@@ -709,7 +1133,7 @@
                         </p>
                     </div>
                 </div>
-                <div id="pivot-table-wrapper" style="display:none;" class="pivot-wrapper max-h-[65vh] overflow-auto"></div>
+                <div id="pivot-table-wrapper" style="display:none;" class="pivot-wrapper overflow-x-auto"></div>
             </div>
 
         </div>
@@ -718,761 +1142,826 @@
     <div class="toast-container" id="toast-container"></div>
 
     <script>
-    (function() {
-        'use strict';
+        (function () {
+            'use strict';
 
-        /* ── State ─────────────────────────────────────────────── */
-        let rawData      = [];
-        let structure     = {};   // { category -> Set of item_types }
-        let sites         = [];
-        let staffList     = [];
-        let categories    = [];
-        let targets       = {};   // key -> value  (user-entered targets)
-        let actualStore   = {};
-        let actualStaff   = {};
-        let currentView   = 'both';
-        let activeFilter  = null;
+            /* ── State ─────────────────────────────────────────────── */
+            let rawData = [];
+            let structure = {};   // { category -> Set of item_types }
+            let sites = [];
+            let staffList = [];
+            let categories = [];
+            let targets = {};   // key -> value  (user-entered targets)
+            let actualStore = {};
+            let actualStaff = {};
+            let currentView = 'both';
+            let activeFilter = null;
 
-        const STORAGE_KEY  = 'target_achievement_data';
-        const TARGETS_KEY  = 'target_achievement_targets';
+            const STORAGE_KEY = 'target_achievement_data';
+            const TARGETS_KEY = 'target_achievement_targets';
 
-        /* ── Init ──────────────────────────────────────────────── */
-        document.addEventListener('DOMContentLoaded', function() {
-            setupUpload();
-            loadFromStorage();
-            updateSystemClock();
-        });
-        
-        setInterval(updateSystemClock, 1000);
-        
-        function updateSystemClock() {
-            const now = new Date();
-            const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-            const dateStr = String(now.getDate()).padStart(2, '0') + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
-            
-            let h = now.getHours();
-            const m = String(now.getMinutes()).padStart(2, '0');
-            const ampm = h >= 12 ? 'PM' : 'AM';
-            h = h % 12 || 12;
-            const timeStr = h + ':' + m + ' ' + ampm;
-
-            const dEl = document.getElementById('sys-date');
-            const tEl = document.getElementById('sys-time');
-            if (dEl) dEl.textContent = dateStr;
-            if (tEl) tEl.textContent = timeStr;
-        }
-
-        /* ── Upload ────────────────────────────────────────────── */
-        function setupUpload() {
-            const dz = document.getElementById('dz-target');
-            const fi = document.getElementById('fi-target');
-
-            ['dragover','dragenter'].forEach(e => dz.addEventListener(e, ev => { ev.preventDefault(); dz.classList.add('dragover'); }));
-            ['dragleave','drop'].forEach(e => dz.addEventListener(e, ev => { ev.preventDefault(); dz.classList.remove('dragover'); }));
-
-            dz.addEventListener('drop', e => {
-                const f = e.dataTransfer.files[0];
-                if (f && f.name.endsWith('.csv')) processFile(f);
-                else toast('error','Invalid File','Please upload a .csv file');
-            });
-            fi.addEventListener('change', e => { if (e.target.files[0]) processFile(e.target.files[0]); });
-        }
-
-        function processFile(file) {
-            const r = new FileReader();
-            r.onload = function(e) {
-                const rows = parseCSV(e.target.result);
-                if (validateData(rows)) {
-                    rawData = rows;
-                    saveRawToStorage();
-                    buildStructure();
-                    toast('success','Data Loaded', rawData.length + ' records parsed');
-                }
-            };
-            r.readAsText(file);
-        }
-
-        /* ── CSV Parser ────────────────────────────────────────── */
-        function parseCSV(text) {
-            const lines = text.split(/\r?\n/).filter(l => l.trim());
-            if (lines.length < 2) return [];
-            const headers = parseLine(lines[0]).map(h => h.trim().toLowerCase());
-            const out = [];
-            for (let i = 1; i < lines.length; i++) {
-                const vals = parseLine(lines[i]);
-                if (vals.length < headers.length) continue;
-                const row = {};
-                headers.forEach((h, idx) => row[h] = (vals[idx]||'').trim());
-                out.push(row);
-            }
-            return out;
-        }
-
-        function parseLine(line) {
-            const res = []; let cur = '', inQ = false;
-            for (let i = 0; i < line.length; i++) {
-                const c = line[i];
-                if (inQ) {
-                    if (c === '"' && line[i+1] === '"') { cur += '"'; i++; }
-                    else if (c === '"') inQ = false;
-                    else cur += c;
-                } else {
-                    if (c === '"') inQ = true;
-                    else if (c === ',') { res.push(cur); cur = ''; }
-                    else cur += c;
-                }
-            }
-            res.push(cur);
-            return res;
-        }
-
-        function validateData(rows) {
-            if (!rows.length) { toast('error','Empty File','No data rows found'); return false; }
-            const keys = Object.keys(rows[0]);
-            const hasCat = keys.includes('itemser_description') || keys.includes('product category');
-            const hasType = keys.includes('item_type') || keys.includes('product type');
-            const hasSite = keys.includes('site_descr') || keys.includes('store name');
-            const hasSp = keys.includes('sp_name') || keys.includes('staff name');
-            
-            if (!hasCat || !hasType || !hasSite || !hasSp) {
-                toast('error','Missing Columns', 'Please ensure file has required columns');
-                return false;
-            }
-            return true;
-        }
-
-        /* ── Build Structure ───────────────────────────────────── */
-        function buildStructure() {
-            structure = {};
-            actualStore = {};
-            actualStaff = {};
-            const sSet = new Set(), stSet = new Set();
-
-            structure['Ready made'] = new Set(['SUITS', 'SHIRTS', 'WAISTCOATS', 'JACKETS', 'TROUSERS', 'LONGSUITS']);
-            structure['Tailoring'] = new Set(['Tailoring coat', 'Tailoring Trousers', 'Tailoring Shirts', 'Tailoring w/coat', 'EMBROIDERY']);
-            structure['FABRIC'] = new Set(['SUITINGS', 'SHIRTINGS', 'SUITLENGTHS', 'COATLENGTHS']);
-
-            rawData.forEach(r => {
-                let cat  = (r['itemser_description'] || r['product category'] || 'Unknown').trim();
-                let type = (r['item_type'] || r['product type'] || '').trim();
-                const site = r['site_descr'] || r['store name'] || '';
-                const sp   = r['sp_name'] || r['staff name'] || '';
-
-                if (cat.toLowerCase() === 'raw materials') {
-                    return;
-                }
-
-                if (cat.toLowerCase() === 'tailoring' && type.toUpperCase() === 'ALTERATIONS-STITCHING') {
-                    return;
-                }
-
-                if (cat.toLowerCase().replace(/\s/g, '') === 'readymade') {
-                    cat = 'Ready made';
-                }
-
-                if (cat.toLowerCase() === 'tailoring') {
-                    cat = 'Tailoring';
-                }
-
-                if (cat.toLowerCase() === 'fabric') {
-                    cat = 'FABRIC';
-                }
-
-                if (cat.toLowerCase() === 'accessories') {
-                    type = ''; // Group all accessories as a single count
-                }
-
-                if (!structure[cat]) structure[cat] = new Set();
-                if (type) structure[cat].add(type);
-                if (site) {
-                    sSet.add(site);
-                    const k = site + '||' + cat + '||' + type;
-                    actualStore[k] = (actualStore[k] || 0) + 1;
-                }
-                if (sp) {
-                    stSet.add(sp);
-                    const k = sp + '||' + cat + '||' + type;
-                    actualStaff[k] = (actualStaff[k] || 0) + 1;
-                }
+            /* ── Init ──────────────────────────────────────────────── */
+            document.addEventListener('DOMContentLoaded', function () {
+                setupUpload();
+                loadFromStorage();
+                updateSystemClock();
             });
 
-            // Convert sets to sorted arrays
-            for (const cat in structure) {
-                if (cat === 'Ready made') {
-                    const order = ['SUITS', 'SHIRTS', 'WAISTCOATS', 'JACKETS', 'TROUSERS', 'LONGSUITS'];
-                    structure[cat] = Array.from(structure[cat]).sort((a, b) => {
-                        let idxA = order.indexOf(a.toUpperCase());
-                        let idxB = order.indexOf(b.toUpperCase());
-                        if (idxA === -1) idxA = 999;
-                        if (idxB === -1) idxB = 999;
-                        if (idxA !== idxB) return idxA - idxB;
-                        return a.localeCompare(b);
-                    });
-                } else if (cat === 'Tailoring') {
-                    const order = ['TAILORING COAT', 'TAILORING TROUSERS', 'TAILORING SHIRTS', 'TAILORING W/COAT', 'EMBROIDERY'];
-                    structure[cat] = Array.from(structure[cat]).sort((a, b) => {
-                        let idxA = order.indexOf(a.toUpperCase());
-                        let idxB = order.indexOf(b.toUpperCase());
-                        if (idxA === -1) idxA = 999;
-                        if (idxB === -1) idxB = 999;
-                        if (idxA !== idxB) return idxA - idxB;
-                        return a.localeCompare(b);
-                    });
-                } else if (cat === 'FABRIC') {
-                    const order = ['SUITINGS', 'SHIRTINGS', 'SUITLENGTHS', 'COATLENGTHS'];
-                    structure[cat] = Array.from(structure[cat]).sort((a, b) => {
-                        let idxA = order.indexOf(a.toUpperCase());
-                        let idxB = order.indexOf(b.toUpperCase());
-                        if (idxA === -1) idxA = 999;
-                        if (idxB === -1) idxB = 999;
-                        if (idxA !== idxB) return idxA - idxB;
-                        return a.localeCompare(b);
-                    });
-                } else {
-                    structure[cat] = Array.from(structure[cat]).sort();
-                }
-            }
-            sites      = Array.from(sSet).sort();
-            staffList  = Array.from(stSet).sort();
-            categories = Object.keys(structure).sort();
+            setInterval(updateSystemClock, 1000);
 
-            // Load saved targets
-            loadTargetsFromStorage();
-            renderTable();
-            updateKPIs();
-            showUI(true);
-        }
+            function updateSystemClock() {
+                const now = new Date();
+                const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+                const dateStr = String(now.getDate()).padStart(2, '0') + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
 
-        /* ── Render Pivot Table ────────────────────────────────── */
-        function renderTable() {
-            const wrap   = document.getElementById('pivot-table-wrapper');
-            const showS  = currentView === 'both' || currentView === 'store';
-            const showSt = currentView === 'both' || currentView === 'staff';
+                let h = now.getHours();
+                const m = String(now.getMinutes()).padStart(2, '0');
+                const ampm = h >= 12 ? 'PM' : 'AM';
+                h = h % 12 || 12;
+                const timeStr = h + ':' + m + ' ' + ampm;
 
-            // Columns to render
-            let storeCols = showS  ? sites     : [];
-            let staffCols = showSt ? staffList  : [];
-            
-            if (activeFilter) {
-                if (activeFilter.type === 'store') {
-                    storeCols = storeCols.includes(activeFilter.name) ? [activeFilter.name] : [];
-                    staffCols = [];
-                } else if (activeFilter.type === 'staff') {
-                    storeCols = [];
-                    staffCols = staffCols.includes(activeFilter.name) ? [activeFilter.name] : [];
-                }
+                const dEl = document.getElementById('sys-date');
+                const tEl = document.getElementById('sys-time');
+                if (dEl) dEl.textContent = dateStr;
+                if (tEl) tEl.textContent = timeStr;
             }
 
-            const totalDataCols = storeCols.length + staffCols.length;
+            /* ── Upload ────────────────────────────────────────────── */
+            function setupUpload() {
+                const dz = document.getElementById('dz-target');
+                const fi = document.getElementById('fi-target');
 
-            let h = '<table class="pivot-table" id="pivotTable">';
+                ['dragover', 'dragenter'].forEach(e => dz.addEventListener(e, ev => { ev.preventDefault(); dz.classList.add('dragover'); }));
+                ['dragleave', 'drop'].forEach(e => dz.addEventListener(e, ev => { ev.preventDefault(); dz.classList.remove('dragover'); }));
 
-            /* ── THEAD ── */
-            h += '<thead>';
-
-            // Row 1: group headers
-            if (storeCols.length || staffCols.length) {
-                h += '<tr class="group-header">';
-                h += '<th class="col-cat" rowspan="2" style="text-align:left;">Product Category</th>';
-                h += '<th class="col-type" rowspan="2" style="text-align:left;">Product Type</th>';
-                if (storeCols.length)
-                    h += '<th colspan="' + storeCols.length + '" class="store-group">Store Targets</th>';
-                if (staffCols.length)
-                    h += '<th colspan="' + staffCols.length + '" class="staff-group">Staff Targets</th>';
-                if (storeCols.length)
-                    h += '<th colspan="' + storeCols.length + '" class="store-achieve-group">Store Achivement</th>';
-                if (staffCols.length)
-                    h += '<th colspan="' + staffCols.length + '" class="staff-achieve-group">Staff Achivement</th>';
-                h += '</tr>';
-            }
-
-            // Row 2: individual column names
-            h += '<tr>';
-            if (!storeCols.length && !staffCols.length) {
-                h += '<th class="col-cat" style="text-align:left;">Product Category</th>';
-                h += '<th class="col-type" style="text-align:left;">Product Type</th>';
-            }
-            storeCols.forEach(s => { h += '<th class="store-col-header">' + esc(s) + '</th>'; });
-            staffCols.forEach(s => { h += '<th class="staff-col-header">' + esc(s) + '</th>'; });
-            storeCols.forEach(s => { h += '<th class="actual-store-header">' + esc(s) + '</th>'; });
-            staffCols.forEach(s => { h += '<th class="actual-staff-header">' + esc(s) + '</th>'; });
-            h += '</tr></thead>';
-
-            /* ── TBODY ── */
-            h += '<tbody>';
-
-            categories.forEach(cat => {
-                const types = structure[cat];
-
-                if (types.length === 0) {
-                    // Category with no sub-items
-                    h += '<tr>';
-                    h += '<td class="cell-cat">' + esc(cat) + '</td>';
-                    h += '<td class="cell-type"></td>';
-                    storeCols.forEach(s => h += inputCell(tKey('store', s, cat, ''), 'store-col'));
-                    staffCols.forEach(s => h += inputCell(tKey('staff', s, cat, ''), 'staff-col'));
-                    storeCols.forEach(s => {
-                        const act = actualStore[s + '||' + cat + '||'] || 0;
-                        const tgt = parseInt(targets[tKey('store', s, cat, '')]) || 0;
-                        h += '<td class="cell-actual-store"><span class="total-value" data-pct-key="store||' + escA(s) + '||' + escA(cat) + '||">' + formatAchievement(act, tgt) + '</span></td>';
-                    });
-                    staffCols.forEach(s => {
-                        const act = actualStaff[s + '||' + cat + '||'] || 0;
-                        const tgt = parseInt(targets[tKey('staff', s, cat, '')]) || 0;
-                        h += '<td class="cell-actual-staff"><span class="total-value" data-pct-key="staff||' + escA(s) + '||' + escA(cat) + '||">' + formatAchievement(act, tgt) + '</span></td>';
-                    });
-                    h += '</tr>';
-                } else {
-                    types.forEach((type, index) => {
-                        h += '<tr>';
-                        if (index === 0) {
-                            h += '<td class="cell-cat" rowspan="' + types.length + '">' + esc(cat) + '</td>';
-                        }
-                        h += '<td class="cell-type">' + esc(type) + '</td>';
-                        storeCols.forEach(s => h += inputCell(tKey('store', s, cat, type), 'store-col'));
-                        staffCols.forEach(s => h += inputCell(tKey('staff', s, cat, type), 'staff-col'));
-                        storeCols.forEach(s => {
-                            const act = actualStore[s + '||' + cat + '||' + type] || 0;
-                            const tgt = parseInt(targets[tKey('store', s, cat, type)]) || 0;
-                            h += '<td class="cell-actual-store"><span class="total-value" data-pct-key="store||' + escA(s) + '||' + escA(cat) + '||' + escA(type) + '">' + formatAchievement(act, tgt) + '</span></td>';
-                        });
-                        staffCols.forEach(s => {
-                            const act = actualStaff[s + '||' + cat + '||' + type] || 0;
-                            const tgt = parseInt(targets[tKey('staff', s, cat, type)]) || 0;
-                            h += '<td class="cell-actual-staff"><span class="total-value" data-pct-key="staff||' + escA(s) + '||' + escA(cat) + '||' + escA(type) + '">' + formatAchievement(act, tgt) + '</span></td>';
-                        });
-                        h += '</tr>';
-                    });
-                }
-
-                // Category Total row
-                h += '<tr class="row-cat-total">';
-                h += '<td class="cell-cat" colspan="2">Total ' + esc(cat) + '</td>';
-                storeCols.forEach(s => h += '<td class="cell-input store-col"><span class="total-value" data-total-key="store__' + escA(s) + '__cat__' + escA(cat) + '">' + (calcCatTotal('store', s, cat) || '') + '</span></td>');
-                staffCols.forEach(s => h += '<td class="cell-input staff-col"><span class="total-value" data-total-key="staff__' + escA(s) + '__cat__' + escA(cat) + '">' + (calcCatTotal('staff', s, cat) || '') + '</span></td>');
-                storeCols.forEach(s => {
-                    const act = calcCatActual(actualStore, s, cat);
-                    const tgt = calcCatTotal('store', s, cat);
-                    h += '<td class="cell-actual-store"><span class="total-value" style="color:#b45309;" data-pct-cat-key="store||' + escA(s) + '||' + escA(cat) + '">' + formatAchievement(act, tgt) + '</span></td>';
+                dz.addEventListener('drop', e => {
+                    const f = e.dataTransfer.files[0];
+                    if (f && f.name.endsWith('.csv')) processFile(f);
+                    else toast('error', 'Invalid File', 'Please upload a .csv file');
                 });
-                staffCols.forEach(s => {
-                    const act = calcCatActual(actualStaff, s, cat);
-                    const tgt = calcCatTotal('staff', s, cat);
-                    h += '<td class="cell-actual-staff"><span class="total-value" style="color:#b45309;" data-pct-cat-key="staff||' + escA(s) + '||' + escA(cat) + '">' + formatAchievement(act, tgt) + '</span></td>';
-                });
-                h += '</tr>';
-            });
-
-            // Grand Total
-            h += '<tr class="row-grand-total">';
-            h += '<td class="cell-cat" colspan="2">Grand Total</td>';
-            storeCols.forEach(s => h += '<td class="cell-input store-col"><span class="total-value">' + (calcGrandTotal('store', s) || '') + '</span></td>');
-            staffCols.forEach(s => h += '<td class="cell-input staff-col"><span class="total-value">' + (calcGrandTotal('staff', s) || '') + '</span></td>');
-            storeCols.forEach(s => {
-                const act = calcGrandActual(actualStore, s);
-                const tgt = calcGrandTotal('store', s);
-                h += '<td class="cell-actual-store"><span class="total-value" style="color:#f4c74a;" data-pct-grand-key="store||' + escA(s) + '">' + formatAchievement(act, tgt) + '</span></td>';
-            });
-            staffCols.forEach(s => {
-                const act = calcGrandActual(actualStaff, s);
-                const tgt = calcGrandTotal('staff', s);
-                h += '<td class="cell-actual-staff"><span class="total-value" style="color:#f4c74a;" data-pct-grand-key="staff||' + escA(s) + '">' + formatAchievement(act, tgt) + '</span></td>';
-            });
-            h += '</tr>';
-
-            h += '</tbody></table>';
-            wrap.innerHTML = h;
-
-            renderCards();
-        }
-
-        /* ── Helper: input cell HTML ─────────────────────────── */
-        function inputCell(key, colClass) {
-            const val = targets[key] || '';
-            return '<td class="cell-input ' + colClass + '">' +
-                   '<input type="number" min="0" data-key="' + escA(key) + '" value="' + val + '" ' +
-                   'oninput="window._tgt.onInput(this)" placeholder="—">' +
-                   '</td>';
-        }
-
-        /* ── Keys ────────────────────────────────────────────── */
-        function tKey(prefix, colName, cat, type) {
-            return prefix + '||' + colName + '||' + cat + '||' + type;
-        }
-
-        /* ── Calculation ─────────────────────────────────────── */
-        function formatAchievement(act, tgt) {
-            if (!act) return '';
-            if (!tgt) return act;
-            const pct = (act / tgt) * 100;
-            return act + ' ( ' + (Math.round(pct * 10) / 10) + ' % )';
-        }
-
-        function calcCatTotal(prefix, colName, cat) {
-            const types = structure[cat];
-            let sum = 0, hasAny = false;
-            if (types.length === 0) {
-                const v = parseInt(targets[tKey(prefix, colName, cat, '')]) || 0;
-                return v || '';
-            }
-            types.forEach(type => {
-                const v = parseInt(targets[tKey(prefix, colName, cat, type)]) || 0;
-                if (v) hasAny = true;
-                sum += v;
-            });
-            return hasAny ? sum : '';
-        }
-
-        function calcGrandTotal(prefix, colName) {
-            let sum = 0, hasAny = false;
-            categories.forEach(cat => {
-                const catSum = calcCatTotal(prefix, colName, cat);
-                if (catSum !== '') { hasAny = true; sum += catSum; }
-            });
-            return hasAny ? sum : '';
-        }
-
-        function calcCatActual(actualsDict, colName, cat) {
-            const types = structure[cat];
-            let sum = 0, hasAny = false;
-            if (types.length === 0) {
-                const v = actualsDict[colName + '||' + cat + '||'] || 0;
-                return v || '';
-            }
-            types.forEach(type => {
-                const v = actualsDict[colName + '||' + cat + '||' + type] || 0;
-                if (v) { hasAny = true; sum += v; }
-            });
-            return hasAny ? sum : '';
-        }
-
-        function calcGrandActual(actualsDict, colName) {
-            let sum = 0, hasAny = false;
-            categories.forEach(cat => {
-                const catSum = calcCatActual(actualsDict, colName, cat);
-                if (catSum !== '') { hasAny = true; sum += catSum; }
-            });
-            return hasAny ? sum : '';
-        }
-
-        /* ── Achievement Cards ───────────────────────────────── */
-        function renderCards() {
-            const c = document.getElementById('achievement-cards');
-            let h = '';
-
-            if (currentView === 'both' || currentView === 'store') {
-                sites.forEach(site => {
-                    const total = calcGrandTotal('store', site);
-                    h += makeCard(site, 'Store', total, '#3b82f6',
-                        '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>'
-                    );
-                });
-            }
-            
-            if (currentView === 'both' || currentView === 'staff') {
-                staffList.forEach(sp => {
-                    const total = calcGrandTotal('staff', sp);
-                    h += makeCard(sp, 'Staff', total, '#7c3aed',
-                        '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>'
-                    );
-                });
+                fi.addEventListener('change', e => { if (e.target.files[0]) processFile(e.target.files[0]); });
             }
 
-            c.innerHTML = h;
-        }
-
-        function makeCard(name, label, total, color, icon) {
-            const val = total || '—';
-            const type = label.toLowerCase();
-            const isActive = activeFilter && activeFilter.type === type && activeFilter.name === name;
-            const ringClass = isActive ? 'ring-2 ring-offset-2 ring-blue-500 shadow-md scale-[1.02] border-blue-200' : 'hover:shadow-md';
-            return '<div class="stat-card cursor-pointer transition-all border border-transparent ' + ringClass + '" onclick="window.toggleFilter(\'' + type + '\', \'' + escA(name) + '\')">' +
-                '<div class="flex items-center gap-2 mb-2">' +
-                    '<span style="color:' + color + '">' + icon + '</span>' +
-                    '<span class="text-[10px] font-bold uppercase tracking-wider text-neutral-400">' + label + '</span>' +
-                '</div>' +
-                '<h3 class="font-bold text-base text-[#242424]">' + esc(name) + '</h3>' +
-                '<div class="flex items-baseline gap-1 mt-1">' +
-                    '<span class="text-2xl font-extrabold" style="color:' + color + '">' + val + '</span>' +
-                    '<span class="text-xs text-neutral-400 font-medium">total target</span>' +
-                '</div>' +
-            '</div>';
-        }
-
-        /* ── KPIs ────────────────────────────────────────────── */
-        function updateKPIs() {
-            let productCount = 0;
-            categories.forEach(c => { productCount += Math.max(structure[c].length, 1); });
-            document.getElementById('kpi-categories').textContent = categories.length;
-            document.getElementById('kpi-products').textContent   = productCount;
-            document.getElementById('kpi-stores').textContent     = sites.length;
-            document.getElementById('kpi-staff').textContent      = staffList.length;
-        }
-
-        /* ── UI Toggle ───────────────────────────────────────── */
-        function showUI(show) {
-            document.getElementById('upload-section').style.display    = show ? 'none' : '';
-            document.getElementById('top-controls-row').style.display  = show ? 'flex' : 'none';
-            document.getElementById('empty-state').style.display       = show ? 'none' : '';
-            document.getElementById('pivot-table-wrapper').style.display = show ? ''   : 'none';
-            document.getElementById('achievement-cards').style.display   = show ? ''   : 'none';
-        }
-
-        /* ── View Tabs ───────────────────────────────────────── */
-        window.setView = function(v) {
-            currentView = v;
-            activeFilter = null;
-            ['both','store','staff'].forEach(t => {
-                document.getElementById('tab-' + t).className = 'view-tab' + (t === v ? ' active-' + t : '');
-            });
-            renderTable();
-        };
-
-        window.toggleFilter = function(type, name) {
-            if (activeFilter && activeFilter.type === type && activeFilter.name === name) {
-                activeFilter = null;
-            } else {
-                activeFilter = { type, name };
+            function processFile(file) {
+                const r = new FileReader();
+                r.onload = function (e) {
+                    const rows = parseCSV(e.target.result);
+                    if (validateData(rows)) {
+                        rawData = rows;
+                        saveRawToStorage();
+                        buildStructure();
+                        toast('success', 'Data Loaded', rawData.length + ' records parsed');
+                    }
+                };
+                r.readAsText(file);
             }
-            renderTable();
-        };
 
-        /* ── Input Handler ───────────────────────────────────── */
-        window._tgt = {
-            onInput: function(el) {
-                const key = el.getAttribute('data-key');
-                const val = el.value;
-                if (val && parseInt(val) >= 0) targets[key] = val;
-                else delete targets[key];
-                // Recalc totals without full re-render (fast)
-                updateTotals();
-                renderCards();
-            }
-        };
-
-        function updateTotals() {
-            // Update all category total and grand total spans
-            const showS  = currentView === 'both' || currentView === 'store';
-            const showSt = currentView === 'both' || currentView === 'staff';
-            const cols = [];
-            if (showS)  sites.forEach(s => cols.push({ prefix: 'store', name: s }));
-            if (showSt) staffList.forEach(s => cols.push({ prefix: 'staff', name: s }));
-
-            // Category totals
-            document.querySelectorAll('[data-total-key]').forEach(span => {
-                const tk = span.getAttribute('data-total-key');
-                // Parse: prefix__colName__cat__catName
-                const m = tk.match(/^(store|staff)__(.+?)__cat__(.+)$/);
-                if (m) {
-                    const sum = calcCatTotal(m[1], m[2], m[3]);
-                    span.textContent = sum !== '' ? sum : '';
+            /* ── CSV Parser ────────────────────────────────────────── */
+            function parseCSV(text) {
+                const lines = text.split(/\r?\n/).filter(l => l.trim());
+                if (lines.length < 2) return [];
+                const headers = parseLine(lines[0]).map(h => h.trim().toLowerCase());
+                const out = [];
+                for (let i = 1; i < lines.length; i++) {
+                    const vals = parseLine(lines[i]);
+                    if (vals.length < headers.length) continue;
+                    const row = {};
+                    headers.forEach((h, idx) => row[h] = (vals[idx] || '').trim());
+                    out.push(row);
                 }
-            });
-
-            // Grand totals: rebuild row
-            const gtRow = document.querySelector('.row-grand-total');
-            if (gtRow) {
-                const tds = gtRow.querySelectorAll('.total-value');
-                let idx = 0;
-                if (showS) {
-                    sites.forEach(s => {
-                        if (tds[idx]) tds[idx].textContent = calcGrandTotal('store', s) || '';
-                        idx++;
-                    });
-                }
-                if (showSt) {
-                    staffList.forEach(s => {
-                        if (tds[idx]) tds[idx].textContent = calcGrandTotal('staff', s) || '';
-                        idx++;
-                    });
-                }
+                return out;
             }
 
-            // Update percentages for individual items
-            document.querySelectorAll('[data-pct-key]').forEach(span => {
-                const parts = span.getAttribute('data-pct-key').split('||');
-                const pfx = parts[0], s = parts[1], cat = parts[2], type = parts[3];
-                const actDict = pfx === 'store' ? actualStore : actualStaff;
-                const act = actDict[s + '||' + cat + '||' + type] || 0;
-                const tgt = parseInt(targets[tKey(pfx, s, cat, type)]) || 0;
-                span.textContent = formatAchievement(act, tgt);
-            });
-            
-            // Update percentages for category totals
-            document.querySelectorAll('[data-pct-cat-key]').forEach(span => {
-                const parts = span.getAttribute('data-pct-cat-key').split('||');
-                const pfx = parts[0], s = parts[1], cat = parts[2];
-                const actDict = pfx === 'store' ? actualStore : actualStaff;
-                const act = calcCatActual(actDict, s, cat);
-                const tgt = calcCatTotal(pfx, s, cat);
-                span.textContent = formatAchievement(act, tgt);
-            });
-
-            // Update percentages for grand totals
-            document.querySelectorAll('[data-pct-grand-key]').forEach(span => {
-                const parts = span.getAttribute('data-pct-grand-key').split('||');
-                const pfx = parts[0], s = parts[1];
-                const actDict = pfx === 'store' ? actualStore : actualStaff;
-                const act = calcGrandActual(actDict, s);
-                const tgt = calcGrandTotal(pfx, s);
-                span.textContent = formatAchievement(act, tgt);
-            });
-        }
-
-        /* ── Save / Load ─────────────────────────────────────── */
-        function saveRawToStorage() {
-            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(rawData)); } catch(e) {}
-        }
-
-        function loadFromStorage() {
-            try {
-                const d = localStorage.getItem(STORAGE_KEY);
-                if (d) {
-                    rawData = JSON.parse(d);
-                    if (rawData.length) buildStructure();
+            function parseLine(line) {
+                const res = []; let cur = '', inQ = false;
+                for (let i = 0; i < line.length; i++) {
+                    const c = line[i];
+                    if (inQ) {
+                        if (c === '"' && line[i + 1] === '"') { cur += '"'; i++; }
+                        else if (c === '"') inQ = false;
+                        else cur += c;
+                    } else {
+                        if (c === '"') inQ = true;
+                        else if (c === ',') { res.push(cur); cur = ''; }
+                        else cur += c;
+                    }
                 }
-            } catch(e) {}
-        }
-
-        function loadTargetsFromStorage() {
-            try {
-                const t = localStorage.getItem(TARGETS_KEY);
-                if (t) targets = JSON.parse(t);
-            } catch(e) {}
-        }
-
-        window.saveTargets = function() {
-            // Collect from DOM
-            document.querySelectorAll('.pivot-table input[data-key]').forEach(inp => {
-                const k = inp.getAttribute('data-key');
-                if (inp.value && parseInt(inp.value) >= 0) targets[k] = inp.value;
-                else delete targets[k];
-            });
-            try {
-                localStorage.setItem(TARGETS_KEY, JSON.stringify(targets));
-                toast('success','Targets Saved','All values persisted');
-            } catch(e) { toast('error','Save Failed','Storage quota exceeded'); }
-        };
-
-        /* ── Export ───────────────────────────────────────────── */
-        window.exportCSV = function() {
-            if (!categories.length) { toast('warning','No Data','Load data first'); return; }
-
-            let rows = [];
-            let hdr = ['itemser_description','item_type'];
-            sites.forEach(s     => hdr.push(s + ' (Store Target)'));
-            staffList.forEach(s => hdr.push(s + ' (Staff Target)'));
-            sites.forEach(s     => hdr.push(s + ' (Store Achievement)'));
-            staffList.forEach(s => hdr.push(s + ' (Staff Achievement)'));
-            rows.push(hdr.join(','));
-
-            categories.forEach(cat => {
-                const types = structure[cat];
-                const itemRows = types.length ? types : [''];
-                itemRows.forEach(type => {
-                    let r = [csvE(cat), csvE(type)];
-                    sites.forEach(s     => r.push(targets[tKey('store', s, cat, type)] || ''));
-                    staffList.forEach(s => r.push(targets[tKey('staff', s, cat, type)] || ''));
-                    sites.forEach(s     => r.push(actualStore[s + '||' + cat + '||' + type] || '0'));
-                    staffList.forEach(s => r.push(actualStaff[s + '||' + cat + '||' + type] || '0'));
-                    rows.push(r.join(','));
-                });
-                // Total row
-                let tr = [csvE('Total ' + cat), ''];
-                sites.forEach(s     => tr.push(calcCatTotal('store', s, cat) || ''));
-                staffList.forEach(s => tr.push(calcCatTotal('staff', s, cat) || ''));
-                sites.forEach(s     => tr.push(calcCatActual(actualStore, s, cat) || '0'));
-                staffList.forEach(s => tr.push(calcCatActual(actualStaff, s, cat) || '0'));
-                rows.push(tr.join(','));
-            });
-
-            // Grand Total
-            let gr = ['Grand Total', ''];
-            sites.forEach(s     => gr.push(calcGrandTotal('store', s) || ''));
-            staffList.forEach(s => gr.push(calcGrandTotal('staff', s) || ''));
-            sites.forEach(s     => gr.push(calcGrandActual(actualStore, s) || '0'));
-            staffList.forEach(s => gr.push(calcGrandActual(actualStaff, s) || '0'));
-            rows.push(gr.join(','));
-
-            const blob = new Blob([rows.join('\n')], { type:'text/csv;charset=utf-8;' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = 'target_achievement_' + new Date().toISOString().slice(0,10) + '.csv';
-            a.click();
-            URL.revokeObjectURL(a.href);
-            toast('success','Exported','CSV downloaded');
-        };
-
-        /* ── Reset Dropdown ─────────────────────────────────── */
-        window.toggleResetMenu = function() {
-            const dd = document.getElementById('reset-dropdown');
-            dd.classList.toggle('hidden');
-        };
-
-        document.addEventListener('click', function(e) {
-            const wrapper = document.getElementById('reset-menu-wrapper');
-            if (wrapper && !wrapper.contains(e.target)) {
-                const dd = document.getElementById('reset-dropdown');
-                if (dd) dd.classList.add('hidden');
+                res.push(cur);
+                return res;
             }
-        });
 
-        /* ── Reset ───────────────────────────────────────────── */
-        window.resetTargets = function() {
-            document.getElementById('reset-dropdown').classList.add('hidden');
-            if (confirm('Reset all Targets? Achievement data will remain unchanged. This cannot be undone.')) {
-                targets = {};
-                try { localStorage.removeItem(TARGETS_KEY); } catch(e) {}
-                renderTable();
-                renderCards();
-                toast('success', 'Targets Reset', 'All target values have been cleared');
+            function validateData(rows) {
+                if (!rows.length) { toast('error', 'Empty File', 'No data rows found'); return false; }
+                const keys = Object.keys(rows[0]);
+                const hasCat = keys.includes('itemser_description') || keys.includes('product category');
+                const hasType = keys.includes('item_type') || keys.includes('product type');
+                const hasSite = keys.includes('site_descr') || keys.includes('store name');
+                const hasSp = keys.includes('sp_name') || keys.includes('staff name');
+
+                if (!hasCat || !hasType || !hasSite || !hasSp) {
+                    toast('error', 'Missing Columns', 'Please ensure file has required columns');
+                    return false;
+                }
+                return true;
             }
-        };
 
-        window.resetAchievement = function() {
-            document.getElementById('reset-dropdown').classList.add('hidden');
-            if (confirm('Reset Achievement data? Targets will remain unchanged. This cannot be undone.')) {
+            /* ── Build Structure ───────────────────────────────────── */
+            function buildStructure() {
+                structure = {};
                 actualStore = {};
                 actualStaff = {};
-                rawData = [];
-                try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
+                const sSet = new Set(), stSet = new Set();
+
+                structure['Ready made'] = new Set(['SUITS', 'SHIRTS', 'WAISTCOATS', 'JACKETS', 'TROUSERS', 'LONGSUITS']);
+                structure['Tailoring'] = new Set(['Tailoring coat', 'Tailoring Trousers', 'Tailoring Shirts', 'Tailoring w/coat', 'EMBROIDERY']);
+                structure['FABRIC'] = new Set(['SUITINGS', 'SHIRTINGS', 'SUITLENGTHS', 'COATLENGTHS']);
+
+                rawData.forEach(r => {
+                    let cat = (r['itemser_description'] || r['product category'] || 'Unknown').trim();
+                    let type = (r['item_type'] || r['product type'] || '').trim();
+                    const site = r['site_descr'] || r['store name'] || '';
+                    const sp = r['sp_name'] || r['staff name'] || '';
+
+                    if (cat.toLowerCase() === 'raw materials') {
+                        return;
+                    }
+
+                    if (cat.toLowerCase() === 'tailoring' && type.toUpperCase() === 'ALTERATIONS-STITCHING') {
+                        return;
+                    }
+
+                    if (cat.toLowerCase().replace(/\s/g, '') === 'readymade') {
+                        cat = 'Ready made';
+                    }
+
+                    if (cat.toLowerCase() === 'tailoring') {
+                        cat = 'Tailoring';
+                    }
+
+                    if (cat.toLowerCase() === 'fabric') {
+                        cat = 'FABRIC';
+                    }
+
+                    if (cat.toLowerCase() === 'accessories') {
+                        type = ''; // Group all accessories as a single count
+                    }
+
+                    if (!structure[cat]) structure[cat] = new Set();
+                    if (type) structure[cat].add(type);
+                    if (site) {
+                        sSet.add(site);
+                        const k = site + '||' + cat + '||' + type;
+                        actualStore[k] = (actualStore[k] || 0) + 1;
+                    }
+                    if (sp) {
+                        stSet.add(sp);
+                        const k = sp + '||' + cat + '||' + type;
+                        actualStaff[k] = (actualStaff[k] || 0) + 1;
+                    }
+                });
+
+                // Convert sets to sorted arrays
+                for (const cat in structure) {
+                    if (cat === 'Ready made') {
+                        const order = ['SUITS', 'SHIRTS', 'WAISTCOATS', 'JACKETS', 'TROUSERS', 'LONGSUITS'];
+                        structure[cat] = Array.from(structure[cat]).sort((a, b) => {
+                            let idxA = order.indexOf(a.toUpperCase());
+                            let idxB = order.indexOf(b.toUpperCase());
+                            if (idxA === -1) idxA = 999;
+                            if (idxB === -1) idxB = 999;
+                            if (idxA !== idxB) return idxA - idxB;
+                            return a.localeCompare(b);
+                        });
+                    } else if (cat === 'Tailoring') {
+                        const order = ['TAILORING COAT', 'TAILORING TROUSERS', 'TAILORING SHIRTS', 'TAILORING W/COAT', 'EMBROIDERY'];
+                        structure[cat] = Array.from(structure[cat]).sort((a, b) => {
+                            let idxA = order.indexOf(a.toUpperCase());
+                            let idxB = order.indexOf(b.toUpperCase());
+                            if (idxA === -1) idxA = 999;
+                            if (idxB === -1) idxB = 999;
+                            if (idxA !== idxB) return idxA - idxB;
+                            return a.localeCompare(b);
+                        });
+                    } else if (cat === 'FABRIC') {
+                        const order = ['SUITINGS', 'SHIRTINGS', 'SUITLENGTHS', 'COATLENGTHS'];
+                        structure[cat] = Array.from(structure[cat]).sort((a, b) => {
+                            let idxA = order.indexOf(a.toUpperCase());
+                            let idxB = order.indexOf(b.toUpperCase());
+                            if (idxA === -1) idxA = 999;
+                            if (idxB === -1) idxB = 999;
+                            if (idxA !== idxB) return idxA - idxB;
+                            return a.localeCompare(b);
+                        });
+                    } else {
+                        structure[cat] = Array.from(structure[cat]).sort();
+                    }
+                }
+                sites = Array.from(sSet).sort();
+                staffList = Array.from(stSet).sort();
+                categories = Object.keys(structure).sort();
+
+                // Load saved targets
+                loadTargetsFromStorage();
                 renderTable();
+                updateKPIs();
+                showUI(true);
+            }
+
+            /* ── Render Pivot Table ────────────────────────────────── */
+            function renderTable() {
+                const wrap = document.getElementById('pivot-table-wrapper');
+                const showS = currentView === 'both' || currentView === 'store';
+                const showSt = currentView === 'both' || currentView === 'staff';
+
+                // Columns to render
+                let storeCols = showS ? sites : [];
+                let staffCols = showSt ? staffList : [];
+
+                if (activeFilter) {
+                    if (activeFilter.type === 'store') {
+                        storeCols = storeCols.includes(activeFilter.name) ? [activeFilter.name] : [];
+                        staffCols = [];
+                    } else if (activeFilter.type === 'staff') {
+                        storeCols = [];
+                        staffCols = staffCols.includes(activeFilter.name) ? [activeFilter.name] : [];
+                    }
+                }
+
+                const totalDataCols = storeCols.length + staffCols.length;
+
+                let h = '<table class="pivot-table" id="pivotTable">';
+
+                /* ── THEAD ── */
+                h += '<thead>';
+
+                // Row 1: group headers
+                if (storeCols.length || staffCols.length) {
+                    h += '<tr class="group-header">';
+                    h += '<th class="col-cat" rowspan="2" style="text-align:left;">Product Category</th>';
+                    h += '<th class="col-type" rowspan="2" style="text-align:left;">Product Type</th>';
+                    if (storeCols.length)
+                        h += '<th colspan="' + storeCols.length + '" class="store-group">Store Targets</th>';
+                    if (staffCols.length)
+                        h += '<th colspan="' + staffCols.length + '" class="staff-group">Staff Targets</th>';
+                    if (storeCols.length)
+                        h += '<th colspan="' + storeCols.length + '" class="store-achieve-group">Store Achivement</th>';
+                    if (staffCols.length)
+                        h += '<th colspan="' + staffCols.length + '" class="staff-achieve-group">Staff Achivement</th>';
+                    h += '</tr>';
+                }
+
+                // Row 2: individual column names
+                h += '<tr>';
+                if (!storeCols.length && !staffCols.length) {
+                    h += '<th class="col-cat" style="text-align:left;">Product Category</th>';
+                    h += '<th class="col-type" style="text-align:left;">Product Type</th>';
+                }
+                storeCols.forEach(s => { h += '<th class="store-col-header">' + esc(s) + '</th>'; });
+                staffCols.forEach(s => { h += '<th class="staff-col-header">' + esc(s) + '</th>'; });
+                storeCols.forEach(s => { h += '<th class="actual-store-header">' + esc(s) + '</th>'; });
+                staffCols.forEach(s => { h += '<th class="actual-staff-header">' + esc(s) + '</th>'; });
+                h += '</tr></thead>';
+
+                /* ── TBODY ── */
+                h += '<tbody>';
+
+                categories.forEach(cat => {
+                    const types = structure[cat];
+
+                    if (types.length === 0) {
+                        // Category with no sub-items
+                        h += '<tr>';
+                        h += '<td class="cell-cat">' + esc(cat) + '</td>';
+                        h += '<td class="cell-type"></td>';
+                        storeCols.forEach(s => h += inputCell(tKey('store', s, cat, ''), 'store-col'));
+                        staffCols.forEach(s => h += inputCell(tKey('staff', s, cat, ''), 'staff-col'));
+                        storeCols.forEach(s => {
+                            const act = actualStore[s + '||' + cat + '||'] || 0;
+                            const tgt = parseInt(targets[tKey('store', s, cat, '')]) || 0;
+                            h += '<td class="cell-actual-store"><span class="total-value" data-pct-key="store||' + escA(s) + '||' + escA(cat) + '||">' + formatAchievement(act, tgt) + '</span></td>';
+                        });
+                        staffCols.forEach(s => {
+                            const act = actualStaff[s + '||' + cat + '||'] || 0;
+                            const tgt = parseInt(targets[tKey('staff', s, cat, '')]) || 0;
+                            h += '<td class="cell-actual-staff"><span class="total-value" data-pct-key="staff||' + escA(s) + '||' + escA(cat) + '||">' + formatAchievement(act, tgt) + '</span></td>';
+                        });
+                        h += '</tr>';
+                    } else {
+                        types.forEach((type, index) => {
+                            h += '<tr>';
+                            if (index === 0) {
+                                h += '<td class="cell-cat" rowspan="' + types.length + '">' + esc(cat) + '</td>';
+                            }
+                            h += '<td class="cell-type">' + esc(type) + '</td>';
+                            storeCols.forEach(s => h += inputCell(tKey('store', s, cat, type), 'store-col'));
+                            staffCols.forEach(s => h += inputCell(tKey('staff', s, cat, type), 'staff-col'));
+                            storeCols.forEach(s => {
+                                const act = actualStore[s + '||' + cat + '||' + type] || 0;
+                                const tgt = parseInt(targets[tKey('store', s, cat, type)]) || 0;
+                                h += '<td class="cell-actual-store"><span class="total-value" data-pct-key="store||' + escA(s) + '||' + escA(cat) + '||' + escA(type) + '">' + formatAchievement(act, tgt) + '</span></td>';
+                            });
+                            staffCols.forEach(s => {
+                                const act = actualStaff[s + '||' + cat + '||' + type] || 0;
+                                const tgt = parseInt(targets[tKey('staff', s, cat, type)]) || 0;
+                                h += '<td class="cell-actual-staff"><span class="total-value" data-pct-key="staff||' + escA(s) + '||' + escA(cat) + '||' + escA(type) + '">' + formatAchievement(act, tgt) + '</span></td>';
+                            });
+                            h += '</tr>';
+                        });
+                    }
+
+                    // Category Total row
+                    h += '<tr class="row-cat-total">';
+                    h += '<td class="cell-cat" colspan="2">Total ' + esc(cat) + '</td>';
+                    storeCols.forEach(s => h += '<td class="cell-input store-col"><span class="total-value" data-total-key="store__' + escA(s) + '__cat__' + escA(cat) + '">' + (calcCatTotal('store', s, cat) || '') + '</span></td>');
+                    staffCols.forEach(s => h += '<td class="cell-input staff-col"><span class="total-value" data-total-key="staff__' + escA(s) + '__cat__' + escA(cat) + '">' + (calcCatTotal('staff', s, cat) || '') + '</span></td>');
+                    storeCols.forEach(s => {
+                        const act = calcCatActual(actualStore, s, cat);
+                        const tgt = calcCatTotal('store', s, cat);
+                        h += '<td class="cell-actual-store"><span class="total-value" style="color:#b45309;" data-pct-cat-key="store||' + escA(s) + '||' + escA(cat) + '">' + formatAchievement(act, tgt) + '</span></td>';
+                    });
+                    staffCols.forEach(s => {
+                        const act = calcCatActual(actualStaff, s, cat);
+                        const tgt = calcCatTotal('staff', s, cat);
+                        h += '<td class="cell-actual-staff"><span class="total-value" style="color:#b45309;" data-pct-cat-key="staff||' + escA(s) + '||' + escA(cat) + '">' + formatAchievement(act, tgt) + '</span></td>';
+                    });
+                    h += '</tr>';
+                });
+
+                // Grand Total
+                h += '<tr class="row-grand-total">';
+                h += '<td class="cell-cat" colspan="2">Grand Total</td>';
+                storeCols.forEach(s => h += '<td class="cell-input store-col"><span class="total-value">' + (calcGrandTotal('store', s) || '') + '</span></td>');
+                staffCols.forEach(s => h += '<td class="cell-input staff-col"><span class="total-value">' + (calcGrandTotal('staff', s) || '') + '</span></td>');
+                storeCols.forEach(s => {
+                    const act = calcGrandActual(actualStore, s);
+                    const tgt = calcGrandTotal('store', s);
+                    h += '<td class="cell-actual-store"><span class="total-value" style="color:#f4c74a;" data-pct-grand-key="store||' + escA(s) + '">' + formatAchievement(act, tgt) + '</span></td>';
+                });
+                staffCols.forEach(s => {
+                    const act = calcGrandActual(actualStaff, s);
+                    const tgt = calcGrandTotal('staff', s);
+                    h += '<td class="cell-actual-staff"><span class="total-value" style="color:#f4c74a;" data-pct-grand-key="staff||' + escA(s) + '">' + formatAchievement(act, tgt) + '</span></td>';
+                });
+                h += '</tr>';
+
+                h += '</tbody></table>';
+                wrap.innerHTML = h;
+
                 renderCards();
-                toast('success', 'Achievement Reset', 'All achievement data has been cleared');
             }
-        };
 
-        window.resetAll = function() {
-            document.getElementById('reset-dropdown').classList.add('hidden');
-            if (confirm('Reset ALL data and targets? This cannot be undone.')) {
-                try { localStorage.removeItem(STORAGE_KEY); localStorage.removeItem(TARGETS_KEY); } catch(e) {}
-                window.location.reload();
+            /* ── Helper: input cell HTML ─────────────────────────── */
+            function inputCell(key, colClass) {
+                const val = targets[key] || '';
+                return '<td class="cell-input ' + colClass + '">' +
+                    '<input type="number" min="0" data-key="' + escA(key) + '" value="' + val + '" ' +
+                    'oninput="window._tgt.onInput(this)" placeholder="—">' +
+                    '</td>';
             }
-        };
 
-        /* ── Utilities ───────────────────────────────────────── */
-        function esc(s)  { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
-        function escA(s) { return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+            /* ── Keys ────────────────────────────────────────────── */
+            function tKey(prefix, colName, cat, type) {
+                return prefix + '||' + colName + '||' + cat + '||' + type;
+            }
 
-        /* ── Toast ───────────────────────────────────────────── */
-        function toast(type, title, msg) {
-            const c = document.getElementById('toast-container');
-            const icons = {
-                success:'<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>',
-                error:'<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>',
-                warning:'<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.072 16.5c-.77.833.192 2.5 1.732 2.5z"></path></svg>'
+            /* ── Calculation ─────────────────────────────────────── */
+            function getAchievementColor(pct) {
+                if (pct <= 25) return '#ef4444'; // Red
+                if (pct <= 50) return '#f97316'; // Orange
+                if (pct <= 75) return '#eab308'; // Yellow
+                if (pct <= 85) return '#84cc16'; // Yellowish green
+                return '#10b981'; // Green
+            }
+
+            function formatAchievement(act, tgt) {
+                if (!act) return '';
+                const tgtNum = parseInt(tgt) || 0;
+                let pctNum = 0;
+                if (tgtNum > 0) pctNum = Math.min((act / tgtNum) * 100, 100);
+
+                const pct = Math.round(pctNum * 10) / 10;
+                return act + ' (' + pct + '%)';
+            }
+
+            function calcCatTotal(prefix, colName, cat) {
+                const types = structure[cat];
+                let sum = 0, hasAny = false;
+                if (types.length === 0) {
+                    const v = parseInt(targets[tKey(prefix, colName, cat, '')]) || 0;
+                    return v || '';
+                }
+                types.forEach(type => {
+                    const v = parseInt(targets[tKey(prefix, colName, cat, type)]) || 0;
+                    if (v) hasAny = true;
+                    sum += v;
+                });
+                return hasAny ? sum : '';
+            }
+
+            function calcGrandTotal(prefix, colName) {
+                let sum = 0, hasAny = false;
+                categories.forEach(cat => {
+                    const catSum = calcCatTotal(prefix, colName, cat);
+                    if (catSum !== '') { hasAny = true; sum += catSum; }
+                });
+                return hasAny ? sum : '';
+            }
+
+            function calcCatActual(actualsDict, colName, cat) {
+                const types = structure[cat];
+                let sum = 0, hasAny = false;
+                if (types.length === 0) {
+                    const v = actualsDict[colName + '||' + cat + '||'] || 0;
+                    return v || '';
+                }
+                types.forEach(type => {
+                    const v = actualsDict[colName + '||' + cat + '||' + type] || 0;
+                    if (v) { hasAny = true; sum += v; }
+                });
+                return hasAny ? sum : '';
+            }
+
+            function calcGrandActual(actualsDict, colName) {
+                let sum = 0, hasAny = false;
+                categories.forEach(cat => {
+                    const catSum = calcCatActual(actualsDict, colName, cat);
+                    if (catSum !== '') { hasAny = true; sum += catSum; }
+                });
+                return hasAny ? sum : '';
+            }
+
+            /* ── Achievement Cards ───────────────────────────────── */
+            function renderCards() {
+                const c = document.getElementById('achievement-cards');
+                let h = '';
+
+                if (currentView === 'both' || currentView === 'store') {
+                    sites.forEach(site => {
+                        const total = calcGrandTotal('store', site);
+                        const actual = calcGrandActual(actualStore, site);
+                        h += makeCard(site, 'Store', total, actual, '#3b82f6',
+                            '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>'
+                        );
+                    });
+                }
+
+                if (currentView === 'both' || currentView === 'staff') {
+                    staffList.forEach(sp => {
+                        const total = calcGrandTotal('staff', sp);
+                        const actual = calcGrandActual(actualStaff, sp);
+                        h += makeCard(sp, 'Staff', total, actual, '#7c3aed',
+                            '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>'
+                        );
+                    });
+                }
+
+                c.innerHTML = h;
+            }
+
+            function makeCard(name, label, total, actual, color, icon) {
+                const val = total || '—';
+                const type = label.toLowerCase();
+                const isActive = activeFilter && activeFilter.type === type && activeFilter.name === name;
+                const ringClass = isActive ? 'ring-2 ring-offset-2 ring-blue-500 shadow-md scale-[1.02] border-blue-200' : 'hover:shadow-md';
+
+                const tgt = parseInt(total) || 0;
+                const act = parseInt(actual) || 0;
+                let pctNum = 0;
+                if (tgt > 0) pctNum = Math.min((act / tgt) * 100, 100);
+
+                const pct = Math.round(pctNum);
+                const achColor = getAchievementColor(pctNum);
+
+                const radius = 24;
+                const circumference = 2 * Math.PI * radius;
+                const offset = circumference - (pctNum / 100) * circumference;
+
+                return '<div class="stat-card cursor-pointer transition-all border border-transparent flex justify-between items-center ' + ringClass + '" onclick="window.toggleFilter(\'' + type + '\', \'' + escA(name) + '\')">' +
+                    '<div class="flex-grow min-w-0">' +
+                    '<div class="flex items-center gap-2 mb-2">' +
+                    '<span style="color:' + color + '">' + icon + '</span>' +
+                    '<span class="text-[10px] font-bold uppercase tracking-wider text-neutral-400">' + label + '</span>' +
+                    '</div>' +
+                    '<h3 class="font-bold text-base text-[#242424] truncate">' + esc(name) + '</h3>' +
+                    '<div class="flex items-baseline gap-1 mt-1">' +
+                    '<span class="text-2xl font-extrabold" style="color:' + color + '">' + val + '</span>' +
+                    '<span class="text-xs text-neutral-400 font-medium">total target</span>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="relative w-[60px] h-[60px] flex-shrink-0 flex items-center justify-center ml-2" title="Achievement: ' + act + ' / ' + (tgt || '0') + '">' +
+                    '<svg class="w-full h-full progress-ring" viewBox="0 0 60 60">' +
+                    '<circle class="text-neutral-100" stroke-width="4" stroke="currentColor" fill="transparent" r="24" cx="30" cy="30" />' +
+                    '<circle class="transition-all duration-700 ease-out" style="color:' + achColor + ';" stroke-width="4" stroke-dasharray="' + circumference + '" stroke-dashoffset="' + offset + '" stroke-linecap="round" stroke="currentColor" fill="transparent" r="24" cx="30" cy="30" />' +
+                    '</svg>' +
+                    '<span class="absolute text-[11px] font-bold" style="color:' + achColor + ';">' + pct + '%</span>' +
+                    '</div>' +
+                    '</div>';
+            }
+
+            /* ── KPIs ────────────────────────────────────────────── */
+            function updateKPIs() {
+                let productCount = 0;
+                categories.forEach(c => { productCount += Math.max(structure[c].length, 1); });
+                document.getElementById('kpi-categories').textContent = categories.length;
+                document.getElementById('kpi-products').textContent = productCount;
+                document.getElementById('kpi-stores').textContent = sites.length;
+                document.getElementById('kpi-staff').textContent = staffList.length;
+            }
+
+            /* ── UI Toggle ───────────────────────────────────────── */
+            function showUI(show) {
+                document.getElementById('upload-section').style.display = show ? 'none' : '';
+                document.getElementById('top-controls-row').style.display = show ? 'flex' : 'none';
+                document.getElementById('empty-state').style.display = show ? 'none' : '';
+                document.getElementById('pivot-table-wrapper').style.display = show ? '' : 'none';
+                document.getElementById('achievement-cards').style.display = show ? '' : 'none';
+            }
+
+            /* ── View Tabs ───────────────────────────────────────── */
+            window.setView = function (v) {
+                currentView = v;
+                activeFilter = null;
+                ['both', 'store', 'staff'].forEach(t => {
+                    document.getElementById('tab-' + t).className = 'view-tab' + (t === v ? ' active-' + t : '');
+                });
+                renderTable();
             };
-            const t = document.createElement('div');
-            t.className = 'toast toast-' + type;
-            t.innerHTML = '<div class="toast-icon">' + (icons[type]||icons.success) + '</div>' +
-                '<div class="toast-content"><div class="toast-title">' + title + '</div><div class="toast-message">' + msg + '</div></div>' +
-                '<div class="toast-close" onclick="this.parentElement.remove()"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></div>';
-            c.appendChild(t);
-            requestAnimationFrame(() => t.classList.add('show'));
-            setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 400); }, 4000);
-        }
-        window.showToast = toast;
-    })();
+
+            window.toggleFilter = function (type, name) {
+                if (activeFilter && activeFilter.type === type && activeFilter.name === name) {
+                    activeFilter = null;
+                } else {
+                    activeFilter = { type, name };
+                }
+                renderTable();
+            };
+
+            /* ── Input Handler ───────────────────────────────────── */
+            window._tgt = {
+                onInput: function (el) {
+                    const key = el.getAttribute('data-key');
+                    const val = el.value;
+                    if (val && parseInt(val) >= 0) targets[key] = val;
+                    else delete targets[key];
+                    // Recalc totals without full re-render (fast)
+                    updateTotals();
+                    renderCards();
+                }
+            };
+
+            function updateTotals() {
+                // Update all category total and grand total spans
+                const showS = currentView === 'both' || currentView === 'store';
+                const showSt = currentView === 'both' || currentView === 'staff';
+                const cols = [];
+                if (showS) sites.forEach(s => cols.push({ prefix: 'store', name: s }));
+                if (showSt) staffList.forEach(s => cols.push({ prefix: 'staff', name: s }));
+
+                // Category totals
+                document.querySelectorAll('[data-total-key]').forEach(span => {
+                    const tk = span.getAttribute('data-total-key');
+                    // Parse: prefix__colName__cat__catName
+                    const m = tk.match(/^(store|staff)__(.+?)__cat__(.+)$/);
+                    if (m) {
+                        const sum = calcCatTotal(m[1], m[2], m[3]);
+                        span.textContent = sum !== '' ? sum : '';
+                    }
+                });
+
+                // Grand totals: rebuild row
+                const gtRow = document.querySelector('.row-grand-total');
+                if (gtRow) {
+                    const tds = gtRow.querySelectorAll('.total-value');
+                    let idx = 0;
+                    if (showS) {
+                        sites.forEach(s => {
+                            if (tds[idx]) tds[idx].textContent = calcGrandTotal('store', s) || '';
+                            idx++;
+                        });
+                    }
+                    if (showSt) {
+                        staffList.forEach(s => {
+                            if (tds[idx]) tds[idx].textContent = calcGrandTotal('staff', s) || '';
+                            idx++;
+                        });
+                    }
+                }
+
+                // Update percentages for individual items
+                document.querySelectorAll('[data-pct-key]').forEach(span => {
+                    const parts = span.getAttribute('data-pct-key').split('||');
+                    const pfx = parts[0], s = parts[1], cat = parts[2], type = parts[3];
+                    const actDict = pfx === 'store' ? actualStore : actualStaff;
+                    const act = actDict[s + '||' + cat + '||' + type] || 0;
+                    const tgt = parseInt(targets[tKey(pfx, s, cat, type)]) || 0;
+                    span.innerHTML = formatAchievement(act, tgt);
+                });
+
+                // Update percentages for category totals
+                document.querySelectorAll('[data-pct-cat-key]').forEach(span => {
+                    const parts = span.getAttribute('data-pct-cat-key').split('||');
+                    const pfx = parts[0], s = parts[1], cat = parts[2];
+                    const actDict = pfx === 'store' ? actualStore : actualStaff;
+                    const act = calcCatActual(actDict, s, cat);
+                    const tgt = calcCatTotal(pfx, s, cat);
+                    span.innerHTML = formatAchievement(act, tgt);
+                });
+
+                // Update percentages for grand totals
+                document.querySelectorAll('[data-pct-grand-key]').forEach(span => {
+                    const parts = span.getAttribute('data-pct-grand-key').split('||');
+                    const pfx = parts[0], s = parts[1];
+                    const actDict = pfx === 'store' ? actualStore : actualStaff;
+                    const act = calcGrandActual(actDict, s);
+                    const tgt = calcGrandTotal(pfx, s);
+                    span.innerHTML = formatAchievement(act, tgt);
+                });
+            }
+
+            /* ── Save / Load ─────────────────────────────────────── */
+            function saveRawToStorage() {
+                try {
+                    const payload = { timestamp: Date.now(), data: rawData };
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+                } catch (e) { }
+            }
+
+            function loadFromStorage() {
+                try {
+                    const d = localStorage.getItem(STORAGE_KEY);
+                    if (d) {
+                        const parsed = JSON.parse(d);
+                        if (Array.isArray(parsed)) {
+                            rawData = parsed;
+                        } else if (parsed.data) {
+                            rawData = parsed.data;
+                            if (parsed.timestamp) {
+                                checkDataAge(parsed.timestamp);
+                            }
+                        }
+                        if (rawData.length) buildStructure();
+                    }
+                } catch (e) { }
+            }
+
+            function checkDataAge(ts) {
+                const ageHours = (Date.now() - ts) / (1000 * 60 * 60);
+                if (ageHours > 24) {
+                    const dot = document.getElementById('notification-dot');
+                    if (dot) dot.classList.remove('hidden');
+                    window.pendingNotification = `Sales data is ${Math.floor(ageHours)} hours old. Please update with the latest report!`;
+                }
+            }
+
+            window.toggleNotificationPanel = function (e) {
+                if (window.pendingNotification) {
+                    toast('warning', 'Data Update Required', window.pendingNotification);
+                } else {
+                    toast('info', 'No Notifications', 'All data is up to date.');
+                }
+            };
+
+
+            function loadTargetsFromStorage() {
+                try {
+                    const t = localStorage.getItem(TARGETS_KEY);
+                    if (t) targets = JSON.parse(t);
+                } catch (e) { }
+            }
+
+            window.saveTargets = function () {
+                // Collect from DOM
+                document.querySelectorAll('.pivot-table input[data-key]').forEach(inp => {
+                    const k = inp.getAttribute('data-key');
+                    if (inp.value && parseInt(inp.value) >= 0) targets[k] = inp.value;
+                    else delete targets[k];
+                });
+                try {
+                    localStorage.setItem(TARGETS_KEY, JSON.stringify(targets));
+                    toast('success', 'Targets Saved', 'All values persisted');
+                } catch (e) { toast('error', 'Save Failed', 'Storage quota exceeded'); }
+            };
+
+            /* ── Export ───────────────────────────────────────────── */
+            window.exportCSV = function () {
+                if (!categories.length) { toast('warning', 'No Data', 'Load data first'); return; }
+
+                let rows = [];
+                let hdr = ['itemser_description', 'item_type'];
+                sites.forEach(s => hdr.push(s + ' (Store Target)'));
+                staffList.forEach(s => hdr.push(s + ' (Staff Target)'));
+                sites.forEach(s => hdr.push(s + ' (Store Achievement)'));
+                staffList.forEach(s => hdr.push(s + ' (Staff Achievement)'));
+                rows.push(hdr.join(','));
+
+                categories.forEach(cat => {
+                    const types = structure[cat];
+                    const itemRows = types.length ? types : [''];
+                    itemRows.forEach(type => {
+                        let r = [csvE(cat), csvE(type)];
+                        sites.forEach(s => r.push(targets[tKey('store', s, cat, type)] || ''));
+                        staffList.forEach(s => r.push(targets[tKey('staff', s, cat, type)] || ''));
+                        sites.forEach(s => r.push(actualStore[s + '||' + cat + '||' + type] || '0'));
+                        staffList.forEach(s => r.push(actualStaff[s + '||' + cat + '||' + type] || '0'));
+                        rows.push(r.join(','));
+                    });
+                    // Total row
+                    let tr = [csvE('Total ' + cat), ''];
+                    sites.forEach(s => tr.push(calcCatTotal('store', s, cat) || ''));
+                    staffList.forEach(s => tr.push(calcCatTotal('staff', s, cat) || ''));
+                    sites.forEach(s => tr.push(calcCatActual(actualStore, s, cat) || '0'));
+                    staffList.forEach(s => tr.push(calcCatActual(actualStaff, s, cat) || '0'));
+                    rows.push(tr.join(','));
+                });
+
+                // Grand Total
+                let gr = ['Grand Total', ''];
+                sites.forEach(s => gr.push(calcGrandTotal('store', s) || ''));
+                staffList.forEach(s => gr.push(calcGrandTotal('staff', s) || ''));
+                sites.forEach(s => gr.push(calcGrandActual(actualStore, s) || '0'));
+                staffList.forEach(s => gr.push(calcGrandActual(actualStaff, s) || '0'));
+                rows.push(gr.join(','));
+
+                const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'target_achievement_' + new Date().toISOString().slice(0, 10) + '.csv';
+                a.click();
+                URL.revokeObjectURL(a.href);
+                toast('success', 'Exported', 'CSV downloaded');
+            };
+
+            /* ── Reset Dropdown ─────────────────────────────────── */
+            window.toggleResetMenu = function () {
+                const dd = document.getElementById('reset-dropdown');
+                dd.classList.toggle('hidden');
+            };
+
+            document.addEventListener('click', function (e) {
+                const wrapper = document.getElementById('reset-menu-wrapper');
+                if (wrapper && !wrapper.contains(e.target)) {
+                    const dd = document.getElementById('reset-dropdown');
+                    if (dd) dd.classList.add('hidden');
+                }
+            });
+
+            /* ── Reset ───────────────────────────────────────────── */
+            window.resetTargets = function () {
+                document.getElementById('reset-dropdown').classList.add('hidden');
+                if (confirm('Reset all Targets? Achievement data will remain unchanged. This cannot be undone.')) {
+                    targets = {};
+                    try { localStorage.removeItem(TARGETS_KEY); } catch (e) { }
+                    renderTable();
+                    renderCards();
+                    toast('success', 'Targets Reset', 'All target values have been cleared');
+                }
+            };
+
+            window.resetAchievement = function () {
+                document.getElementById('reset-dropdown').classList.add('hidden');
+                if (confirm('Reset Achievement data? Targets will remain unchanged. This cannot be undone.')) {
+                    actualStore = {};
+                    actualStaff = {};
+                    rawData = [];
+                    try { localStorage.removeItem(STORAGE_KEY); } catch (e) { }
+                    renderTable();
+                    renderCards();
+                    toast('success', 'Achievement Reset', 'All achievement data has been cleared');
+                }
+            };
+
+            window.resetAll = function () {
+                document.getElementById('reset-dropdown').classList.add('hidden');
+                if (confirm('Reset ALL data and targets? This cannot be undone.')) {
+                    try { localStorage.removeItem(STORAGE_KEY); localStorage.removeItem(TARGETS_KEY); } catch (e) { }
+                    window.location.reload();
+                }
+            };
+
+            /* ── Utilities ───────────────────────────────────────── */
+            function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+            function escA(s) { return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+            /* ── Toast ───────────────────────────────────────────── */
+            function toast(type, title, msg) {
+                const c = document.getElementById('toast-container');
+                const icons = {
+                    success: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>',
+                    error: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>',
+                    warning: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.072 16.5c-.77.833.192 2.5 1.732 2.5z"></path></svg>'
+                };
+                const t = document.createElement('div');
+                t.className = 'toast toast-' + type;
+                t.innerHTML = '<div class="toast-icon">' + (icons[type] || icons.success) + '</div>' +
+                    '<div class="toast-content"><div class="toast-title">' + title + '</div><div class="toast-message">' + msg + '</div></div>' +
+                    '<div class="toast-close" onclick="this.parentElement.remove()"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></div>';
+                c.appendChild(t);
+                requestAnimationFrame(() => t.classList.add('show'));
+                setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 400); }, 4000);
+            }
+            window.showToast = toast;
+        })();
     </script>
 </body>
+
 </html>
