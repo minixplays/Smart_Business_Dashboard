@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Pending Purchase Order Pivot Report — view open POs grouped by site with detail drill-down.">
+    <title>Pending PO Report — Smart Business Dashboard</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="assets/normalize.css">
+    <link rel="stylesheet" href="assets/theme.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/theme.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+        /* ── Base ──────────────────────────────────────────────── */
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            opacity: 0;
+            animation: pageEnter 0.4s ease-out 0.05s forwards;
+        }
+
+        @keyframes pageEnter {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        body.page-exit { animation: pageExit 0.25s ease-in forwards; }
+
+        @keyframes pageExit {
+            from { opacity: 1; transform: translateY(0); }
+            to   { opacity: 0; transform: translateY(-10px); }
+        }
+
+        /* ── Background — same warm gradient as poMaker ─────── */
+        .theme-bg {
+            background: linear-gradient(135deg, #dce0e3 0%, #f4ebd5 50%, #fae6a2 100%);
+        }
+
+        /* ── Main white card ────────────────────────────────── */
+        .gc-card {
+            background: #fbfbfc;
+            box-shadow: 0 20px 60px -15px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ── Nav pills ──────────────────────────────────────── */
+        .pill-nav-active {
+            background: #242424;
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .pill-nav {
+            color: #525252;
+            transition: all 0.2s;
+        }
+
+        .pill-nav:hover {
+            background: rgba(36, 36, 36, 0.06);
+            color: #242424;
+        }
+
+        /* ── KPI strip ──────────────────────────────────────── */
+        .kpi-strip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            align-items: flex-end;
+        }
+
+        .kpi-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .kpi-num {
+            font-size: 2.25rem;
+            font-weight: 300;
+            line-height: 1;
+            color: #1a1a1a;
+            letter-spacing: -0.03em;
+        }
+
+        .kpi-lbl {
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #a1a1aa;
+        }
+
+        .kpi-divider {
+            width: 1px;
+            height: 2.5rem;
+            background: #e4e4e7;
+            align-self: center;
+        }
+
+        /* ── Pivot table ────────────────────────────────────── */
+        .pivot-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8125rem;
+        }
+
+        .pivot-table thead th {
+            padding: 0.625rem 1rem;
+            font-size: 0.625rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #a1a1aa;
+            border-bottom: 1.5px solid #e4e4e7;
+            text-align: left;
+            background: transparent;
+            white-space: nowrap;
+        }
+
+        .pivot-table thead th.center { text-align: center; }
+
+        .pivot-table thead tr.group-header th {
+            background: #1a1a1a;
+            color: #f4c74a;
+            font-size: 0.6875rem;
+            letter-spacing: 0.08em;
+            padding: 0.5rem 1rem;
+        }
+
+        .pivot-table tbody td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #f0f0f2;
+            font-size: 0.8125rem;
+            color: #292929;
+            font-weight: 500;
+        }
+
+        .pivot-table tbody tr:hover td { background: #fafafa; cursor: pointer; }
+        .pivot-table tbody tr:last-child td { border-bottom: none; }
+
+        .pivot-table .count-cell {
+            text-align: center;
+            font-weight: 800;
+            font-size: 1rem;
+            color: #1a1a1a;
+        }
+
+        .pivot-table .site-cell { font-weight: 700; color: #1a1a1a; }
+
+        .pivot-table .total-row td {
+            background: #f8f6f0;
+            font-weight: 800;
+            border-top: 1.5px solid #e4e4e7;
+            border-bottom: none;
+        }
+
+        .pivot-table .total-row td.count-cell { color: #b45309; font-size: 1.125rem; }
+
+        /* ── Detail table ───────────────────────────────────── */
+        .detail-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8125rem;
+        }
+
+        .detail-table thead th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            padding: 0.85rem 1rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: #374151;
+            background: #f1f3f5;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 2px solid #cbd5e1;
+            white-space: nowrap;
+            text-align: left;
+        }
+
+        .detail-table thead th.th-num { text-align: right; }
+        .detail-table thead th.th-center { text-align: center; }
+
+        .detail-table tbody td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #f0f0f2;
+            color: #292929;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .detail-table tbody tr:hover td { background: #fafafa; }
+        .detail-table tbody tr:last-child td { border-bottom: none; }
+
+        .detail-table td.num { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+        .detail-table td.mono {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            color: #374151;
+            font-variant-numeric: tabular-nums;
+        }
+        .detail-table td.bold { font-weight: 700; color: #09090b; }
+        .detail-table td.muted { color: #a1a1aa; font-size: 0.75rem; }
+
+        /* ── Scroll wrappers ────────────────────────────────── */
+        .table-scroll {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .detail-scroll {
+            overflow-x: auto;
+            overflow-y: auto;
+            max-height: 52vh;
+            -webkit-overflow-scrolling: touch;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.875rem;
+            background: #fff;
+        }
+
+        ::-webkit-scrollbar { height: 5px; width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a1a1aa; }
+
+        /* ── Filters ────────────────────────────────────────── */
+        .filter-input {
+            border: 1.5px solid #eaeaec;
+            background: #fff;
+            border-radius: 0.625rem;
+            padding: 0.45rem 0.875rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: #292929;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+        }
+
+        .filter-search { width: 220px; }
+
+        /* ── Remarks input ──────────────────────────────────── */
+        .remarks-input {
+            border: 1.5px solid #eaeaec;
+            background: #fff;
+            border-radius: 0.5rem;
+            padding: 0.3rem 0.6rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: #292929;
+            width: 170px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .remarks-input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+        }
+
+        /* ── Buttons ────────────────────────────────────────── */
+        .btn-primary {
+            background: #242424;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.78rem;
+            border-radius: 999px;
+            padding: 0.55rem 1.125rem;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            transition: background 0.2s, transform 0.15s;
+            white-space: nowrap;
+        }
+
+        .btn-primary:hover { background: #3a3a3a; transform: translateY(-1px); }
+
+        .btn-outline {
+            background: transparent;
+            color: #525252;
+            font-weight: 700;
+            font-size: 0.78rem;
+            border-radius: 999px;
+            padding: 0.5rem 1rem;
+            border: 1.5px solid #e4e4e7;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: border-color 0.2s, color 0.2s, transform 0.15s;
+            white-space: nowrap;
+        }
+
+        .btn-outline:hover { border-color: #a1a1aa; color: #1a1a1a; transform: translateY(-1px); }
+
+        /* ── Section divider ────────────────────────────────── */
+        .sec-label {
+            font-size: 0.6rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #c4c4cc;
+        }
+
+        /* ── Item type chip ─────────────────────────────────── */
+        .type-chip {
+            display: inline-block;
+            padding: 0.15rem 0.55rem;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            background: #f0f0f5;
+            color: #525252;
+            letter-spacing: 0.04em;
+        }
+
+        /* ── Empty state ────────────────────────────────────── */
+        .empty-wrap {
+            padding: 5rem 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1rem;
+        }
+
+        /* ── Upload zone (nav bar) ──────────────────────────── */
+        .upload-zone { transition: all 0.2s ease-in-out; }
+        .upload-zone.dragover { border-color: #6366f1; background-color: #eef2ff; }
+
+        /* ── Toast ──────────────────────────────────────────── */
+        .toast-container {
+            position: fixed; top: 1.5rem; right: 1.5rem;
+            z-index: 9999; display: flex; flex-direction: column;
+            gap: 0.625rem; pointer-events: none;
+        }
+
+        .toast {
+            pointer-events: auto;
+            padding: 0.875rem 1.25rem;
+            border-radius: 1rem;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+            animation: toastIn 0.4s cubic-bezier(0.16,1,0.3,1);
+            display: flex; align-items: center; gap: 0.625rem;
+            max-width: 360px; backdrop-filter: blur(12px);
+        }
+
+        .toast-info    { background: rgba(36,36,36,0.92); color: #fff; }
+        .toast-success { background: rgba(16,185,129,0.92); color: #fff; }
+        .toast-warning { background: rgba(244,199,74,0.95); color: #242424; }
+        .toast-error   { background: rgba(239,68,68,0.92); color: #fff; }
+        .toast-exit    { animation: toastOut 0.3s ease-in forwards; }
+
+        @keyframes toastIn {
+            from { opacity:0; transform:translateX(100%) scale(0.9); }
+            to   { opacity:1; transform:translateX(0) scale(1); }
+        }
+        @keyframes toastOut {
+            from { opacity:1; transform:translateX(0) scale(1); }
+            to   { opacity:0; transform:translateX(100%) scale(0.9); }
+        }
+
+        /* ══════════════════════════════════════════════════════
+           DARK MODE
+        ══════════════════════════════════════════════════════ */
+        html.dark-mode body, body.dark-mode {
+            background: linear-gradient(135deg, #09090b 0%, #141417 50%, #1c1c21 100%) !important;
+            color: #f4f4f5 !important;
+        }
+
+        html.dark-mode .theme-bg, body.dark-mode .theme-bg {
+            background: linear-gradient(135deg, #09090b 0%, #141417 50%, #1c1c21 100%) !important;
+        }
+
+        html.dark-mode .gc-card, body.dark-mode .gc-card {
+            background: rgba(24,24,27,0.7) !important;
+            box-shadow: 0 0 60px rgba(0,0,0,0.5) !important;
+        }
+
+        html.dark-mode .pill-nav-active, body.dark-mode .pill-nav-active {
+            background: #f4c74a !important; color: #18181b !important;
+        }
+        html.dark-mode .pill-nav, body.dark-mode .pill-nav { color: #a1a1aa !important; }
+        html.dark-mode .pill-nav:hover, body.dark-mode .pill-nav:hover {
+            background: rgba(255,255,255,0.08) !important; color: #fff !important;
+        }
+
+        html.dark-mode .kpi-num, body.dark-mode .kpi-num { color: #f4f4f5 !important; }
+        html.dark-mode .kpi-lbl, body.dark-mode .kpi-lbl { color: #52525b !important; }
+        html.dark-mode .kpi-divider, body.dark-mode .kpi-divider { background: #3f3f46 !important; }
+
+        html.dark-mode .pivot-table thead th,
+        body.dark-mode .pivot-table thead th { color: #52525b !important; border-color: #3f3f46 !important; }
+        html.dark-mode .pivot-table tbody td,
+        body.dark-mode .pivot-table tbody td {
+            border-color: #27272a !important; color: #d4d4d8 !important; background: transparent !important;
+        }
+        html.dark-mode .pivot-table tbody tr:hover td,
+        body.dark-mode .pivot-table tbody tr:hover td { background: #1f1f23 !important; }
+        html.dark-mode .pivot-table .site-cell,
+        body.dark-mode .pivot-table .site-cell { color: #f4f4f5 !important; }
+        html.dark-mode .pivot-table .total-row td,
+        body.dark-mode .pivot-table .total-row td {
+            background: #1f1f23 !important; border-color: #3f3f46 !important;
+        }
+        html.dark-mode .table-scroll, body.dark-mode .table-scroll {
+            background: #18181b !important; border-color: #3f3f46 !important;
+        }
+
+        html.dark-mode .detail-scroll, body.dark-mode .detail-scroll {
+            background: #18181b !important; border-color: #3f3f46 !important;
+        }
+        html.dark-mode .detail-table thead th,
+        body.dark-mode .detail-table thead th {
+            background: #27272a !important; color: #e4e4e7 !important; border-top-color: #3f3f46 !important; border-bottom-color: #52525b !important;
+        }
+        html.dark-mode .detail-table thead th span,
+        body.dark-mode .detail-table thead th span {
+            color: #a1a1aa !important;
+        }
+        html.dark-mode .detail-table tbody td,
+        body.dark-mode .detail-table tbody td {
+            border-color: #27272a !important; color: #d4d4d8 !important; background: transparent !important;
+        }
+        html.dark-mode .detail-table tbody tr:hover td,
+        body.dark-mode .detail-table tbody tr:hover td { background: #1f1f23 !important; }
+        html.dark-mode .detail-table td.mono,
+        body.dark-mode .detail-table td.mono { color: #d4d4d8 !important; }
+        html.dark-mode .detail-table td.bold,
+        body.dark-mode .detail-table td.bold { color: #f4f4f5 !important; }
+        html.dark-mode .detail-table td.muted,
+        body.dark-mode .detail-table td.muted { color: #52525b !important; }
+
+        html.dark-mode .type-chip, body.dark-mode .type-chip {
+            background: #27272a !important; color: #a1a1aa !important;
+        }
+
+        html.dark-mode .filter-input, body.dark-mode .filter-input {
+            background: #09090b !important; color: #f4f4f5 !important; border-color: #3f3f46 !important;
+        }
+        html.dark-mode .filter-input:focus, body.dark-mode .filter-input:focus {
+            border-color: #6366f1 !important; box-shadow: 0 0 0 3px rgba(99,102,241,0.15) !important;
+        }
+
+        html.dark-mode .remarks-input, body.dark-mode .remarks-input {
+            background: #09090b !important; color: #f4f4f5 !important; border-color: #3f3f46 !important;
+        }
+        html.dark-mode .remarks-input:focus, body.dark-mode .remarks-input:focus {
+            border-color: #6366f1 !important;
+        }
+
+        html.dark-mode .btn-primary, body.dark-mode .btn-primary {
+            background: #f4c74a !important; color: #1a1a1a !important;
+        }
+        html.dark-mode .btn-primary:hover, body.dark-mode .btn-primary:hover { background: #e8b832 !important; }
+
+        html.dark-mode .btn-outline, body.dark-mode .btn-outline {
+            border-color: #3f3f46 !important; color: #a1a1aa !important;
+        }
+        html.dark-mode .btn-outline:hover, body.dark-mode .btn-outline:hover {
+            border-color: #71717a !important; color: #f4f4f5 !important;
+        }
+
+        html.dark-mode .sec-label, body.dark-mode .sec-label { color: #3f3f46 !important; }
+
+        html.dark-mode h1, html.dark-mode h2, html.dark-mode h3, html.dark-mode h4,
+        body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4 { color: #f4f4f5 !important; }
+        html.dark-mode p, body.dark-mode p { color: #a1a1aa !important; }
+
+        html.dark-mode .bg-white, body.dark-mode .bg-white {
+            background: #18181b !important; border-color: rgba(255,255,255,0.06) !important;
+        }
+        html.dark-mode .text-neutral-500, body.dark-mode .text-neutral-500 { color: #a1a1aa !important; }
+        html.dark-mode .text-neutral-400, body.dark-mode .text-neutral-400 { color: #71717a !important; }
+        html.dark-mode [fill="none"], body.dark-mode [fill="none"] { stroke: #f1f5f9 !important; }
+
+        html.dark-mode [class*="border-[#eaeaec]"], body.dark-mode [class*="border-[#eaeaec]"] { border-color: #3f3f46 !important; }
+    </style>
+</head>
+
+<body class="py-4 sm:py-8 px-2 sm:px-4 md:px-8 theme-bg min-h-screen text-[#292929]">
+<div class="max-w-[1600px] mx-auto relative">
+
+    <!-- ══ Top Navigation ═══════════════════════════════════════ -->
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+
+        <!-- Back / Logo -->
+        <div class="w-full md:w-auto">
+            <button onclick="navigateBack()"
+                class="flex items-center gap-1.5 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-white/40 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60 hover:bg-white text-[#292929] transition-all text-xs sm:text-sm font-semibold w-fit"
+                title="Back to Dashboard">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+                Dashboard
+            </button>
+        </div>
+
+        <!-- Nav Pills -->
+        <div class="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-white/40 backdrop-blur-md rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60 w-full md:w-auto justify-center overflow-x-auto">
+            <button class="pill-nav px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap"
+                onclick="navigate('index.html')">Dashboard</button>
+            <button class="pill-nav px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap"
+                onclick="navigate('index.html?panel=tools')">Tools</button>
+            <button class="pill-nav px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap"
+                onclick="navigate('reports.html')">Reports</button>
+            <button class="pill-nav-active px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap">
+                Pending POs</button>
+            <button class="pill-nav px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap"
+                onclick="navigate('calendar.html')">Calendar</button>
+            <button class="pill-nav px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap"
+                onclick="navigate('target.html')">Target</button>
+        </div>
+
+        <!-- Right actions -->
+        <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+            <button onclick="toggleTheme()"
+                class="flex items-center justify-center px-3 py-2.5 sm:px-4 rounded-full bg-white/40 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60 hover:bg-white transition-all"
+                title="Toggle dark mode">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                </svg>
+            </button>
+            <button id="btnSaveRemarks" onclick="saveRemarks()" class="btn-outline hidden">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
+                </svg>
+                Save Remarks
+            </button>
+            <button id="btnExport" onclick="exportCSV()" class="btn-primary hidden">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                </svg>
+                Export CSV
+            </button>
+        </div>
+    </div>
+
+    <!-- ══ Main Card ═════════════════════════════════════════════ -->
+    <div class="gc-card rounded-[2.5rem] sm:rounded-[3rem] p-6 sm:p-10 md:p-14 border border-white/80">
+
+        <!-- ── Title + KPIs ─────────────────────────────────── -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-6">
+            <div>
+                <h1 class="text-4xl sm:text-5xl font-light text-[#1a1a1a] tracking-tight mb-2 leading-none">
+                    Purchase&nbsp;<span class="font-bold">Order Report</span>
+                </h1>
+                <p class="text-neutral-500 font-medium text-sm">
+                    Pivot of pending POs by site — rows with status <strong class="text-[#292929]">CLOSED</strong> are excluded.
+                </p>
+            </div>
+
+            <!-- KPI strip -->
+            <div id="kpiRow" class="kpi-strip hidden">
+                <div class="kpi-item">
+                    <span class="kpi-num" id="kpiTotalOpen">—</span>
+                    <span class="kpi-lbl">Open POs</span>
+                </div>
+                <div class="kpi-divider"></div>
+                <div class="kpi-item">
+                    <span class="kpi-num" id="kpiSites">—</span>
+                    <span class="kpi-lbl">Sites</span>
+                </div>
+                <div class="kpi-divider"></div>
+                <div class="kpi-item">
+                    <span class="kpi-num" id="kpiQty">—</span>
+                    <span class="kpi-lbl">Total Qty</span>
+                </div>
+                <div class="kpi-divider"></div>
+                <div class="kpi-item">
+                    <span class="kpi-num" style="color:#b45309;" id="kpiSkipped">—</span>
+                    <span class="kpi-lbl">Closed Skipped</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Empty State ──────────────────────────────────── -->
+        <div id="emptyState">
+            <div class="empty-wrap">
+                <div class="w-16 h-16 rounded-full bg-neutral-100 flex items-center justify-center text-neutral-400">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-neutral-700">No Purchase Order Data</h3>
+                <p class="text-neutral-400 text-sm max-w-xs">
+                    Upload the <strong>Purchase Orders CSV</strong> on the
+                    <a href="reports.html" style="color:#b45309;font-weight:700;text-decoration:underline;">Reports &amp; Data Sync</a>
+                    page, then return here to view the pivot report.
+                </p>
+                <button onclick="navigate('reports.html')" class="btn-primary mt-2">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                    </svg>
+                    Go to Reports &amp; Upload
+                </button>
+            </div>
+        </div>
+
+        <!-- ── Report Content ───────────────────────────────── -->
+        <div id="reportContent" class="hidden">
+
+            <!-- ·· Pivot ·········································· -->
+            <div class="mb-12 max-w-md">
+                <p class="sec-label mb-4">Pivot Summary</p>
+
+                <div class="table-scroll rounded-2xl border border-neutral-200/80 shadow-sm overflow-hidden bg-white">
+                    <table class="pivot-table w-full" id="pivotTable">
+                        <thead>
+                            <tr class="group-header">
+                                <th style="width:260px;">site_description</th>
+                                <th class="center">PENDING POs</th>
+                            </tr>
+                            <tr>
+                                <th>Site</th>
+                                <th class="center">Count&nbsp;(status_description&nbsp;(OPEN))</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pivotBody"></tbody>
+                    </table>
+                </div>
+                <p class="text-xs text-neutral-400 font-medium mt-3">
+                    ↑ Click any site row to filter the detail view below.
+                </p>
+            </div>
+
+            <!-- ·· Detail ········································· -->
+            <div>
+                <!-- Filter bar -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                    <div>
+                        <p class="sec-label mb-1">Detail View</p>
+                        <p class="text-xs text-neutral-400 font-semibold" id="detailCount">— rows</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <div style="position:relative;">
+                            <svg style="position:absolute;left:0.7rem;top:50%;transform:translateY(-50%);width:0.875rem;height:0.875rem;color:#a1a1aa;pointer-events:none;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                            <input type="text" id="detailSearch" class="filter-input filter-search"
+                                style="padding-left:2.1rem;" placeholder="Search any field…" oninput="applyDetailFilters()">
+                        </div>
+                        <select id="siteFilter" class="filter-input" onchange="applyDetailFilters()">
+                            <option value="">All Sites</option>
+                        </select>
+                        <select id="itemTypeFilter" class="filter-input" onchange="applyDetailFilters()">
+                            <option value="">All Item Types</option>
+                        </select>
+                        <button onclick="clearDetailFilters()" class="btn-outline">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                            Clear
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Table -->
+                <div class="detail-scroll">
+                    <table class="detail-table" id="detailTable">
+                        <thead>
+                            <tr>
+                                <th class="th-center">#</th>
+                                <th>order_date</th>
+                                <th>sale_order</th>
+                                <th>purchase_order</th>
+                                <th>item_ser_descr</th>
+                                <th>item_type</th>
+                                <th>sku_code</th>
+                                <th class="th-num">quantity</th>
+                                <th>color_base</th>
+                                <th>Remarks <span style="font-size:0.65rem;font-weight:500;color:#64748b;text-transform:none;">(user input)</span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="detailBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div><!-- /reportContent -->
+    </div><!-- /gc-card -->
+</div><!-- /max-w -->
+
+<!-- Toast -->
+<div id="toastContainer" class="toast-container" role="status" aria-live="polite"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  PENDING PO REPORT
+// ═══════════════════════════════════════════════════════════════
+
+const STORAGE_KEY = 'raw_csv_poMaker';
+const REMARKS_KEY = 'pending_po_remarks';
+
+let allRows      = [];
+let filteredRows = [];
+let remarksMap   = {};
+let COL          = {};
+
+function resolveCol(keys, candidates) {
+    for (const cand of candidates) {
+        const nc = cand.toLowerCase().replace(/_/g, ' ');
+        for (const k of keys) {
+            if (k.trim().toLowerCase().replace(/_/g, ' ') === nc) return k;
+        }
+    }
+    for (const cand of candidates) {
+        const nc = cand.toLowerCase().replace(/_/g, ' ');
+        for (const k of keys) {
+            const nk = k.trim().toLowerCase().replace(/_/g, ' ');
+            if (nk.includes(nc) || nc.includes(nk)) return k;
+        }
+    }
+    return null;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    remarksMap = loadRemarks();
+    const csv = localStorage.getItem(STORAGE_KEY);
+    if (!csv) { return; }
+
+    Papa.parse(csv, {
+        header: true,
+        skipEmptyLines: true,
+        complete: (res) => {
+            if (!res.data || res.data.length === 0) return;
+            buildReport(res.data);
+        },
+        error: (err) => showToast('Failed to parse PO data: ' + err.message, 'error')
+    });
+});
+
+function buildReport(raw) {
+    const keys = Object.keys(raw[0]);
+
+    COL = {
+        site:          resolveCol(keys, ['site_description','site description','site']),
+        status:        resolveCol(keys, ['status_description','status description','status']),
+        orderDate:     resolveCol(keys, ['order_date','order date','orderdate','date']),
+        saleOrder:     resolveCol(keys, ['sale_order','sale order','so','order no']),
+        purchaseOrder: resolveCol(keys, ['purchase_order','purchase order','po','purc order']),
+        itemDescr:     resolveCol(keys, ['item_ser_descr','item description','item ser descr','itemser','description']),
+        itemType:      resolveCol(keys, ['item_type','item type','itemtype']),
+        skuCode:       resolveCol(keys, ['sku_code','sku code','sku','barcode']),
+        quantity:      resolveCol(keys, ['quantity','qty','order quantity']),
+        colorBase:     resolveCol(keys, ['color_base','colour based','color based','colour base','color','colour']),
+    };
+
+    let skippedCount = 0;
+    allRows = raw.filter(row => {
+        const status = (row[COL.status] || '').trim().toUpperCase();
+        if (status === 'CLOSED') { skippedCount++; return false; }
+        return true;
+    });
+
+    const totalQty = allRows.reduce((s, r) => s + (parseFloat(r[COL.quantity]) || 0), 0);
+    const siteSet  = new Set(allRows.map(r => val(r, COL.site)).filter(s => s && s !== '—'));
+    const typeSet  = new Set(allRows.map(r => val(r, COL.itemType)).filter(s => s && s !== '—'));
+
+    document.getElementById('kpiTotalOpen').textContent = allRows.length.toLocaleString();
+    document.getElementById('kpiSites').textContent     = siteSet.size;
+    document.getElementById('kpiQty').textContent       = totalQty.toLocaleString();
+    document.getElementById('kpiSkipped').textContent   = skippedCount.toLocaleString();
+
+    populateFilter('siteFilter',     [...siteSet].sort());
+    populateFilter('itemTypeFilter', [...typeSet].sort());
+
+    renderPivot(allRows);
+    filteredRows = [...allRows];
+    renderDetailTable(filteredRows);
+
+    document.getElementById('emptyState').classList.add('hidden');
+    document.getElementById('reportContent').classList.remove('hidden');
+    document.getElementById('kpiRow').classList.remove('hidden');
+    document.getElementById('btnExport').classList.remove('hidden');
+    document.getElementById('btnSaveRemarks').classList.remove('hidden');
+
+    showToast(allRows.length + ' open POs loaded across ' + siteSet.size + ' sites.', 'success');
+}
+
+function renderPivot(rows) {
+    const siteMap = {};
+    rows.forEach(r => {
+        const site = val(r, COL.site) || '(No Site)';
+        siteMap[site] = (siteMap[site] || 0) + 1;
+    });
+
+    const sites = Object.keys(siteMap).sort();
+    const tbody = document.getElementById('pivotBody');
+    tbody.innerHTML = '';
+    let grand = 0;
+
+    sites.forEach(site => {
+        const count = siteMap[site];
+        grand += count;
+        const tr = document.createElement('tr');
+        tr.innerHTML =
+            '<td class="site-cell">' + escHtml(site) + '</td>' +
+            '<td class="count-cell">' + count + '</td>';
+        tr.style.cursor = 'pointer';
+        tr.title = 'Filter detail to "' + site + '"';
+        tr.addEventListener('click', () => {
+            document.getElementById('siteFilter').value = site;
+            applyDetailFilters();
+            document.getElementById('detailBody').closest('.detail-scroll').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+        tbody.appendChild(tr);
+    });
+
+    const tot = document.createElement('tr');
+    tot.className = 'total-row';
+    tot.innerHTML = '<td>Grand Total</td><td class="count-cell">' + grand + '</td>';
+    tbody.appendChild(tot);
+}
+
+function renderDetailTable(rows) {
+    const tbody = document.getElementById('detailBody');
+    tbody.innerHTML = '';
+    document.getElementById('detailCount').textContent = rows.length.toLocaleString() + ' row' + (rows.length !== 1 ? 's' : '');
+
+    if (rows.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:2.5rem;color:#a1a1aa;font-weight:600;">No records match your filters.</td></tr>';
+        return;
+    }
+
+    rows.forEach((row, idx) => {
+        const key         = rowKey(row, idx);
+        const savedRemark = remarksMap[key] || '';
+        const itv         = val(row, COL.itemType);
+        const typeHtml    = itv !== '—'
+            ? '<span class="type-chip">' + escHtml(itv) + '</span>'
+            : '<span style="color:#d4d4d8;">—</span>';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML =
+            '<td class="muted">' + (idx+1) + '</td>' +
+            '<td>' + escHtml(val(row, COL.orderDate)) + '</td>' +
+            '<td class="mono">' + escHtml(val(row, COL.saleOrder)) + '</td>' +
+            '<td class="mono bold">' + escHtml(val(row, COL.purchaseOrder)) + '</td>' +
+            '<td>' + escHtml(val(row, COL.itemDescr)) + '</td>' +
+            '<td>' + typeHtml + '</td>' +
+            '<td class="mono">' + escHtml(val(row, COL.skuCode)) + '</td>' +
+            '<td class="num">' + escHtml(val(row, COL.quantity)) + '</td>' +
+            '<td>' + escHtml(val(row, COL.colorBase)) + '</td>' +
+            '<td><input type="text" class="remarks-input" data-key="' + escHtml(key) + '" value="' + escHtml(savedRemark) + '" placeholder="Add remark…" oninput="onRemarkChange(this)"></td>';
+        tbody.appendChild(tr);
+    });
+}
+
+function populateFilter(id, items) {
+    const sel = document.getElementById(id);
+    items.forEach(s => {
+        const o = document.createElement('option');
+        o.value = s; o.textContent = s;
+        sel.appendChild(o);
+    });
+}
+
+function applyDetailFilters() {
+    const search   = (document.getElementById('detailSearch').value || '').toLowerCase().trim();
+    const site     = document.getElementById('siteFilter').value;
+    const itemType = document.getElementById('itemTypeFilter').value;
+
+    filteredRows = allRows.filter(row => {
+        if (site     && val(row, COL.site) !== site)         return false;
+        if (itemType && val(row, COL.itemType) !== itemType) return false;
+        if (search) {
+            if (!Object.values(row).join(' ').toLowerCase().includes(search)) return false;
+        }
+        return true;
+    });
+    renderDetailTable(filteredRows);
+}
+
+function clearDetailFilters() {
+    document.getElementById('detailSearch').value   = '';
+    document.getElementById('siteFilter').value     = '';
+    document.getElementById('itemTypeFilter').value = '';
+    filteredRows = [...allRows];
+    renderDetailTable(filteredRows);
+}
+
+function onRemarkChange(input) { remarksMap[input.dataset.key] = input.value; }
+
+function saveRemarks() {
+    document.querySelectorAll('.remarks-input').forEach(inp => { remarksMap[inp.dataset.key] = inp.value; });
+    try {
+        localStorage.setItem(REMARKS_KEY, JSON.stringify(remarksMap));
+        showToast('Remarks saved.', 'success');
+    } catch(e) { showToast('Could not save remarks.', 'error'); }
+}
+
+function loadRemarks() {
+    try { return JSON.parse(localStorage.getItem(REMARKS_KEY) || '{}'); }
+    catch { return {}; }
+}
+
+function exportCSV() {
+    if (filteredRows.length === 0) { showToast('Nothing to export.', 'warning'); return; }
+    document.querySelectorAll('.remarks-input').forEach(inp => { remarksMap[inp.dataset.key] = inp.value; });
+
+    const headers = ['order_date','sale_order','purchase_order','item_ser_descr','item_type','sku_code','quantity','color_base','Remarks'];
+    const cols    = [COL.orderDate, COL.saleOrder, COL.purchaseOrder, COL.itemDescr, COL.itemType, COL.skuCode, COL.quantity, COL.colorBase];
+    const csvRows = [headers.join(',')];
+
+    filteredRows.forEach((row, idx) => {
+        const key   = rowKey(row, idx);
+        const cells = cols.map(c => csvCell(val(row, c)));
+        cells.push(csvCell(remarksMap[key] || ''));
+        csvRows.push(cells.join(','));
+    });
+
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = 'pending_po_' + fmtDate(new Date()) + '.csv';
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(url);
+    showToast('Exported ' + filteredRows.length + ' rows.', 'success');
+}
+
+// ── Utilities ──────────────────────────────────────────────────
+function val(row, col) {
+    if (!col) return '—';
+    const v = row[col];
+    return (v !== undefined && v !== null && String(v).trim() !== '') ? String(v).trim() : '—';
+}
+
+function rowKey(row, idx) {
+    return [val(row, COL.purchaseOrder), val(row, COL.saleOrder), val(row, COL.orderDate), idx].join('|');
+}
+
+function escHtml(str) {
+    const d = document.createElement('div');
+    d.textContent = String(str == null ? '' : str);
+    return d.innerHTML;
+}
+
+function csvCell(v) {
+    const s = String(v == null ? '' : v);
+    if (s.includes(',') || s.includes('"') || s.includes('\n'))
+        return '"' + s.replace(/"/g, '""') + '"';
+    return s;
+}
+
+function fmtDate(d) {
+    return d.getFullYear() + String(d.getMonth()+1).padStart(2,'0') + String(d.getDate()).padStart(2,'0');
+}
+
+function navigate(url) {
+    document.body.classList.add('page-exit');
+    setTimeout(() => { window.location.href = url; }, 250);
+}
+
+function navigateBack() { navigate('index.html'); }
+
+function showToast(message, type, duration) {
+    if (!duration) duration = 3500;
+    const c = document.getElementById('toastContainer');
+    const icons = { info:'💡', success:'✅', warning:'⚠️', error:'❌' };
+    const t = document.createElement('div');
+    t.className = 'toast toast-' + (type || 'info');
+    t.innerHTML = '<span>' + (icons[type]||'💡') + '</span><span>' + escHtml(message) + '</span>';
+    c.appendChild(t);
+    setTimeout(() => {
+        t.classList.add('toast-exit');
+        t.addEventListener('animationend', () => t.remove());
+    }, duration);
+}
+</script>
+
+<script src="assets/notifications.js"></script>
+</body>
+</html>
