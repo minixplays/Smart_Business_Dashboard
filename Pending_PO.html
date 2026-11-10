@@ -610,9 +610,9 @@
                             d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
                     </svg>
                 </div>
-                <h3 class="text-xl font-bold text-neutral-700">No Purchase Order Data</h3>
+                <h3 class="text-xl font-bold text-neutral-700">No Pending Purchase Order Data</h3>
                 <p class="text-neutral-400 text-sm max-w-xs">
-                    Upload the <strong>Purchase Orders CSV</strong> on the
+                    Upload the <strong>Pending Purchase Orders CSV</strong> on the
                     <a href="reports.html" style="color:#b45309;font-weight:700;text-decoration:underline;">Reports &amp; Data Sync</a>
                     page, then return here to view the pivot report.
                 </p>
@@ -718,7 +718,7 @@
 //  PENDING PO REPORT
 // ═══════════════════════════════════════════════════════════════
 
-const STORAGE_KEY = 'raw_csv_poMaker';
+const STORAGE_KEY = 'raw_csv_pendingPO';
 const REMARKS_KEY = 'pending_po_remarks';
 
 let allRows      = [];
@@ -745,7 +745,8 @@ function resolveCol(keys, candidates) {
 
 document.addEventListener('DOMContentLoaded', () => {
     remarksMap = loadRemarks();
-    const csv = localStorage.getItem(STORAGE_KEY);
+    // Prioritize dedicated raw_csv_pendingPO, fallback to raw_csv_poMaker if not yet set
+    const csv = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('raw_csv_poMaker');
     if (!csv) { return; }
 
     Papa.parse(csv, {

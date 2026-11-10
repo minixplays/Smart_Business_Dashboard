@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Business calendar with tailoring schedules and store routine events.">
-    <title>Calendar X Manager</title>
+    <title>Calendar – PNR Manager</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="assets/normalize.css">
@@ -40,7 +40,7 @@
         }
 
         .theme-bg {
-            background: linear-gradient(135deg, #fefbf6 0%, #fdf5e1 50%, #fae5ac 100%);
+            background: #faf8f5;
             min-height: 100vh;
         }
 
@@ -440,46 +440,301 @@
         html.dark-mode [fill="none"], body.dark-mode [fill="none"] { stroke: #f1f5f9 !important; }
         html.dark-mode .border-neutral-100, body.dark-mode .border-neutral-100 { border-color: #3f3f46 !important; }
         html.dark-mode .bg-neutral-200, body.dark-mode .bg-neutral-200 { background: #3f3f46 !important; }
+    
+        /* ===== SIDEBAR & MODERN DASHBOARD STYLES ===== */
+        .sidebar-nav {
+            background: #13151b;
+            transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .sidebar-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            padding: 0.65rem 0.875rem;
+            border-radius: 0.875rem;
+            color: #94a3b8;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            text-align: left;
+            width: 100%;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+        .sidebar-nav-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #ffffff;
+        }
+        .sidebar-nav-item.active {
+            background: rgba(244, 199, 74, 0.12);
+            color: #f4c74a;
+            border: 1px solid rgba(244, 199, 74, 0.35);
+        }
+        .sidebar-nav-item.active svg {
+            color: #f4c74a;
+        }
+        .sidebar-collapsed {
+            width: 72px !important;
+        }
+        .sidebar-collapsed .nav-text,
+        .sidebar-collapsed .logo-text,
+        .sidebar-collapsed .profile-text,
+        .sidebar-collapsed .collapse-icon-expanded {
+            display: none !important;
+        }
+        .sidebar-collapsed .sidebar-header {
+            justify-content: center !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+        .sidebar-collapsed .sidebar-nav-item {
+            justify-content: center !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+        .sidebar-collapsed .user-profile-row {
+            justify-content: center !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+        body.dark-mode .sidebar-nav {
+            background: #0d0f14;
+        }
+        body.dark-mode header {
+            background: rgba(13, 15, 20, 0.8) !important;
+            border-bottom-color: rgba(255, 255, 255, 0.05) !important;
+        }
+        body.dark-mode .theme-bg, html.dark-mode .theme-bg {
+            background: #090a0f !important;
+        }
+        body.dark-mode header input {
+            background: #141720 !important;
+            border-color: #272a35 !important;
+            color: #f4f4f5 !important;
+        }
+        body.dark-mode header button {
+            background: #141720 !important;
+            border-color: #272a35 !important;
+            color: #94a3b8 !important;
+        }
+        body.dark-mode header button:hover {
+            color: #ffffff !important;
+        }
+
+    
+        /* Garment Cards & Follow-up Filter Styles */
+        .garment-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            color: #374151;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .garment-card:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+            transform: translateY(-1px);
+        }
+        .garment-card.active {
+            background: #1a1a1a !important;
+            color: #ffffff !important;
+            border-color: #1a1a1a !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        .garment-card.active svg {
+            color: #ffffff !important;
+        }
+        body.dark-mode .garment-card {
+            background: #181a24 !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+            color: #94a3b8 !important;
+        }
+        body.dark-mode .garment-card:hover {
+            background: #202433 !important;
+            color: #ffffff !important;
+        }
+        body.dark-mode .garment-card.active {
+            background: #f4c74a !important;
+            color: #13151b !important;
+            border-color: #f4c74a !important;
+        }
+        body.dark-mode .garment-card.active svg {
+            color: #13151b !important;
+        }
+        body.dark-mode #followupInfoBanner {
+            background: rgba(99, 102, 241, 0.15) !important;
+            border-color: rgba(99, 102, 241, 0.25) !important;
+            color: #c7d2fe !important;
+        }
+        body.dark-mode .followup-row {
+            background: #181a24 !important;
+            border-color: rgba(255, 255, 255, 0.06) !important;
+        }
+        body.dark-mode .followup-row:hover {
+            background: #202433 !important;
+        }
+        /* Event badge mockup colors */
+        .event-blue { background: #e0f2fe; color: #026aa2; border: 1px solid #b9e6fe; font-weight: 700; }
+        .event-red { background: #fee4e2; color: #b42318; border: 1px solid #fecdca; font-weight: 700; }
+
     </style>
 </head>
 
-<body class="theme-bg p-2 sm:p-4 md:p-6 lg:p-8 text-[#242424]">
+<body class="theme-bg min-h-screen text-[#242424] flex overflow-x-hidden antialiased" style="margin:0;padding:0;">
 
-    <div class="dashboard-container rounded-[2.5rem] sm:rounded-[3rem] p-4 sm:p-8 md:p-10 border border-neutral-200 min-h-[92vh] flex flex-col">
-
-        <!-- Header (Same as Dashboard) -->
-        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-6 w-full">
-            <div class="flex items-center gap-3 bg-white px-5 py-2.5 rounded-full shadow-sm border border-neutral-100/50 cursor-pointer" onclick="navigateTo('index')">
-                <div class="w-8 h-8 rounded-full bg-[#f4c74a] flex items-center justify-center text-[#242424] font-extrabold text-sm shadow-inner">
+    <!-- ===== LEFT SIDEBAR ===== -->
+    <aside id="sidebar" class="sidebar-nav w-56 flex-shrink-0 h-screen sticky top-0 flex flex-col py-6 px-3 z-40 border-r border-neutral-800/40 select-none">
+        <!-- Logo & Collapse Button -->
+        <div class="sidebar-header flex items-center justify-between px-2 mb-7">
+            <div class="flex items-center gap-2.5 cursor-pointer" onclick="navigateTo('index')">
+                <div class="w-8 h-8 rounded-full bg-[#f4c74a] flex items-center justify-center text-[#1a1a1a] font-extrabold text-xs shadow-inner flex-shrink-0">
                     PNR
                 </div>
-                <span class="font-extrabold text-lg tracking-tight">Manager</span>
+                <span class="logo-text font-extrabold text-base tracking-tight text-white">Manager</span>
             </div>
-
-            <!-- Navigation -->
-            <div class="flex items-center overflow-x-auto w-full lg:w-auto bg-white/60 backdrop-blur-md p-1.5 rounded-full border border-white shadow-[0_4px_20px_rgba(0,0,0,0.02)] hide-scrollbar">
-                <button class="pill-nav px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap" onclick="navigateTo('index')">Dashboard</button>
-                <button class="pill-nav px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap" onclick="navigateTo('tools')">Tools</button>
-                <button class="pill-nav px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap" onclick="navigateTo('reports')">Reports</button>
-                <button class="pill-nav px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap" onclick="navigateTo('Pending_PO')">Pending POs</button>
-                <button class="pill-nav-active px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap">Calendar</button>
-                <button class="pill-nav px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap" onclick="navigateTo('target')">Target</button>
-            </div>
-
-            <!-- Right Profile -->
-            <div class="flex items-center gap-2">
-                <button class="w-10 h-10 rounded-full bg-white border border-neutral-100 flex items-center justify-center text-neutral-500 hover:text-[#242424] hover:bg-neutral-50 transition shadow-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                    </svg>
-                </button>
-                <div class="w-10 h-10 rounded-full bg-neutral-200 border-2 border-white shadow-sm overflow-hidden">
-                    <img src="https://ui-avatars.com/api/?name=Admin&background=242424&color=fff" alt="Profile" class="w-full h-full object-cover">
-                </div>
-            </div>
+            <button onclick="toggleSidebar()" class="collapse-icon-expanded p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-white/5 transition" title="Toggle Sidebar">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
+                </svg>
+            </button>
         </div>
 
-        <!-- Main Content -->
+        <!-- Main Navigation Links -->
+        <nav class="flex flex-col gap-1.5 flex-grow">
+            <button class="sidebar-nav-item" onclick="navigateTo('index')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+                <span class="nav-text">Dashboard</span>
+            </button>
+            <button class="sidebar-nav-item" onclick="navigateTo('tools')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l-7-7m7 7l-2.121 2.121m4.242 4.242a3 3 0 11-4.242-4.242m0 0a3 3 0 10-4.242-4.242m8.484 0a3 3 0 10-4.242-4.242m0 0L5 19"/>
+                </svg>
+                <span class="nav-text">Tools</span>
+            </button>
+            <button class="sidebar-nav-item" onclick="navigateTo('reports')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span class="nav-text">Reports</span>
+            </button>
+            <button class="sidebar-nav-item" onclick="navigateTo('Pending_PO')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span class="nav-text">Pending POs</span>
+            </button>
+            <button class="sidebar-nav-item active" onclick="navigateTo('calendar')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                <span class="nav-text">Calendar</span>
+            </button>
+            <button class="sidebar-nav-item" onclick="navigateTo('target')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0013 3.06V1h-2v2.06A8.994 8.994 0 003.06 11H1v2h2.06A8.994 8.994 0 0011 20.94V23h2v-2.06A8.994 8.994 0 0020.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
+                </svg>
+                <span class="nav-text">Target</span>
+            </button>
+        </nav>
+
+        <!-- Bottom Items -->
+        <div class="flex flex-col gap-1.5 pt-3 border-t border-white/10">
+            <button class="sidebar-nav-item" onclick="showToast('Settings panel', 'info')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <span class="nav-text">Settings</span>
+            </button>
+            <button id="sidebarNotificationBtn" class="sidebar-nav-item relative" onclick="toggleNotificationPanel(event)">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                </svg>
+                <span class="nav-text">Notifications</span>
+            </button>
+
+            <!-- User Profile Row -->
+            <div class="user-profile-row flex items-center gap-2.5 px-2 py-2 mt-1 pt-3 border-t border-white/10 cursor-pointer">
+                <div class="w-8 h-8 rounded-full bg-[#1b1e24] border border-neutral-700/80 flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
+                    AU
+                </div>
+                <div class="profile-text flex-grow min-w-0">
+                    <div class="text-xs font-bold text-white truncate leading-tight">Admin User</div>
+                    <div class="text-[10px] text-neutral-400 font-medium">Super Admin</div>
+                </div>
+                <svg class="profile-text w-3.5 h-3.5 text-neutral-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ===== MAIN CONTENT COLUMN ===== -->
+    <div class="flex-1 flex flex-col min-w-0 min-h-screen overflow-y-auto">
+
+        <!-- ===== TOP BAR HEADER ===== -->
+        <header class="flex items-center justify-between px-6 py-4 bg-transparent sticky top-0 z-30 backdrop-blur-md">
+            <!-- Left: Hamburger icon -->
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSidebar()" class="w-9 h-9 rounded-xl bg-white border border-neutral-200/60 shadow-xs flex items-center justify-center text-neutral-700 hover:text-black hover:bg-neutral-50 transition" title="Toggle Sidebar">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Center: Search Bar -->
+            <div class="flex-1 max-w-md mx-4">
+                <div class="relative w-full">
+                    <div class="absolute inset-y-0 left-3.5 flex items-center pointer-events-none">
+                        <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                    <input type="text" id="calendarSearchBar" placeholder="Search orders or events..."
+                        class="w-full pl-10 pr-4 py-2 text-xs sm:text-sm font-medium bg-white rounded-full border border-neutral-200/80 shadow-xs focus:outline-none focus:ring-2 focus:ring-[#f4c74a]/40 focus:border-[#f4c74a] transition text-[#1a1a1a] placeholder-neutral-400">
+                </div>
+            </div>
+
+            <!-- Right: Clock & Action Buttons -->
+            <div class="flex items-center gap-2.5">
+                <div class="hidden sm:flex flex-col items-end mr-2">
+                    <span id="live-clock" class="text-xs font-bold text-[#1a1a1a] tabular-nums tracking-tight">--:-- --</span>
+                    <span id="live-date" class="text-[9px] font-bold text-neutral-400 uppercase tracking-widest">---</span>
+                </div>
+                <button class="w-9 h-9 rounded-full bg-white border border-neutral-200/80 shadow-xs flex items-center justify-center text-neutral-500 hover:text-[#1a1a1a] hover:bg-neutral-50 transition" title="Settings">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                </button>
+                <button onclick="toggleTheme()" class="w-9 h-9 rounded-full bg-white border border-neutral-200/80 shadow-xs flex items-center justify-center text-neutral-500 hover:text-[#1a1a1a] hover:bg-neutral-50 transition theme-toggle relative" title="Toggle Theme">
+                    <span class="sun-icon">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1m-16 0H1m15.364 1.636l.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                    </span>
+                    <span class="moon-icon">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                        </svg>
+                    </span>
+                </button>
+                <button id="notificationBtn" onclick="toggleNotificationPanel(event)" class="w-9 h-9 rounded-full bg-white border border-neutral-200/80 shadow-xs flex items-center justify-center text-neutral-500 hover:text-[#1a1a1a] hover:bg-neutral-50 transition relative" title="Notifications">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                    </svg>
+                </button>
+                <div class="w-9 h-9 rounded-full bg-[#171920] text-white flex items-center justify-center text-xs font-bold shadow-xs cursor-pointer ml-0.5">
+                    AU
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== MAIN VIEWPORT ===== -->
+        <main class="flex-1 px-6 py-4 flex flex-col min-h-0">
+            <!-- Main Content -->
         <div class="flex-1 flex flex-col xl:flex-row gap-8">
             
             <!-- Left Side: Calendar Grid -->
@@ -524,40 +779,150 @@
             </div>
 
             <!-- Right Side: Events Panel -->
-            <div class="w-full xl:w-80 side-panel gap-4">
+            <div class="w-full xl:w-[410px] side-panel gap-3 flex-shrink-0">
+                <!-- Panel Top Header -->
+                <div class="flex items-center justify-between pb-1 border-b border-neutral-100">
+                    <h2 class="text-sm font-extrabold flex items-center gap-2 text-[#1a1a1a]">
+                        <svg class="w-4 h-4 text-[#1a1a1a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                        </svg>
+                        Follow-up Filters
+                    </h2>
+                    <button onclick="resetFollowupFilter()" class="text-neutral-400 hover:text-black p-1 rounded-lg transition" title="Reset Filters">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
 
-                <!-- == UPCOMING EVENTS VIEW == -->
-                <div id="upcomingView" class="upcoming-panel">
+                <!-- 2-Tab Switcher Pill -->
+                <div class="flex bg-neutral-100 p-1 rounded-full mb-1">
+                    <button id="tabFollowups" onclick="switchSideTab('followups')" class="flex-1 py-1.5 px-3 rounded-full text-xs font-bold transition bg-[#1a1a1a] text-white shadow-xs">
+                        Pending Tailoring Follow-ups
+                    </button>
+                    <button id="tabUpcoming" onclick="switchSideTab('upcoming')" class="flex-1 py-1.5 px-3 rounded-full text-xs font-bold transition text-neutral-500 hover:text-black">
+                        Upcoming Events
+                    </button>
+                </div>
+
+                <!-- == 1. FOLLOW-UP FILTERS VIEW == -->
+                <div id="followupView" class="flex flex-col flex-1 min-h-0">
+                    
+                    <!-- Filter by Garment Type Header -->
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-[#1a1a1a]">Filter by Garment Type</span>
+                        <div class="relative">
+                            <select id="followupMonthFilter" onchange="applyFollowupFilter()" class="text-[11px] font-bold bg-transparent border-none text-neutral-600 focus:ring-0 cursor-pointer pr-4 py-0">
+                                <option value="all" selected>All Pending ▾</option>
+                                <option value="this-month">This Month</option>
+                                <option value="this-week">This Week</option>
+                                <option value="today">Today</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 4 Garment Category Cards -->
+                    <div class="grid grid-cols-4 gap-2 mb-3">
+                        <button id="garment-shirt" onclick="selectGarmentFilter('shirt')" class="garment-card flex flex-col items-center justify-center p-2.5 rounded-2xl border transition text-center cursor-pointer">
+                            <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 3H8l-4 4 3 3 2-2v11a1 1 0 001 1h8a1 1 0 001-1V6l2 2 3-3-4-4z"/>
+                            </svg>
+                            <span class="text-[11px] font-bold">Shirts</span>
+                        </button>
+                        <button id="garment-coat" onclick="selectGarmentFilter('coat')" class="garment-card flex flex-col items-center justify-center p-2.5 rounded-2xl border transition text-center cursor-pointer">
+                            <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 3h10l-1 5-4 4-4-4L7 3zm0 0v16a2 2 0 002 2h6a2 2 0 002-2V3M12 12v9"/>
+                            </svg>
+                            <span class="text-[11px] font-bold">Coats</span>
+                        </button>
+                        <button id="garment-trouser" onclick="selectGarmentFilter('trouser')" class="garment-card flex flex-col items-center justify-center p-2.5 rounded-2xl border transition text-center cursor-pointer">
+                            <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4h10l1 16-4-1-2-7-2 7-4 1L7 4z"/>
+                            </svg>
+                            <span class="text-[11px] font-bold">Trousers</span>
+                        </button>
+                        <button id="garment-other" onclick="selectGarmentFilter('other')" class="garment-card flex flex-col items-center justify-center p-2.5 rounded-2xl border transition text-center cursor-pointer">
+                            <svg class="w-5 h-5 mb-1" fill="currentColor" viewBox="0 0 24 24">
+                                <circle cx="6" cy="6" r="1.8"/><circle cx="12" cy="6" r="1.8"/><circle cx="18" cy="6" r="1.8"/><circle cx="6" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="18" cy="12" r="1.8"/><circle cx="6" cy="18" r="1.8"/><circle cx="12" cy="18" r="1.8"/><circle cx="18" cy="18" r="1.8"/>
+                            </svg>
+                            <span class="text-[11px] font-bold">Others</span>
+                        </button>
+                    </div>
+
+                    <!-- Info Callout Banner -->
+                    <div id="followupInfoBanner" class="p-2.5 bg-[#f0f2fe] border border-indigo-100 rounded-xl mb-3 flex items-start gap-2 text-indigo-900 text-xs">
+                        <svg class="w-4 h-4 text-indigo-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span id="followupInfoText" class="font-medium text-[11px] leading-tight">
+                            Showing all pending follow-ups for All Garments
+                        </span>
+                    </div>
+
+                    <!-- Follow-up List Header -->
+                    <div class="flex items-center justify-between mb-2">
+                        <span id="followupListHeader" class="text-xs font-extrabold text-[#1a1a1a]">
+                            Pending Tailoring Follow-ups (12)
+                        </span>
+                        <div class="flex items-center gap-1">
+                            <select id="followupSortBy" onchange="renderFollowupList()" class="text-[11px] font-semibold bg-transparent border-none text-neutral-500 focus:ring-0 cursor-pointer pr-4 py-0">
+                                <option value="fcfs">Sort by ▾</option>
+                                <option value="fcfs">FCFS (Earliest Delivery)</option>
+                                <option value="trial">Earliest Trial</option>
+                                <option value="name">Customer Name</option>
+                                <option value="order">Order Number</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Scrollable Follow-up List -->
+                    <div id="followupItemsList" class="flex flex-col gap-2 flex-1 overflow-y-auto min-h-0 pr-1 max-h-[380px]">
+                        <!-- Injected Rows -->
+                    </div>
+
+                    <!-- Bottom CTA Button -->
+                    <div class="mt-auto pt-3 border-t border-neutral-100">
+                        <button onclick="viewAllFollowupsToggle()" id="viewAllFollowupsBtn" class="w-full bg-[#1a1a1a] hover:bg-black text-white font-bold py-2.5 px-4 rounded-xl shadow-xs transition flex items-center justify-center gap-2 text-xs">
+                            <svg class="w-4 h-4 text-[#f4c74a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+                            </svg>
+                            <span id="viewAllBtnText">← Show Filtered Month</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- == 2. UPCOMING EVENTS VIEW == -->
+                <div id="upcomingView" class="upcoming-panel hidden-panel">
                     <div>
-                        <h2 class="text-lg font-extrabold mb-4 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-[#f4c74a]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        <h2 class="text-base font-extrabold mb-3 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-[#f4c74a]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                             Upcoming Events
                         </h2>
-                        <div class="flex flex-col gap-3" id="upcomingEventsList">
+                        <div class="flex flex-col gap-2.5" id="upcomingEventsList">
                             <!-- JS Injected Events -->
                         </div>
                     </div>
-                    <div class="mt-auto pt-4">
-                        <button class="w-full bg-[#242424] text-white font-bold py-3 px-4 rounded-xl shadow-lg hover:bg-black transition-colors flex items-center justify-center gap-2">
+                    <div class="mt-auto pt-3">
+                        <button onclick="showToast('Event scheduling coming soon', 'info')" class="w-full bg-[#1a1a1a] text-white font-bold py-2.5 px-4 rounded-xl shadow-xs hover:bg-black transition-colors flex items-center justify-center gap-2 text-xs">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                             New Event
                         </button>
                     </div>
                 </div>
 
-                <!-- == ORDER TRACKER VIEW == -->
+                <!-- == 3. ORDER TRACKER VIEW == -->
                 <div id="trackerView" class="tracker-panel">
                     <!-- Back Button -->
-                    <button onclick="closeTracker()" class="flex items-center gap-1.5 text-xs font-bold text-neutral-500 hover:text-[#242424] transition mb-4 w-fit">
+                    <button onclick="closeTracker()" class="flex items-center gap-1.5 text-xs font-bold text-neutral-500 hover:text-[#242424] transition mb-3 w-fit">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
-                        Back to Events
+                        Back to Follow-ups
                     </button>
 
                     <!-- Order Info Header -->
-                    <div id="trackerHeader" class="mb-4 pb-4 border-b border-neutral-200"></div>
+                    <div id="trackerHeader" class="mb-3 pb-3 border-b border-neutral-200"></div>
 
                     <!-- Item Tab Switcher (shown only if multiple items) -->
-                    <div id="trackerItemTabs" class="flex flex-wrap gap-1.5 mb-4"></div>
+                    <div id="trackerItemTabs" class="flex flex-wrap gap-1.5 mb-3"></div>
 
                     <!-- Vertical Stage Track -->
                     <div id="trackerStages" class="flex-1 overflow-y-auto min-h-0"></div>
@@ -568,11 +933,80 @@
 
             </div>
         </div>
-    </div>
+        </main>
 
+        <div class="mt-auto py-4 text-center text-neutral-400 text-[10px] font-extrabold uppercase tracking-widest">
+            Manager &copy; 2026
+        </div>
+
+    </div> <!-- end main content column -->
     <script>
+
+        // Live Clock & Sidebar Helpers
+        function updateClock() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+            const dateStr = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }).toUpperCase();
+            const clockEl = document.getElementById('live-clock');
+            const dateEl = document.getElementById('live-date');
+            if (clockEl) clockEl.textContent = timeStr;
+            if (dateEl) dateEl.textContent = dateStr;
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) {
+                sidebar.classList.toggle('sidebar-collapsed');
+            }
+        }
+
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // Search in Upcoming Events and Calendar Badges
+        const calSearch = document.getElementById('calendarSearchBar');
+        if (calSearch) {
+            calSearch.addEventListener('input', (e) => {
+                const q = e.target.value.toLowerCase().trim();
+                const items = document.querySelectorAll('#upcomingEventsList > div');
+                items.forEach(item => {
+                    const txt = item.textContent.toLowerCase();
+                    if (!q || txt.includes(q)) {
+                        item.style.display = '';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+
+                const followups = document.querySelectorAll('#followupItemsList > div');
+                followups.forEach(item => {
+                    const txt = item.textContent.toLowerCase();
+                    if (!q || txt.includes(q)) {
+                        item.style.display = '';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+
+                const badges = document.querySelectorAll('#calendarDays .event-badge');
+                badges.forEach(badge => {
+                    if (!q) {
+                        badge.style.opacity = '1';
+                        badge.style.filter = 'none';
+                    } else if (badge.textContent.toLowerCase().includes(q)) {
+                        badge.style.opacity = '1';
+                        badge.style.filter = 'drop-shadow(0 0 4px #f4c74a)';
+                    } else {
+                        badge.style.opacity = '0.25';
+                        badge.style.filter = 'none';
+                    }
+                });
+            });
+        }
+
         // =============================================
-        // ORDER TRACKING PANEL LOGIC
+        // =============================================
+        // ORDER TRACKING & TAILORING DATA DEFINITIONS
         // =============================================
         const TRIAL_STAGES = [
             "FABRIC RECEIVED", "CUTTING COMPLETED", "CUTTING SHIPPED TO FACTORY",
@@ -587,11 +1021,482 @@
             "FINISHED GARMENT READY AT STORE", "DELVERED TO CUSTOMER"
         ];
 
+        // Default Tailoring Orders matching the Smart Dashboard Mockup
+        const DEFAULT_TAILORING_ORDERS = [
+            {
+                orderNo: "SO27022650",
+                customerName: "Ramesh Kumar",
+                deliveryDate: "10-Nov-26",
+                trailDate: "05-Nov-26",
+                items: [{ product: "Shirt", woNo: "WO-9901", woOrderStatus: "QC TESTING", orderKind: "TRIAL", qty: 2 }]
+            },
+            {
+                orderNo: "SO27022855",
+                customerName: "Suresh Varma",
+                deliveryDate: "10-Nov-26",
+                trailDate: "06-Nov-26",
+                items: [{ product: "Shirt", woNo: "WO-9902", woOrderStatus: "ALLOCATED_FINSISH_TAILOR", orderKind: "FULL FINISH", qty: 1 }]
+            },
+            {
+                orderNo: "SO27022646",
+                customerName: "Praveen Patil",
+                trailDate: "11-Nov-26",
+                deliveryDate: "27-Nov-26",
+                items: [{ product: "Coat", woNo: "WO-9903", woOrderStatus: "TRIAL GARMENT READY STORE", orderKind: "TRIAL", qty: 1 }]
+            },
+            {
+                orderNo: "SO27022415",
+                customerName: "Mahesh Deshmukh",
+                trailDate: "11-Nov-26",
+                deliveryDate: "22-Nov-26",
+                items: [{ product: "Trouser", woNo: "WO-9904", woOrderStatus: "CUTTING COMPLETED", orderKind: "FULL FINISH", qty: 2 }]
+            },
+            {
+                orderNo: "SO27022694",
+                customerName: "Dinesh Patel",
+                deliveryDate: "11-Nov-26",
+                trailDate: "07-Nov-26",
+                items: [{ product: "Shirt", woNo: "WO-9905", woOrderStatus: "FINISHED GARMENT READY AT STORE", orderKind: "TRIAL", qty: 3 }]
+            },
+            {
+                orderNo: "SO27023079",
+                customerName: "Rajesh Shinde",
+                deliveryDate: "12-Nov-26",
+                trailDate: "08-Nov-26",
+                items: [{ product: "Coat", woNo: "WO-9906", woOrderStatus: "TRIAL COMPLETED AT STORE", orderKind: "TRIAL", qty: 1 }]
+            },
+            {
+                orderNo: "SO27022394",
+                customerName: "Amitabh Kulkarni",
+                deliveryDate: "13-Nov-26",
+                trailDate: "09-Nov-26",
+                items: [{ product: "Shirt", woNo: "WO-9907", woOrderStatus: "ALLOCATED_FINSISH_TAILOR", orderKind: "FULL FINISH", qty: 2 }]
+            },
+            {
+                orderNo: "SO27022922",
+                customerName: "Venkatesh Rao",
+                deliveryDate: "13-Nov-26",
+                trailDate: "08-Nov-26",
+                items: [{ product: "Trouser", woNo: "WO-9908", woOrderStatus: "BOM ISSUING FOR FINISH", orderKind: "FULL FINISH", qty: 2 }]
+            },
+            {
+                orderNo: "SO27022792",
+                customerName: "Deepak Joshi",
+                deliveryDate: "14-Nov-26",
+                trailDate: "10-Nov-26",
+                items: [{ product: "Coat", woNo: "WO-9909", woOrderStatus: "CUTTING SHIPPED TO FACTORY", orderKind: "TRIAL", qty: 1 }]
+            },
+            {
+                orderNo: "SO27023501",
+                customerName: "Santosh Hegde",
+                deliveryDate: "16-Nov-26",
+                trailDate: "12-Nov-26",
+                items: [{ product: "Shirt", woNo: "WO-9910", woOrderStatus: "FABRIC RECEIVED", orderKind: "FULL FINISH", qty: 2 }]
+            },
+            {
+                orderNo: "SO27022333",
+                customerName: "Ganesh Naik",
+                deliveryDate: "16-Nov-26",
+                trailDate: "12-Nov-26",
+                items: [{ product: "Trouser", woNo: "WO-9911", woOrderStatus: "CUTTING COMPLETED", orderKind: "FULL FINISH", qty: 1 }]
+            },
+            {
+                orderNo: "SO27022881",
+                customerName: "Naveen Bhat",
+                deliveryDate: "16-Nov-26",
+                trailDate: "11-Nov-26",
+                items: [{ product: "Kurta", woNo: "WO-9912", woOrderStatus: "TRIAL TAILOR ALLOCATION", orderKind: "TRIAL", qty: 1 }]
+            },
+            {
+                orderNo: "SO27022718",
+                customerName: "Vivek Shastry",
+                deliveryDate: "18-Nov-26",
+                trailDate: "13-Nov-26",
+                items: [{ product: "Shirt", woNo: "WO-9913", woOrderStatus: "CUTTING COMPLETED", orderKind: "TRIAL", qty: 1 }]
+            },
+            {
+                orderNo: "SO27023102",
+                customerName: "Sandeep Pai",
+                deliveryDate: "19-Nov-26",
+                trailDate: "14-Nov-26",
+                items: [{ product: "Shirt", woNo: "WO-9914", woOrderStatus: "TRIAL TAILOR ALLOCATION", orderKind: "TRIAL", qty: 2 }]
+            },
+            {
+                orderNo: "SO27022830",
+                customerName: "Rohan Mehta",
+                deliveryDate: "20-Nov-26",
+                trailDate: "15-Nov-26",
+                items: [{ product: "Shirt", woNo: "WO-9915", woOrderStatus: "FABRIC RECEIVED", orderKind: "FULL FINISH", qty: 1 }]
+            },
+            {
+                orderNo: "SO27022995",
+                customerName: "Vijay Alva",
+                deliveryDate: "24-Nov-26",
+                trailDate: "18-Nov-26",
+                items: [{ product: "Shirt", woNo: "WO-9916", woOrderStatus: "ALLOCATED_FINSISH_TAILOR", orderKind: "FULL FINISH", qty: 1 }]
+            },
+            {
+                orderNo: "SO27023241",
+                customerName: "Chetan Kadam",
+                deliveryDate: "26-Nov-26",
+                trailDate: "20-Nov-26",
+                items: [{ product: "Shirt", woNo: "WO-9917", woOrderStatus: "QC TESTING", orderKind: "TRIAL", qty: 1 }]
+            },
+            {
+                orderNo: "SO27023077",
+                customerName: "Anil Prasad",
+                trailDate: "17-Nov-26",
+                deliveryDate: "30-Nov-26",
+                items: [{ product: "Shirt", woNo: "WO-9918", woOrderStatus: "TRIAL COMPLETED AT STORE", orderKind: "TRIAL", qty: 1 }]
+            },
+            {
+                orderNo: "SO27023062",
+                customerName: "Manoj Shetty",
+                trailDate: "17-Nov-26",
+                deliveryDate: "30-Nov-26",
+                items: [{ product: "Shirt", woNo: "WO-9919", woOrderStatus: "ALLOCATED_FINSISH_TAILOR", orderKind: "FULL FINISH", qty: 2 }]
+            },
+            {
+                orderNo: "SO27022571",
+                customerName: "Kiran Hiremath",
+                deliveryDate: "07-Nov-26",
+                trailDate: "03-Nov-26",
+                items: [{ product: "Coat", woNo: "WO-9920", woOrderStatus: "FINISHED GARMENT READY AT STORE", orderKind: "TRIAL", qty: 1 }]
+            }
+        ];
+
+        // Garment & Follow-up State (Default on "← Show Filtered Month")
+        let currentGarmentFilter = 'all';
+        let currentFollowupScope = 'all';
+        let currentFollowupSort = 'fcfs';
+        let currentSideTab = 'followups';
+        let isViewAllActive = true;
+
+        function getGarmentCategory(productName) {
+            const p = (productName || '').toLowerCase();
+            if (p.includes('shirt') || p.includes('shirting')) return 'shirt';
+            if (p.includes('coat') || p.includes('suit') || p.includes('blazer') || p.includes('jacket') || p.includes('safari') || p.includes('waistcoat')) return 'coat';
+            if (p.includes('trouser') || p.includes('pant') || p.includes('bottom')) return 'trouser';
+            return 'other';
+        }
+
+        function getInitials(name) {
+            if (!name) return 'SO';
+            const parts = name.trim().split(/\s+/);
+            if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+            return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+        }
+
+        const AVATAR_COLORS = [
+            'bg-blue-100 text-blue-700',
+            'bg-purple-100 text-purple-700',
+            'bg-emerald-100 text-emerald-700',
+            'bg-amber-100 text-amber-700',
+            'bg-rose-100 text-rose-700',
+            'bg-indigo-100 text-indigo-700'
+        ];
+        function getAvatarColor(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
+            return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+        }
+
+        function getLoadedTailoringOrders() {
+            try {
+                const saved = localStorage.getItem('tailoring_orders');
+                if (saved) return JSON.parse(saved);
+            } catch (e) {
+                console.error("Error reading tailoring orders", e);
+            }
+            return DEFAULT_TAILORING_ORDERS;
+        }
+
+        // =============================================
+        // FOLLOW-UP FILTER & SIDE PANEL TABS LOGIC
+        // =============================================
+        function switchSideTab(tab) {
+            currentSideTab = tab;
+            const fView = document.getElementById('followupView');
+            const uView = document.getElementById('upcomingView');
+            const tView = document.getElementById('trackerView');
+            const tabF = document.getElementById('tabFollowups');
+            const tabU = document.getElementById('tabUpcoming');
+
+            if (tView) tView.classList.remove('active');
+
+            if (tab === 'followups') {
+                if (fView) fView.style.display = 'flex';
+                if (uView) uView.classList.add('hidden-panel');
+                if (tabF) {
+                    tabF.className = 'flex-1 py-1.5 px-3 rounded-full text-xs font-bold transition bg-[#1a1a1a] text-white shadow-xs';
+                }
+                if (tabU) {
+                    tabU.className = 'flex-1 py-1.5 px-3 rounded-full text-xs font-bold transition text-neutral-500 hover:text-black';
+                }
+                renderFollowupList();
+                applyGarmentSpotlight();
+            } else {
+                if (fView) fView.style.display = 'none';
+                if (uView) uView.classList.remove('hidden-panel');
+                if (tabU) {
+                    tabU.className = 'flex-1 py-1.5 px-3 rounded-full text-xs font-bold transition bg-[#1a1a1a] text-white shadow-xs';
+                }
+                if (tabF) {
+                    tabF.className = 'flex-1 py-1.5 px-3 rounded-full text-xs font-bold transition text-neutral-500 hover:text-black';
+                }
+                renderUpcomingEvents();
+            }
+        }
+
+        function selectGarmentFilter(type) {
+            if (currentGarmentFilter === type) {
+                currentGarmentFilter = 'all';
+            } else {
+                currentGarmentFilter = type;
+            }
+
+            const cards = ['shirt', 'coat', 'trouser', 'other'];
+            cards.forEach(c => {
+                const el = document.getElementById('garment-' + c);
+                if (el) {
+                    if (c === currentGarmentFilter) {
+                        el.classList.add('active');
+                    } else {
+                        el.classList.remove('active');
+                    }
+                }
+            });
+
+            renderFollowupList();
+            applyGarmentSpotlight();
+        }
+
+        function applyFollowupFilter() {
+            const scopeSelect = document.getElementById('followupMonthFilter');
+            if (scopeSelect) {
+                currentFollowupScope = scopeSelect.value;
+            }
+            renderFollowupList();
+        }
+
+        function resetFollowupFilter() {
+            currentGarmentFilter = 'all';
+            currentFollowupScope = 'all';
+            isViewAllActive = true;
+
+            const scopeSelect = document.getElementById('followupMonthFilter');
+            if (scopeSelect) scopeSelect.value = 'all';
+
+            const sortSelect = document.getElementById('followupSortBy');
+            if (sortSelect) sortSelect.value = 'fcfs';
+
+            const cards = ['shirt', 'coat', 'trouser', 'other'];
+            cards.forEach(c => {
+                const el = document.getElementById('garment-' + c);
+                if (el) el.classList.remove('active');
+            });
+
+            const btnText = document.getElementById('viewAllBtnText');
+            if (btnText) btnText.textContent = '← Show Filtered Month';
+
+            renderFollowupList();
+            applyGarmentSpotlight();
+            showToast('Follow-up filters reset to all pending', 'info');
+        }
+
+        function viewAllFollowupsToggle() {
+            isViewAllActive = !isViewAllActive;
+            const btnText = document.getElementById('viewAllBtnText');
+            const scopeSelect = document.getElementById('followupMonthFilter');
+
+            if (isViewAllActive) {
+                currentFollowupScope = 'all';
+                currentGarmentFilter = 'all';
+                if (scopeSelect) scopeSelect.value = 'all';
+                if (btnText) btnText.textContent = '← Show Filtered Month';
+                ['shirt', 'coat', 'trouser', 'other'].forEach(c => {
+                    const el = document.getElementById('garment-' + c);
+                    if (el) el.classList.remove('active');
+                });
+            } else {
+                currentFollowupScope = 'this-month';
+                currentGarmentFilter = 'shirt';
+                if (scopeSelect) scopeSelect.value = 'this-month';
+                if (btnText) btnText.textContent = 'View All Follow-ups →';
+                const el = document.getElementById('garment-shirt');
+                if (el) el.classList.add('active');
+            }
+
+            renderFollowupList();
+            applyGarmentSpotlight();
+        }
+
+        function renderFollowupList() {
+            const list = document.getElementById('followupItemsList');
+            if (!list) return;
+
+            const orders = getLoadedTailoringOrders();
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+
+            let entries = [];
+            orders.forEach(order => {
+                const delDate = order.deliveryDate ? parseTailoringDate(order.deliveryDate) : null;
+                const trDate = order.trailDate ? parseTailoringDate(order.trailDate) : null;
+                const primaryDate = delDate || trDate;
+                if (!primaryDate || isNaN(primaryDate)) return;
+
+                const items = order.items && order.items.length ? order.items : [{ product: 'Garment', woOrderStatus: 'PENDING' }];
+                items.forEach(it => {
+                    const cat = getGarmentCategory(it.product);
+
+                    if (currentGarmentFilter !== 'all' && cat !== currentGarmentFilter) {
+                        return;
+                    }
+
+                    if (currentFollowupScope === 'this-month') {
+                        if (primaryDate.getFullYear() !== year || primaryDate.getMonth() !== month) {
+                            return;
+                        }
+                    } else if (currentFollowupScope === 'this-week') {
+                        const dayDiff = Math.abs(primaryDate - today) / (1000 * 60 * 60 * 24);
+                        if (dayDiff > 7) return;
+                    } else if (currentFollowupScope === 'today') {
+                        if (primaryDate.getDate() !== today.getDate() || primaryDate.getMonth() !== today.getMonth() || primaryDate.getFullYear() !== today.getFullYear()) {
+                            return;
+                        }
+                    }
+
+                    entries.push({
+                        orderNo: order.orderNo,
+                        customerName: order.customerName || 'Customer',
+                        product: it.product || 'Garment',
+                        status: it.woOrderStatus || 'PENDING',
+                        deliveryDate: delDate,
+                        trailDate: trDate,
+                        primaryDate: primaryDate
+                    });
+                });
+            });
+
+            // Sort
+            const sortBy = document.getElementById('followupSortBy') ? document.getElementById('followupSortBy').value : 'fcfs';
+            if (sortBy === 'fcfs') {
+                entries.sort((a, b) => a.primaryDate - b.primaryDate);
+            } else if (sortBy === 'trial') {
+                entries.sort((a, b) => (a.trailDate || a.primaryDate) - (b.trailDate || b.primaryDate));
+            } else if (sortBy === 'name') {
+                entries.sort((a, b) => a.customerName.localeCompare(b.customerName));
+            } else if (sortBy === 'order') {
+                entries.sort((a, b) => a.orderNo.localeCompare(b.orderNo));
+            }
+
+            // Update Header Count
+            const countEl = document.getElementById('followupListHeader');
+            if (countEl) {
+                countEl.textContent = `Pending Tailoring Follow-ups (${entries.length})`;
+            }
+
+            // Update Info Callout Banner
+            const infoTextEl = document.getElementById('followupInfoText');
+            if (infoTextEl) {
+                const garmentNames = {
+                    'shirt': 'Shirts',
+                    'coat': 'Coats',
+                    'trouser': 'Trousers',
+                    'other': 'Other Garments',
+                    'all': 'All Garments'
+                };
+                const gName = garmentNames[currentGarmentFilter] || 'Garments';
+                const mName = monthNames[month];
+                const yName = year;
+                if (currentFollowupScope === 'this-month') {
+                    infoTextEl.textContent = `Showing pending follow-ups for ${gName} this month (${mName.substring(0,3)} ${yName})`;
+                } else if (currentFollowupScope === 'this-week') {
+                    infoTextEl.textContent = `Showing pending follow-ups for ${gName} scheduled this week`;
+                } else if (currentFollowupScope === 'today') {
+                    infoTextEl.textContent = `Showing pending follow-ups for ${gName} due today`;
+                } else {
+                    infoTextEl.textContent = `Showing all pending follow-ups for ${gName}`;
+                }
+            }
+
+            if (entries.length === 0) {
+                list.innerHTML = `
+                    <div class="text-center py-8 px-3 border border-dashed border-neutral-200 rounded-2xl text-neutral-400">
+                        <svg class="w-7 h-7 mx-auto mb-1.5 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <p class="text-xs font-bold text-neutral-500">No pending follow-ups found</p>
+                        <p class="text-[10px] text-neutral-400 mt-0.5">Try selecting another garment filter or month scope</p>
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = entries.map(item => {
+                const initials = getInitials(item.customerName);
+                const avatarColor = getAvatarColor(item.customerName);
+
+                const d = item.primaryDate;
+                const isToday = (d.getDate() === today.getDate() && d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear());
+                
+                let dateBadgeHtml = '';
+                if (isToday) {
+                    dateBadgeHtml = `<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-100 text-rose-700 whitespace-nowrap">Today</span>`;
+                } else {
+                    const dMonth = monthNames[d.getMonth()].substring(0, 3);
+                    const dDay = d.getDate();
+                    dateBadgeHtml = `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-600 border border-rose-100 whitespace-nowrap">${dDay} ${dMonth}</span>`;
+                }
+
+                return `
+                    <div onclick="openTracker('${item.orderNo}')" class="followup-row flex items-center justify-between p-2.5 rounded-xl border border-neutral-100 bg-white hover:bg-neutral-50/80 transition-all cursor-pointer group shadow-xs">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="w-8 h-8 rounded-full ${avatarColor} flex items-center justify-center font-extrabold text-[11px] flex-shrink-0">
+                                ${initials}
+                            </div>
+                            <div class="min-w-0">
+                                <h4 class="text-xs font-bold text-[#1a1a1a] truncate group-hover:text-black">${item.customerName}</h4>
+                                <p class="text-[10px] font-semibold text-neutral-400 truncate">${item.orderNo} • ${item.product}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1.5 flex-shrink-0 ml-2">
+                            ${dateBadgeHtml}
+                            <svg class="w-3.5 h-3.5 text-neutral-400 group-hover:text-black group-hover:translate-x-0.5 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function applyGarmentSpotlight() {
+            const badges = document.querySelectorAll('#calendarDays .event-badge');
+            badges.forEach(badge => {
+                const cat = badge.getAttribute('data-garment');
+                if (currentGarmentFilter === 'all' || cat === currentGarmentFilter) {
+                    badge.style.opacity = '1';
+                    badge.style.filter = 'none';
+                } else {
+                    badge.style.opacity = '0.25';
+                    badge.style.filter = 'grayscale(60%)';
+                }
+            });
+        }
+
+        // =============================================
+        // ORDER TRACKER VIEW LOGIC
+        // =============================================
         let _trackerOrderNo = null;
         let _trackerItemIdx = 0;
 
         function openTracker(orderNo) {
-            const orders = JSON.parse(localStorage.getItem('tailoring_orders') || '[]');
+            const orders = getLoadedTailoringOrders();
             const order = orders.find(o => o.orderNo === orderNo);
             if (!order) return;
 
@@ -625,17 +1530,19 @@
             renderTrackerStages(order, 0);
 
             // Switch panels
-            document.getElementById('upcomingView').classList.add('hidden-panel');
+            const fView = document.getElementById('followupView');
+            if (fView) fView.style.display = 'none';
+            const uView = document.getElementById('upcomingView');
+            if (uView) uView.classList.add('hidden-panel');
             document.getElementById('trackerView').classList.add('active');
         }
 
         function switchTrackerItem(orderNo, itemIdx) {
             _trackerItemIdx = itemIdx;
-            const orders = JSON.parse(localStorage.getItem('tailoring_orders') || '[]');
+            const orders = getLoadedTailoringOrders();
             const order = orders.find(o => o.orderNo === orderNo);
             if (!order) return;
 
-            // Update active tab
             document.querySelectorAll('.tracker-item-tab').forEach((btn, i) => {
                 btn.classList.toggle('active', i === itemIdx);
             });
@@ -643,77 +1550,63 @@
             renderTrackerStages(order, itemIdx);
         }
 
-        /* Stage-specific icons for the ACTIVE node only */
         function getStageIcon(label) {
             const s = label.toUpperCase();
-            /* Scissors — any cutting that isn't shipped */
             if ((s.includes('CUTTING') || s.includes('RECUTTING')) && !s.includes('SHIPPED'))
                 return `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>`;
-            /* Truck — shipped / delivered */
             if (s.includes('SHIPPED') || s.includes('DELIVER'))
                 return `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>`;
-            /* Layers — fabric received */
             if (s.includes('FABRIC'))
                 return `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`;
-            /* Document — BOM issuing */
             if (s.includes('BOM'))
                 return `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`;
-            /* User — tailor allocation / finish tailor */
             if (s.includes('TAILOR') || s.includes('ALLOCATED') || s.includes('ALLOCATION'))
                 return `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
-            /* Store / home — garment ready at store */
             if (s.includes('READY') || s.includes('STORE') || s.includes('GARMENT'))
                 return `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`;
-            /* Shield / search — QC testing */
             if (s.includes('QC') || s.includes('TESTING'))
                 return `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`;
-            /* Checkmark — finished / trial completed */
             if (s.includes('FINISHED') || s.includes('COMPLETED'))
                 return `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
-            /* Clock — generic / unknown */
             return `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
         }
 
-        const CHECK_ICON     = `<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>`;
-        const UPCOMING_ICON  = `<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>`;
+        const CHECK_ICON = `<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>`;
+        const UPCOMING_ICON = `<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>`;
 
         function renderTrackerStages(order, itemIdx) {
             const item = order.items[itemIdx];
             if (!item) return;
 
-            const status    = (item.woOrderStatus || '').toUpperCase().trim();
-            const orderKind = (item.orderKind     || '').toUpperCase().trim();
-            const stages    = orderKind === 'FULL FINISH' ? FULL_FINISH_STAGES : TRIAL_STAGES;
+            const status = (item.woOrderStatus || '').toUpperCase().trim();
+            const orderKind = (item.orderKind || '').toUpperCase().trim();
+            const stages = orderKind === 'FULL FINISH' ? FULL_FINISH_STAGES : TRIAL_STAGES;
 
-            /* Determine current step (1-based). Default to 1 if not found. */
             let currentStep = stages.indexOf(status) + 1;
             if (currentStep === 0) currentStep = 1;
 
             let html = '';
-
             stages.forEach((label, index) => {
-                const stepNum     = index + 1;
-                const isCompleted = stepNum <  currentStep;
-                const isActive    = stepNum === currentStep;
-                const isLast      = index === stages.length - 1;
+                const stepNum = index + 1;
+                const isCompleted = stepNum < currentStep;
+                const isActive = stepNum === currentStep;
+                const isLast = index === stages.length - 1;
 
-                /* ── Node ────────────────────────────── */
                 let nodeClass, nodeIcon;
                 if (isCompleted) {
                     nodeClass = 'wf-node--completed';
-                    nodeIcon  = CHECK_ICON;
+                    nodeIcon = CHECK_ICON;
                 } else if (isActive) {
                     nodeClass = 'wf-node--current';
-                    nodeIcon  = getStageIcon(label);
+                    nodeIcon = getStageIcon(label);
                 } else {
                     nodeClass = 'wf-node--upcoming';
-                    nodeIcon  = UPCOMING_ICON;
+                    nodeIcon = UPCOMING_ICON;
                 }
 
-                /* ── Connector (below this node, connecting to next stage) */
                 let connClass;
                 if (isLast) {
-                    connClass = '';          /* no connector after last stage */
+                    connClass = '';
                 } else if (isCompleted) {
                     connClass = 'wf-connector--completed';
                 } else if (isActive) {
@@ -722,10 +1615,9 @@
                     connClass = 'wf-connector--pending';
                 }
 
-                /* ── Label ───────────────────────────── */
                 const labelClass = isCompleted ? 'wf-label--completed'
-                                 : isActive    ? 'wf-label--current'
-                                 :               'wf-label--upcoming';
+                                 : isActive ? 'wf-label--current'
+                                 : 'wf-label--upcoming';
 
                 html += `
                     <div class="wf-stage">
@@ -743,12 +1635,11 @@
 
             document.getElementById('trackerStages').innerHTML = html;
 
-            /* Footer */
             document.getElementById('trackerFooter').innerHTML = `
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-[9px] font-extrabold text-neutral-400 uppercase tracking-widest mb-1">WO Number</p>
-                        <p class="text-xs font-extrabold text-[#242424]">${item.woNo || '\u2014'}</p>
+                        <p class="text-xs font-extrabold text-[#242424]">${item.woNo || '—'}</p>
                     </div>
                     <div class="text-right">
                         <p class="text-[9px] font-extrabold text-neutral-400 uppercase tracking-widest mb-1">Raw Status</p>
@@ -762,12 +1653,14 @@
             _trackerOrderNo = null;
             _trackerItemIdx = 0;
             document.getElementById('trackerView').classList.remove('active');
-            document.getElementById('upcomingView').classList.remove('hidden-panel');
+            if (currentSideTab === 'followups') {
+                const fView = document.getElementById('followupView');
+                if (fView) fView.style.display = 'flex';
+            } else {
+                const uView = document.getElementById('upcomingView');
+                if (uView) uView.classList.remove('hidden-panel');
+            }
         }
-
-        // =============================================
-        // END TRACKING LOGIC
-        // =============================================
 
         function navigateTo(pageId) {
             document.body.classList.add('page-exit');
@@ -784,12 +1677,12 @@
             }, 250);
         }
 
-        // Calendar Logic
+        // =============================================
+        // CALENDAR ENGINE & DATA POPULATION
+        // =============================================
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         
-        let currentDate = new Date(); // Start with current actual date
-        
-        // Store events mapped by YYYY-MM-DD
+        let currentDate = new Date(); // Start with current actual date (Nov 2026)
         const eventsData = {};
 
         function parseTailoringDate(str) {
@@ -809,88 +1702,57 @@
             return new Date(str);
         }
 
-        function loadTailoringEvents() {
-            try {
-                const saved = localStorage.getItem('tailoring_orders');
-                const rawSync = localStorage.getItem('raw_csv_tailoring');
-
-                if (rawSync && !saved) {
-                    alert("New synced Tailoring Data found. Please open the Tailoring Tracker once to process the data for the Calendar.");
-                    return;
-                }
-
-                if (saved) {
-                    const orders = JSON.parse(saved);
-                    orders.forEach(o => {
-                        // Trial Date
-                        if (o.trailDate && o.trailDate !== 'null') {
-                            const td = parseTailoringDate(o.trailDate);
-                            if (td && !isNaN(td)) {
-                                const key = formatDateKey(td.getFullYear(), td.getMonth(), td.getDate());
-                                if (!eventsData[key]) eventsData[key] = [];
-                                eventsData[key].push({
-                                    title: 'Trial: ' + o.orderNo,
-                                    type: 'event-blue',
-                                    rawDate: td,
-                                    _orderNo: o.orderNo,
-                                    sideBarType: 'bg-blue-100 text-blue-800'
-                                });
-                            }
-                        }
-                        // Delivery Date
-                        if (o.deliveryDate && o.deliveryDate !== 'null') {
-                            const dd = parseTailoringDate(o.deliveryDate);
-                            if (dd && !isNaN(dd)) {
-                                const key = formatDateKey(dd.getFullYear(), dd.getMonth(), dd.getDate());
-                                if (!eventsData[key]) eventsData[key] = [];
-                                eventsData[key].push({
-                                    title: 'Delivery: ' + o.orderNo,
-                                    type: 'event-red',
-                                    rawDate: dd,
-                                    _orderNo: o.orderNo,
-                                    sideBarType: 'bg-red-100 text-red-800'
-                                });
-                            }
-                        }
-                    });
-                }
-            } catch (e) { console.error("Error loading tailoring events", e); }
-        }
-        
-        loadTailoringEvents();
-
         function formatDateKey(year, month, day) {
             return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         }
 
-        const DEFAULT_STORE_ROUTINE = [
-            { dayId: 'Mon', day: 'M', label: 'Stock Take & Scanning', weight: 70, type: 'event-blue' },
-            { dayId: 'Tue', day: 'T', label: 'VM', weight: 60, type: 'event-gray' },
-            { dayId: 'Wed', day: 'W', label: 'Working Day', weight: 100, type: 'event-yellow' },
-            { dayId: 'Thu', day: 'T', label: 'Working Day', weight: 50, type: 'event-yellow' },
-            { dayId: 'Fri', day: 'F', label: 'Delivery Tracking', weight: 80, type: 'event-blue' },
-            { dayId: 'Sat', day: 'S', label: 'Peak Sales Support', weight: 30, type: 'event-red' },
-            { dayId: 'Sun', day: 'Su', label: 'Peak Sales Support', weight: 30, type: 'event-red' }
-        ];
-
-        function loadStoreRoutine() {
+        function loadTailoringEvents() {
             try {
-                const saved = localStorage.getItem('storeWeeklyRoutine');
-                if (saved) return JSON.parse(saved);
-            } catch(e) { console.error('Error loading routine', e); }
-            return JSON.parse(JSON.stringify(DEFAULT_STORE_ROUTINE));
-        }
+                const orders = getLoadedTailoringOrders();
 
-        const routineData = loadStoreRoutine();
-        const storeWeeklyTasks = [
-            routineData[6], // Sun
-            routineData[0], // Mon
-            routineData[1], // Tue
-            routineData[2], // Wed
-            routineData[3], // Thu
-            routineData[4], // Fri
-            routineData[5]  // Sat
-        ];
+                orders.forEach(o => {
+                    const garmentKind = (o.items && o.items[0] && o.items[0].product) ? o.items[0].product : 'Garment';
+                    const cat = getGarmentCategory(garmentKind);
+
+                    // Trial Date
+                    if (o.trailDate && o.trailDate !== 'null') {
+                        const td = parseTailoringDate(o.trailDate);
+                        if (td && !isNaN(td)) {
+                            const key = formatDateKey(td.getFullYear(), td.getMonth(), td.getDate());
+                            if (!eventsData[key]) eventsData[key] = [];
+                            eventsData[key].push({
+                                title: 'Trial: ' + o.orderNo,
+                                type: 'event-blue',
+                                rawDate: td,
+                                _orderNo: o.orderNo,
+                                _customerName: o.customerName || '',
+                                _garmentCategory: cat,
+                                _product: garmentKind,
+                                sideBarType: 'bg-blue-100 text-blue-800'
+                            });
+                        }
+                    }
+                    // Delivery Date
+                    if (o.deliveryDate && o.deliveryDate !== 'null') {
+                        const dd = parseTailoringDate(o.deliveryDate);
+                        if (dd && !isNaN(dd)) {
+                            const key = formatDateKey(dd.getFullYear(), dd.getMonth(), dd.getDate());
+                            if (!eventsData[key]) eventsData[key] = [];
+                            eventsData[key].push({
+                                title: 'Delivery: ' + o.orderNo,
+                                type: 'event-red',
+                                rawDate: dd,
+                                _orderNo: o.orderNo,
+                                _customerName: o.customerName || '',
+                                _garmentCategory: cat,
+                                _product: garmentKind,
+                                sideBarType: 'bg-red-100 text-red-800'
+                            });
+                        }
+                    }
+                });
+            } catch (e) { console.error("Error loading tailoring events", e); }
+        }
 
         let currentView = 'month';
 
@@ -902,7 +1764,7 @@
         }
 
         function renderCalendar(offset = 0) {
-            const today = new Date(); // Always strictly today
+            const today = new Date();
             
             if (currentView === 'month') {
                 currentDate.setMonth(currentDate.getMonth() + offset);
@@ -931,15 +1793,22 @@
 
                 // Days of the month
                 for (let day = 1; day <= daysInMonth; day++) {
-                    const dateObj = new Date(year, month, day);
-                    const dayOfWeek = dateObj.getDay();
                     const isToday = (day === today.getDate() && month === today.getMonth() && year === today.getFullYear());
                     const dateKey = formatDateKey(year, month, day);
                     const dayEvents = eventsData[dateKey] || [];
                     
-                    let eventsHtml = dayEvents.map(e => `<div class="event-badge ${e.type} cursor-pointer hover:opacity-80 transition-opacity" onclick="openTracker('${e._orderNo}')" title="Click to track ${e._orderNo}">${e.title}</div>`).join('');
+                    let eventsHtml = dayEvents.map(e => `
+                        <div class="event-badge ${e.type} cursor-pointer hover:opacity-80 transition-all font-semibold"
+                             data-garment="${e._garmentCategory || 'other'}"
+                             data-order="${e._orderNo}"
+                             onclick="openTracker('${e._orderNo}')"
+                             title="${e.title} - ${e._customerName || ''} (${e._product || ''})">
+                            ${e.title}
+                        </div>
+                    `).join('');
+
                     grid.innerHTML += `
-                        <div class="calendar-day ${isToday ? 'today' : ''} cursor-pointer group">
+                        <div class="calendar-day ${isToday ? 'today' : ''} cursor-pointer group" id="cal-day-${year}-${month + 1}-${day}">
                             <div class="date-num">${day}</div>
                             <div class="flex-1 flex flex-col gap-1 overflow-y-auto hide-scrollbar">
                                 ${eventsHtml}
@@ -965,7 +1834,16 @@
                     const dateKey = formatDateKey(dYear, dMonth, dDay);
                     const dayEvents = eventsData[dateKey] || [];
                     
-                    let eventsHtml = dayEvents.map(e => `<div class="event-badge ${e.type} text-xs py-1 px-2 mb-2 cursor-pointer hover:opacity-80 transition-opacity" onclick="openTracker('${e._orderNo}')" title="Click to track ${e._orderNo}">${e.title}</div>`).join('');
+                    let eventsHtml = dayEvents.map(e => `
+                        <div class="event-badge ${e.type} text-xs py-1 px-2 mb-2 cursor-pointer hover:opacity-80 transition-all font-semibold"
+                             data-garment="${e._garmentCategory || 'other'}"
+                             data-order="${e._orderNo}"
+                             onclick="openTracker('${e._orderNo}')"
+                             title="${e.title} - ${e._customerName || ''} (${e._product || ''})">
+                            ${e.title}
+                        </div>
+                    `).join('');
+
                     grid.innerHTML += `
                         <div class="calendar-day calendar-day-week ${isToday ? 'today' : ''} cursor-pointer group">
                             <div class="date-num text-lg">${dDay} <span class="text-xs font-normal text-neutral-500">${monthNames[dMonth].substring(0,3)}</span></div>
@@ -977,6 +1855,8 @@
                 }
             }
             
+            applyGarmentSpotlight();
+            renderFollowupList();
             renderUpcomingEvents();
         }
 
@@ -987,13 +1867,13 @@
 
         function renderUpcomingEvents() {
             const list = document.getElementById('upcomingEventsList');
+            if (!list) return;
             list.innerHTML = '';
             
             let upcoming = [];
             const today = new Date();
             today.setHours(0,0,0,0);
 
-            // Flatten all events from eventsData
             Object.keys(eventsData).forEach(key => {
                 const dayEvents = eventsData[key];
                 dayEvents.forEach(ev => {
@@ -1003,14 +1883,12 @@
                 });
             });
 
-            // Sort ascending by date
             upcoming.sort((a, b) => a.rawDate - b.rawDate);
-            
-            // Limit to top 6
             upcoming = upcoming.slice(0, 6);
 
             if (upcoming.length === 0) {
-                list.innerHTML = '<div class="text-center text-neutral-400 font-bold text-sm py-8 border border-dashed rounded-xl border-neutral-200">No upcoming items found!</div>';
+                list.innerHTML = '<div class="text-center text-neutral-400 font-bold text-xs py-8 border border-dashed rounded-xl border-neutral-200">No upcoming items found!</div>';
+                return;
             }
 
             upcoming.forEach(ev => {
@@ -1019,7 +1897,7 @@
                 
                 let dateBadgeStr = '';
                 if (isToday) {
-                    dateBadgeStr = '<span class="text-[9px] uppercase opacity-80">TODAY</span>';
+                    dateBadgeStr = '<span class="text-[9px] uppercase opacity-80 font-bold">TODAY</span>';
                 } else {
                     dateBadgeStr = `
                         <span class="text-[9px] uppercase opacity-80">${monthNames[d.getMonth()].substring(0,3)}</span>
@@ -1028,13 +1906,13 @@
                 }
 
                 list.innerHTML += `
-                    <div class="p-3 bg-white rounded-xl shadow-sm border border-neutral-100 flex items-start gap-3 hover:-translate-y-0.5 transition-transform cursor-pointer">
-                        <div class="w-10 h-10 rounded-lg flex flex-col items-center justify-center ${ev.sideBarType} font-bold leading-tight">
+                    <div onclick="openTracker('${ev._orderNo}')" class="p-2.5 bg-white rounded-xl shadow-xs border border-neutral-100 flex items-start gap-2.5 hover:-translate-y-0.5 transition-transform cursor-pointer">
+                        <div class="w-9 h-9 rounded-lg flex flex-col items-center justify-center ${ev.sideBarType} font-bold leading-tight flex-shrink-0">
                             ${dateBadgeStr}
                         </div>
-                        <div>
-                            <h4 class="font-bold text-sm text-[#242424]">${ev.title}</h4>
-                            <p class="text-xs font-semibold text-neutral-400 mt-0.5">Automated Tailoring Task</p>
+                        <div class="min-w-0">
+                            <h4 class="font-bold text-xs text-[#242424] truncate">${ev.title}</h4>
+                            <p class="text-[10px] font-semibold text-neutral-400 mt-0.5 truncate">${ev._customerName || 'Tailoring Task'}</p>
                         </div>
                     </div>
                 `;
@@ -1043,10 +1921,10 @@
 
         // Init
         document.addEventListener('DOMContentLoaded', () => {
+            loadTailoringEvents();
             renderCalendar(0);
         });
     </script>
     <script src="assets/notifications.js"></script>
 </body>
 </html>
-

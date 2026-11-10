@@ -6,7 +6,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Count (GC) Maker</title>
+    <title>Global Count Maker – PNR Manager</title>
     <link rel="stylesheet" href="assets/theme.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="assets/theme.js"></script>
@@ -50,12 +50,14 @@
         }
 
         .theme-bg {
-            background: linear-gradient(135deg, #dce0e3 0%, #f4ebd5 50%, #fae6a2 100%);
+            background: #faf8f5;
         }
 
         .gc-card {
-            background: #fbfbfc;
-            box-shadow: 0 20px 60px -15px rgba(0, 0, 0, 0.05);
+            background: #ffffff;
+            border-radius: 1.5rem;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03);
             position: relative;
         }
 
@@ -175,43 +177,299 @@
         .summary-box:hover {
             transform: translateY(-4px);
         }
+    
+        /* ===== SIDEBAR & MODERN DASHBOARD STYLES ===== */
+        .sidebar-nav {
+            background: #13151b;
+            transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .sidebar-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            padding: 0.65rem 0.875rem;
+            border-radius: 0.875rem;
+            color: #94a3b8;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            text-align: left;
+            width: 100%;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+        .sidebar-nav-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #ffffff;
+        }
+        .sidebar-nav-item.active {
+            background: rgba(244, 199, 74, 0.12);
+            color: #f4c74a;
+            border: 1px solid rgba(244, 199, 74, 0.35);
+        }
+        .sidebar-nav-item.active svg {
+            color: #f4c74a;
+        }
+        .sidebar-collapsed {
+            width: 72px !important;
+        }
+        .sidebar-collapsed .nav-text,
+        .sidebar-collapsed .logo-text,
+        .sidebar-collapsed .profile-text,
+        .sidebar-collapsed .collapse-icon-expanded {
+            display: none !important;
+        }
+        .sidebar-collapsed .sidebar-header {
+            justify-content: center !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+        .sidebar-collapsed .sidebar-nav-item {
+            justify-content: center !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+        .sidebar-collapsed .user-profile-row {
+            justify-content: center !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+        body.dark-mode .sidebar-nav {
+            background: #0d0f14;
+        }
+        body.dark-mode header {
+            background: rgba(13, 15, 20, 0.8) !important;
+            border-bottom-color: rgba(255, 255, 255, 0.05) !important;
+        }
+        body.dark-mode .theme-bg, html.dark-mode .theme-bg {
+            background: #090a0f !important;
+            color: #f4f4f5 !important;
+        }
+        body.dark-mode header input {
+            background: #141720 !important;
+            border-color: #272a35 !important;
+            color: #f4f4f5 !important;
+        }
+        body.dark-mode header button {
+            background: #141720 !important;
+            border-color: #272a35 !important;
+            color: #94a3b8 !important;
+        }
+        body.dark-mode header button:hover {
+            color: #ffffff !important;
+        }
+        /* GC Maker Dark Mode Overrides */
+        body.dark-mode .gc-card, html.dark-mode .gc-card {
+            background: #13151b !important;
+            border-color: rgba(255, 255, 255, 0.06) !important;
+            color: #f4f4f5 !important;
+        }
+        body.dark-mode .bg-white, html.dark-mode .bg-white {
+            background: #181a24 !important;
+            border-color: rgba(255, 255, 255, 0.06) !important;
+            color: #f4f4f5 !important;
+        }
+        body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4,
+        html.dark-mode h1, html.dark-mode h2, html.dark-mode h3, html.dark-mode h4 {
+            color: #f4f4f5 !important;
+        }
+        body.dark-mode .text-\[\#1a1a1a\], html.dark-mode .text-\[\#1a1a1a\],
+        body.dark-mode .text-\[\#292929\], html.dark-mode .text-\[\#292929\] {
+            color: #f4f4f5 !important;
+        }
+        body.dark-mode table thead tr, html.dark-mode table thead tr {
+            background: #141720 !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+        body.dark-mode table tfoot tr, html.dark-mode table tfoot tr {
+            background: #141720 !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+            color: #f4f4f5 !important;
+        }
+        body.dark-mode table tbody tr, html.dark-mode table tbody tr {
+            border-color: rgba(255, 255, 255, 0.05) !important;
+        }
+        body.dark-mode table tbody tr:hover, html.dark-mode table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.03) !important;
+        }
+        body.dark-mode input, body.dark-mode select,
+        html.dark-mode input, html.dark-mode select {
+            background-color: #141720 !important;
+            border-color: #272a35 !important;
+            color: #f4f4f5 !important;
+        }
+
     </style>
 </head>
 
-<body class="py-4 sm:py-8 px-2 sm:px-4 md:px-8 theme-bg min-h-screen text-[#292929]">
-    <div class="max-w-[1440px] mx-auto relative">
+<body class="theme-bg min-h-screen text-[#242424] flex overflow-x-hidden antialiased" style="margin:0;padding:0;">
 
-        <!-- Top Navigation (Pill styling) -->
-        <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-            <div class="w-full md:w-auto">
-                <button onclick="navigateBack()"
-                    class="flex items-center gap-1.5 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-white/40 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60 hover:bg-white text-[#292929] transition-all text-xs sm:text-sm font-semibold w-fit"
-                    title="Back to Dashboard">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
-                        </path>
+    <!-- ===== LEFT SIDEBAR ===== -->
+    <aside id="sidebar" class="sidebar-nav w-56 flex-shrink-0 h-screen sticky top-0 flex flex-col py-6 px-3 z-40 border-r border-neutral-800/40 select-none">
+        <!-- Logo & Collapse Button -->
+        <div class="sidebar-header flex items-center justify-between px-2 mb-7">
+            <div class="flex items-center gap-2.5 cursor-pointer" onclick="navigateTo('index')">
+                <div class="w-8 h-8 rounded-full bg-[#f4c74a] flex items-center justify-center text-[#1a1a1a] font-extrabold text-xs shadow-inner flex-shrink-0">
+                    PNR
+                </div>
+                <span class="logo-text font-extrabold text-base tracking-tight text-white">Manager</span>
+            </div>
+            <button onclick="toggleSidebar()" class="collapse-icon-expanded p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-white/5 transition" title="Toggle Sidebar">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Main Navigation Links -->
+        <nav class="flex flex-col gap-1.5 flex-grow">
+            <button class="sidebar-nav-item" onclick="navigateTo('index')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+                <span class="nav-text">Dashboard</span>
+            </button>
+            <button class="sidebar-nav-item active" onclick="navigateTo('tools')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l-7-7m7 7l-2.121 2.121m4.242 4.242a3 3 0 11-4.242-4.242m0 0a3 3 0 10-4.242-4.242m8.484 0a3 3 0 10-4.242-4.242m0 0L5 19"/>
+                </svg>
+                <span class="nav-text">Tools</span>
+            </button>
+            <button class="sidebar-nav-item" onclick="navigateTo('reports')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span class="nav-text">Reports</span>
+            </button>
+            <button class="sidebar-nav-item" onclick="navigateTo('Pending_PO')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span class="nav-text">Pending POs</span>
+            </button>
+            <button class="sidebar-nav-item" onclick="navigateTo('calendar')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                <span class="nav-text">Calendar</span>
+            </button>
+            <button class="sidebar-nav-item" onclick="navigateTo('target')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0013 3.06V1h-2v2.06A8.994 8.994 0 003.06 11H1v2h2.06A8.994 8.994 0 0011 20.94V23h2v-2.06A8.994 8.994 0 0020.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
+                </svg>
+                <span class="nav-text">Target</span>
+            </button>
+        </nav>
+
+        <!-- Bottom Items -->
+        <div class="flex flex-col gap-1.5 pt-3 border-t border-white/10">
+            <button class="sidebar-nav-item" onclick="showToast('Settings panel', 'info')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <span class="nav-text">Settings</span>
+            </button>
+            <button id="sidebarNotificationBtn" class="sidebar-nav-item relative" onclick="toggleNotificationPanel(event)">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                </svg>
+                <span class="nav-text">Notifications</span>
+            </button>
+
+            <!-- User Profile Row -->
+            <div class="user-profile-row flex items-center gap-2.5 px-2 py-2 mt-1 pt-3 border-t border-white/10 cursor-pointer">
+                <div class="w-8 h-8 rounded-full bg-[#1b1e24] border border-neutral-700/80 flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
+                    AU
+                </div>
+                <div class="profile-text flex-grow min-w-0">
+                    <div class="text-xs font-bold text-white truncate leading-tight">Admin User</div>
+                    <div class="text-[10px] text-neutral-400 font-medium">Super Admin</div>
+                </div>
+                <svg class="profile-text w-3.5 h-3.5 text-neutral-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ===== MAIN CONTENT COLUMN ===== -->
+    <div class="flex-1 flex flex-col min-w-0 min-h-screen overflow-y-auto">
+
+        <!-- ===== TOP BAR HEADER ===== -->
+        <header class="flex items-center justify-between px-6 py-4 bg-transparent sticky top-0 z-30 backdrop-blur-md">
+            <!-- Left: Hamburger icon -->
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSidebar()" class="w-9 h-9 rounded-xl bg-white border border-neutral-200/60 shadow-xs flex items-center justify-center text-neutral-700 hover:text-black hover:bg-neutral-50 transition" title="Toggle Sidebar">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                     </svg>
-                    Dashboard
                 </button>
             </div>
 
-            <div
-                class="flex items-center gap-3 sm:gap-4 p-2 sm:p-3 bg-white/40 backdrop-blur-md rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60 w-full md:w-auto justify-center">
-                <!-- Dropzone Pill -->
+            <!-- Center: Search Bar -->
+            <div class="flex-1 max-w-md mx-4">
+                <div class="relative w-full">
+                    <div class="absolute inset-y-0 left-3.5 flex items-center pointer-events-none">
+                        <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                    <input type="text" id="topNavSearch" placeholder="Search product category..."
+                        class="w-full pl-10 pr-4 py-2 text-xs sm:text-sm font-medium bg-white rounded-full border border-neutral-200/80 shadow-xs focus:outline-none focus:ring-2 focus:ring-[#f4c74a]/40 focus:border-[#f4c74a] transition text-[#1a1a1a] placeholder-neutral-400">
+                </div>
+            </div>
+
+            <!-- Right: Upload Stock CSV, Clock & Action Buttons -->
+            <div class="flex items-center gap-2.5">
+                <!-- Dropzone Pill Button -->
                 <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="handleFileSelect(event)">
                 <label for="csvFileInput" id="dropZone"
-                    class="upload-zone flex items-center justify-center px-4 py-2 sm:px-6 sm:py-2.5 bg-white hover:bg-[#f7d060]/20 border border-neutral-100 rounded-full cursor-pointer transition text-xs sm:text-sm shadow-sm gap-2">
-                    <svg class="w-4 h-4 text-[#f7d060]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="upload-zone flex items-center justify-center px-4 py-2 rounded-full bg-[#f4c74a] hover:bg-[#e5be4f] text-[#1a1a1a] cursor-pointer transition text-xs font-bold shadow-xs gap-2 flex-shrink-0" title="Upload Stock CSV">
+                    <svg class="w-4 h-4 text-[#1a1a1a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
                         </path>
                     </svg>
-                    <span class="font-bold text-[#292929]" id="uploadText">Upload Stock CSV</span>
+                    <span class="font-bold text-[#1a1a1a]" id="uploadText">Upload Stock CSV</span>
                 </label>
-            </div>
-        </div>
 
-        <!-- Main Tool Area (Bento Box Wrapper) -->
+                <div class="hidden sm:flex flex-col items-end mr-2">
+                    <span id="live-clock" class="text-xs font-bold text-[#1a1a1a] tabular-nums tracking-tight">--:-- --</span>
+                    <span id="live-date" class="text-[9px] font-bold text-neutral-400 uppercase tracking-widest">---</span>
+                </div>
+                <button class="w-9 h-9 rounded-full bg-white border border-neutral-200/80 shadow-xs flex items-center justify-center text-neutral-500 hover:text-[#1a1a1a] hover:bg-neutral-50 transition" title="Settings" onclick="showToast('Settings panel', 'info')">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                </button>
+                <button onclick="toggleTheme()" class="w-9 h-9 rounded-full bg-white border border-neutral-200/80 shadow-xs flex items-center justify-center text-neutral-500 hover:text-[#1a1a1a] hover:bg-neutral-50 transition theme-toggle relative" title="Toggle Theme">
+                    <span class="sun-icon">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1m-16 0H1m15.364 1.636l.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                    </span>
+                    <span class="moon-icon">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                        </svg>
+                    </span>
+                </button>
+                <button id="notificationBtn" onclick="toggleNotificationPanel(event)" class="w-9 h-9 rounded-full bg-white border border-neutral-200/80 shadow-xs flex items-center justify-center text-neutral-500 hover:text-[#1a1a1a] hover:bg-neutral-50 transition relative" title="Notifications">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                    </svg>
+                </button>
+                <div class="w-9 h-9 rounded-full bg-[#171920] text-white flex items-center justify-center text-xs font-bold shadow-xs cursor-pointer ml-0.5">
+                    AU
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== MAIN VIEWPORT ===== -->
+        <main class="flex-1 px-4 sm:px-8 py-6 max-w-[1600px] w-full mx-auto flex flex-col min-h-0">
+            <!-- Main Tool Area (Bento Box Wrapper) -->
         <div class="gc-card rounded-[2.5rem] sm:rounded-[3rem] p-4 sm:p-8 md:p-12 border border-white/80">
 
             <!-- Header section -->
@@ -235,6 +493,24 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            
+            <!-- Empty State when no CSV is loaded -->
+            <div id="emptyUploadState" class="py-16 text-center flex flex-col items-center justify-center">
+                <div class="w-16 h-16 rounded-2xl bg-[#f4c74a]/10 border border-[#f4c74a]/30 flex items-center justify-center text-[#d97706] mb-4">
+                    <svg class="w-8 h-8 text-[#d97706]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-bold text-[#1a1a1a] mb-1">No Stock CSV Loaded</h3>
+                <p class="text-xs text-neutral-400 max-w-sm mb-5">Upload a Stock CSV to begin global count reconciliation or sync data automatically from the Reports page.</p>
+                <label for="csvFileInput" class="px-5 py-2.5 rounded-full bg-[#f4c74a] hover:bg-[#e5be4f] text-[#1a1a1a] font-bold text-xs cursor-pointer transition shadow-xs flex items-center gap-2">
+                    <svg class="w-4 h-4 text-[#1a1a1a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                    </svg>
+                    Choose Stock CSV
+                </label>
             </div>
 
             <!-- Dashboard Area Hidden by Default -->
@@ -489,13 +765,68 @@
 
             </div>
         </div>
+        </main>
 
-        <div class="mt-8 text-center text-neutral-500 text-xs font-medium tracking-wide">
-            Professional Automation System &copy; 2026
+        <div class="mt-auto py-4 text-center text-neutral-400 text-[10px] font-extrabold uppercase tracking-widest">
+            Manager &copy; 2026
         </div>
-    </div>
 
-    <script>
+    </div> <!-- end main content column -->
+<script>
+
+        // Live Clock & Sidebar Helpers
+        function updateClock() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+            const dateStr = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }).toUpperCase();
+            const clockEl = document.getElementById('live-clock');
+            const dateEl = document.getElementById('live-date');
+            if (clockEl) clockEl.textContent = timeStr;
+            if (dateEl) dateEl.textContent = dateStr;
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) {
+                sidebar.classList.toggle('sidebar-collapsed');
+            }
+        }
+
+        function navigateTo(pageId) {
+            document.body.classList.add('page-exit');
+            setTimeout(() => {
+                if (pageId === 'index') {
+                    window.location.href = 'index.html';
+                } else if (pageId === 'tools') {
+                    window.location.href = 'index.html?panel=tools';
+                } else if (pageId === 'reports') {
+                    window.location.href = 'reports.html';
+                } else {
+                    window.location.href = pageId + '.html';
+                }
+            }, 250);
+        }
+
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // Top Navigation Search Sync with categorySearch
+        const topNavSearch = document.getElementById('topNavSearch');
+        if (topNavSearch) {
+            topNavSearch.addEventListener('input', (e) => {
+                const catSearch = document.getElementById('categorySearch');
+                if (catSearch) {
+                    catSearch.value = e.target.value;
+                    const clearBtn = document.getElementById('clearCategorySearchBtn');
+                    if (clearBtn) {
+                        if (catSearch.value) clearBtn.classList.remove('hidden');
+                        else clearBtn.classList.add('hidden');
+                    }
+                    applyFilter();
+                }
+            });
+        }
+
         let aggregatedData = {};
         let currentViewData = [];
         let sites = new Set();
@@ -653,6 +984,7 @@
 
             applyFilter();
             document.getElementById('dashboardArea').classList.remove('hidden');
+            const emptyEl = document.getElementById('emptyUploadState'); if (emptyEl) emptyEl.style.display = 'none';
         }
 
         function populateSiteDropdown() {

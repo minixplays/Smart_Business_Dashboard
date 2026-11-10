@@ -55,7 +55,7 @@
 
         /* Smooth background gradient matching the Crextio aesthetic */
         .theme-bg {
-            background: linear-gradient(135deg, #fefbf6 0%, #fdf5e1 50%, #fae5ac 100%);
+            background: #faf8f5;
         }
 
         .dashboard-container {
@@ -1151,6 +1151,39 @@
             right: 0.35rem;
         }
 
+        .quick-access-card {
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .quick-access-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.08);
+        }
+
+        body.dark-mode .quick-access-card:hover {
+            box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.45);
+        }
+
+        .quick-access-card .pin-btn {
+            top: 0.45rem;
+            right: 0.45rem;
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        .quick-access-card .pin-btn svg {
+            width: 0.75rem;
+            height: 0.75rem;
+        }
+
+        body .quick-access-card[data-app-id="quotation"] .pin-btn.pinned {
+            background: #1a1a1a;
+        }
+
+        body .quick-access-card[data-app-id="quotation"] .pin-btn.pinned svg {
+            color: #f4c74a;
+        }
+
         .pin-btn.pinned {
             opacity: 1;
             transform: scale(1);
@@ -1488,206 +1521,344 @@
             background: #13091f !important;
             border-color: #4c1d95 !important;
         }
+    
+        /* ===== SIDEBAR & DASHBOARD MODERN STYLES ===== */
+        .sidebar-nav {
+            background: #13151b;
+            transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .sidebar-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            padding: 0.65rem 0.875rem;
+            border-radius: 0.875rem;
+            color: #94a3b8;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            text-align: left;
+            width: 100%;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+        .sidebar-nav-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #ffffff;
+        }
+        .sidebar-nav-item.active {
+            background: rgba(244, 199, 74, 0.12);
+            color: #f4c74a;
+            border: 1px solid rgba(244, 199, 74, 0.35);
+        }
+        .sidebar-nav-item.active svg {
+            color: #f4c74a;
+        }
+        .sidebar-collapsed {
+            width: 72px !important;
+        }
+        .sidebar-collapsed .nav-text,
+        .sidebar-collapsed .logo-text,
+        .sidebar-collapsed .profile-text,
+        .sidebar-collapsed .collapse-icon-expanded {
+            display: none !important;
+        }
+        .sidebar-collapsed .sidebar-header {
+            justify-content: center !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+        .sidebar-collapsed .sidebar-nav-item {
+            justify-content: center !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+        .sidebar-collapsed .user-profile-row {
+            justify-content: center !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+        body.dark-mode .sidebar-nav {
+            background: #0d0f14;
+        }
+        body.dark-mode header {
+            background: rgba(13, 15, 20, 0.8) !important;
+            border-bottom-color: rgba(255, 255, 255, 0.05) !important;
+        }
+        body.dark-mode .theme-bg {
+            background: #090a0f !important;
+        }
+        body.dark-mode header input {
+            background: #141720 !important;
+            border-color: #272a35 !important;
+            color: #f4f4f5 !important;
+        }
+        body.dark-mode header button {
+            background: #141720 !important;
+            border-color: #272a35 !important;
+            color: #94a3b8 !important;
+        }
+        body.dark-mode header button:hover {
+            color: #ffffff !important;
+        }
+
     </style>
 </head>
 
-<body class="py-4 sm:py-6 px-2 sm:px-4 md:px-6 theme-bg min-h-screen text-[#242424]">
+<body class="theme-bg min-h-screen text-[#242424] flex overflow-x-hidden antialiased" style="margin:0;padding:0;">
 
-    <div class="max-w-[1440px] mx-auto relative">
-
-        <!-- App Window Container -->
-        <div
-            class="dashboard-container rounded-[2.5rem] sm:rounded-[3rem] p-4 sm:p-8 md:p-10 border border-neutral-200 min-h-[92vh] flex flex-col">
-
-            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-6 w-full">
-
-                <!-- Logo & Brand -->
-                <div
-                    class="flex items-center gap-3 bg-white px-5 py-2.5 rounded-full shadow-sm border border-neutral-100/50">
-                    <div
-                        class="w-8 h-8 rounded-full bg-[#f4c74a] flex items-center justify-center text-[#242424] font-extrabold text-sm shadow-inner">
-                        PNR
-                    </div>
-                    <span class="font-extrabold text-lg tracking-tight">Manager</span>
+    <!-- ===== LEFT SIDEBAR ===== -->
+    <aside id="sidebar" class="sidebar-nav w-56 flex-shrink-0 h-screen sticky top-0 flex flex-col py-6 px-3 z-40 border-r border-neutral-800/40 select-none">
+        <!-- Logo & Collapse Button -->
+        <div class="sidebar-header flex items-center justify-between px-2 mb-7">
+            <div class="flex items-center gap-2.5 cursor-pointer" onclick="switchPanel('dashboard')">
+                <div class="w-8 h-8 rounded-full bg-[#f4c74a] flex items-center justify-center text-[#1a1a1a] font-extrabold text-xs shadow-inner flex-shrink-0">
+                    PNR
                 </div>
+                <span class="logo-text font-extrabold text-base tracking-tight text-white">Manager</span>
+            </div>
+            <button onclick="toggleSidebar()" class="collapse-icon-expanded p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-white/5 transition" title="Toggle Sidebar">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
+                </svg>
+            </button>
+        </div>
 
-                <!-- Center Pill Navigation -->
-                <div
-                    class="flex items-center overflow-x-auto w-full lg:w-auto bg-white/60 backdrop-blur-md p-1.5 rounded-full border border-white shadow-[0_4px_20px_rgba(0,0,0,0.02)] hide-scrollbar">
-                    <button id="navDashboard"
-                        class="pill-nav-active px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap"
-                        onclick="switchPanel('dashboard')">Dashboard</button>
-                    <button id="navTools" class="pill-nav px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap"
-                        onclick="switchPanel('tools')">Tools</button>
-                    <button class="pill-nav px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap"
-                        onclick="navigateTo('reports')">Reports</button>
-                    <button class="pill-nav px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap"
-                        onclick="navigateTo('Pending_PO')">Pending POs</button>
-                    <button class="pill-nav px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap"
-                        onclick="navigateTo('calendar')">Calendar</button>
-                    <button class="pill-nav px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap"
-                        onclick="navigateTo('target')">Target</button>
+        <!-- Main Navigation Links -->
+        <nav class="flex flex-col gap-1.5 flex-grow">
+            <button id="navDashboard" class="sidebar-nav-item active" onclick="switchPanel('dashboard')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+                <span class="nav-text">Dashboard</span>
+            </button>
+            <button id="navTools" class="sidebar-nav-item" onclick="switchPanel('tools')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l-7-7m7 7l-2.121 2.121m4.242 4.242a3 3 0 11-4.242-4.242m0 0a3 3 0 10-4.242-4.242m8.484 0a3 3 0 10-4.242-4.242m0 0L5 19"/>
+                </svg>
+                <span class="nav-text">Tools</span>
+            </button>
+            <button class="sidebar-nav-item" onclick="navigateTo('reports')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span class="nav-text">Reports</span>
+            </button>
+            <button class="sidebar-nav-item" onclick="navigateTo('Pending_PO')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span class="nav-text">Pending POs</span>
+            </button>
+            <button class="sidebar-nav-item" onclick="navigateTo('calendar')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                <span class="nav-text">Calendar</span>
+            </button>
+            <button class="sidebar-nav-item" onclick="navigateTo('target')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0013 3.06V1h-2v2.06A8.994 8.994 0 003.06 11H1v2h2.06A8.994 8.994 0 0011 20.94V23h2v-2.06A8.994 8.994 0 0020.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
+                </svg>
+                <span class="nav-text">Target</span>
+            </button>
+        </nav>
+
+        <!-- Bottom Items: Settings, Notifications & Profile -->
+        <div class="flex flex-col gap-1.5 pt-3 border-t border-white/10">
+            <button class="sidebar-nav-item" onclick="showToast('Settings panel', 'info')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <span class="nav-text">Settings</span>
+            </button>
+            <button id="sidebarNotificationBtn" class="sidebar-nav-item relative" onclick="toggleNotificationPanel(event)">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                </svg>
+                <span class="nav-text">Notifications</span>
+                <span id="sidebar-notification-dot" class="hidden absolute top-3 right-3 w-1.5 h-1.5 bg-rose-500 rounded-full"></span>
+            </button>
+
+            <!-- User Profile Row -->
+            <div class="user-profile-row flex items-center gap-2.5 px-2 py-2 mt-1 pt-3 border-t border-white/10 cursor-pointer">
+                <div class="w-8 h-8 rounded-full bg-[#1b1e24] border border-neutral-700/80 flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
+                    AU
                 </div>
+                <div class="profile-text flex-grow min-w-0">
+                    <div class="text-xs font-bold text-white truncate leading-tight">Admin User</div>
+                    <div class="text-[10px] text-neutral-400 font-medium">Super Admin</div>
+                </div>
+                <svg class="profile-text w-3.5 h-3.5 text-neutral-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </div>
+        </div>
+    </aside>
 
-                <!-- Right Action Icons & Profile -->
-                <div class="flex items-center gap-2">
-                    <div class="hidden sm:flex flex-col items-end mr-2">
-                        <span id="live-clock" class="text-xs font-bold text-[#242424] tabular-nums tracking-tight">--:--
-                            --</span>
-                        <span id="live-date"
-                            class="text-[9px] font-bold text-neutral-400 uppercase tracking-widest">---</span>
-                    </div>
-                    <button
-                        class="w-10 h-10 rounded-full bg-white border border-neutral-100 flex items-center justify-center text-neutral-500 hover:text-[#242424] hover:bg-neutral-50 transition shadow-sm">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
-                            </path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+    <!-- ===== MAIN CONTENT COLUMN ===== -->
+    <div class="flex-1 flex flex-col min-w-0 min-h-screen overflow-y-auto">
+
+        <!-- ===== TOP BAR HEADER ===== -->
+        <header class="flex items-center justify-between px-6 py-4 bg-transparent sticky top-0 z-30 backdrop-blur-md">
+            <!-- Left: Hamburger icon -->
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSidebar()" class="w-9 h-9 rounded-xl bg-white border border-neutral-200/60 shadow-xs flex items-center justify-center text-neutral-700 hover:text-black hover:bg-neutral-50 transition" title="Toggle Sidebar">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Center: Search Bar -->
+            <div class="flex-1 max-w-md mx-4">
+                <div class="relative w-full">
+                    <div class="absolute inset-y-0 left-3.5 flex items-center pointer-events-none">
+                        <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
-                    </button>
-                    <button onclick="toggleTheme()"
-                        class="w-10 h-10 rounded-full bg-white border border-neutral-100 flex items-center justify-center text-neutral-500 hover:text-[#242424] hover:bg-neutral-50 transition shadow-sm theme-toggle relative"
-                        title="Toggle Theme">
-                        <span class="sun-icon">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 3v1m0 16v1m9-9h-1m-16 0H1m15.364 1.636l.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
-                                </path>
-                            </svg>
-                        </span>
-                        <span class="moon-icon">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                            </svg>
-                        </span>
-                    </button>
-                    <div class="relative">
-                        <button id="notificationBtn" onclick="toggleNotificationPanel(event)"
-                            class="w-10 h-10 rounded-full bg-white border border-neutral-100 flex items-center justify-center text-neutral-500 hover:text-[#242424] hover:bg-neutral-50 transition shadow-sm relative">
-                            <span id="notification-dot"
-                                class="hidden absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-rose-500 rounded-full"></span>
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
-                                </path>
-                            </svg>
-                        </button>
                     </div>
-                    <div
-                        class="h-10 w-10 rounded-full bg-neutral-200 border-2 border-white shadow-sm overflow-hidden ml-1 cursor-pointer">
-                        <img src="https://ui-avatars.com/api/?name=Admin+User&background=242424&color=fff&font-size=0.35"
-                            alt="User" class="w-full h-full object-cover" loading="lazy">
-                    </div>
+                    <input type="text" id="topSearchBar" placeholder="Search anything..."
+                        class="w-full pl-10 pr-4 py-2 text-xs sm:text-sm font-medium bg-white rounded-full border border-neutral-200/80 shadow-xs focus:outline-none focus:ring-2 focus:ring-[#f4c74a]/40 focus:border-[#f4c74a] transition text-[#1a1a1a] placeholder-neutral-400">
                 </div>
             </div>
+
+            <!-- Right: Clock & Action Buttons -->
+            <div class="flex items-center gap-2.5">
+                <div class="hidden sm:flex flex-col items-end mr-2">
+                    <span id="live-clock" class="text-xs font-bold text-[#1a1a1a] tabular-nums tracking-tight">--:-- --</span>
+                    <span id="live-date" class="text-[9px] font-bold text-neutral-400 uppercase tracking-widest">---</span>
+                </div>
+                <button class="w-9 h-9 rounded-full bg-white border border-neutral-200/80 shadow-xs flex items-center justify-center text-neutral-500 hover:text-[#1a1a1a] hover:bg-neutral-50 transition" title="Settings">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                </button>
+                <button onclick="toggleTheme()" class="w-9 h-9 rounded-full bg-white border border-neutral-200/80 shadow-xs flex items-center justify-center text-neutral-500 hover:text-[#1a1a1a] hover:bg-neutral-50 transition theme-toggle relative" title="Toggle Theme">
+                    <span class="sun-icon">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1m-16 0H1m15.364 1.636l.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                    </span>
+                    <span class="moon-icon">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                        </svg>
+                    </span>
+                </button>
+                <button id="notificationBtn" onclick="toggleNotificationPanel(event)" class="w-9 h-9 rounded-full bg-white border border-neutral-200/80 shadow-xs flex items-center justify-center text-neutral-500 hover:text-[#1a1a1a] hover:bg-neutral-50 transition relative" title="Notifications">
+                    <span id="notification-dot" class="hidden absolute top-2 right-2 w-1.5 h-1.5 bg-rose-500 rounded-full"></span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                    </svg>
+                </button>
+                <div class="w-9 h-9 rounded-full bg-[#171920] text-white flex items-center justify-center text-xs font-bold shadow-xs cursor-pointer ml-0.5">
+                    AU
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== MAIN VIEWPORT ===== -->
+        <main class="flex-1 px-6 py-2">
 
             <!-- ===== DASHBOARD PANEL ===== -->
             <div id="dashboardPanel" class="panel active">
 
-                <div class="mb-8 flex flex-col xl:flex-row justify-between items-start xl:items-end gap-8">
+                <!-- Greeting & Target KPI Header Row -->
+                <div class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>
-                        <h1 id="greeting-text"
-                            class="text-3xl sm:text-4xl font-light text-[#1a1a1a] tracking-tight mb-3">
-                            Welcome in, <span class="font-bold">Manager</span>
+                        <h1 id="greeting-text" class="text-3xl font-light text-[#1a1a1a] tracking-tight mb-1">
+                            Good Afternoon, <span class="font-extrabold text-[#1a1a1a]">Manager</span>
                         </h1>
+                        <p class="text-xs sm:text-sm text-neutral-500 font-medium">Here's what's happening with your business today.</p>
 
-                        <!-- Mini progress bars imitating the Crextio sub-header -->
-                        <div class="flex flex-wrap items-center gap-4 sm:gap-6 mt-4">
-                            <div class="flex items-center gap-2">
-                                <span
-                                    class="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Tasks</span>
-                                <div class="w-16 h-6 rounded-full bg-[#242424] flex items-center px-2">
-                                    <span class="text-[9px] font-bold text-white" id="tasks-percentage">45%</span>
-                                </div>
+                        <!-- Status Indicators matching mockup -->
+                        <div class="flex flex-wrap items-center gap-3 sm:gap-4 mt-3">
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">TASKS</span>
+                                <div class="rounded-full bg-[#1a1a1a] text-white px-2.5 py-0.5 text-[10px] font-bold" id="tasks-percentage">0%</div>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <span
-                                    class="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Reports</span>
-                                <div class="w-16 h-6 rounded-full bg-[#f4c74a] flex items-center px-2 relative overflow-hidden"
-                                    id="reports-progress-bar-container">
-                                    <div id="reports-progress-fill" class="absolute left-0 top-0 bottom-0 bg-[#e0b43c]"
-                                        style="width: 82%; z-index: 0;"></div>
-                                    <span class="text-[9px] font-bold text-[#242424] relative z-10"
-                                        id="reports-percentage">82%</span>
-                                </div>
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">REPORTS</span>
+                                <div class="rounded-full bg-[#f4c74a] text-[#1a1a1a] px-2.5 py-0.5 text-[10px] font-bold" id="reports-percentage">20%</div>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <span
-                                    class="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Sync</span>
-                                <div
-                                    class="w-20 h-6 rounded-full border border-neutral-300 flex items-center px-2 bg-white/50">
-                                    <span class="text-[9px] font-bold text-neutral-500">100%</span>
-                                </div>
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">SYNC</span>
+                                <div class="rounded-full bg-white border border-neutral-200/80 text-neutral-700 px-2.5 py-0.5 text-[10px] font-bold">100%</div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- KPI Target Achievements -->
-                    <div class="flex items-center gap-3 sm:gap-4 overflow-x-auto hide-scrollbar pb-1 max-w-full" id="dashboard-kpi-container">
-                        <!-- Rendered by JS -->
-                        <div class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Loading targets...</div>
+                    <!-- Store KPI Target Card -->
+                    <div id="dashboard-kpi-container" class="flex-shrink-0">
+                        <div class="bg-white rounded-2xl p-4 shadow-sm border border-neutral-100 flex justify-between items-center min-w-[190px] hover:shadow-md transition-shadow cursor-pointer" onclick="navigateTo('target')">
+                            <div class="flex-grow min-w-0 pr-3 text-left">
+                                <div class="flex items-center justify-start gap-1.5 mb-1">
+                                    <svg class="w-3.5 h-3.5 text-[#2563eb]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                    </svg>
+                                    <span class="text-[9px] font-bold uppercase tracking-wider text-neutral-400">STORE</span>
+                                </div>
+                                <h3 class="font-extrabold text-sm text-[#1a1a1a] truncate">HUBLI</h3>
+                                <div class="flex items-baseline gap-1 mt-0.5 justify-start">
+                                    <span class="text-lg font-extrabold text-[#2563eb]">452</span>
+                                    <span class="text-[10px] text-neutral-400 font-medium">total</span>
+                                </div>
+                            </div>
+                            <div class="relative w-[46px] h-[46px] flex-shrink-0 flex items-center justify-center">
+                                <svg class="w-full h-full" style="transform: rotate(-90deg);" viewBox="0 0 48 48">
+                                    <circle class="text-neutral-100" stroke-width="4" stroke="currentColor" fill="transparent" r="18" cx="24" cy="24" />
+                                    <circle style="color:#f59e0b;" stroke-width="4" stroke-dasharray="113.1" stroke-dashoffset="50.9" stroke-linecap="round" stroke="currentColor" fill="transparent" r="18" cx="24" cy="24" />
+                                </svg>
+                                <span class="absolute text-[10px] font-bold text-amber-500">55%</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div id="dashboardGrid"
-                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 flex-grow">
+                <!-- Bento Row (3 Cards Side-by-Side: Barcode Routine, Store Routine, Daily Tasks) -->
+                <div id="dashboardGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
 
-                    <!-- TOOL 7: Glass Window Block (Barcode Scanning Routine) -->
-                    <div
-                        class="bento-card glass-card border border-neutral-200 rounded-[2rem] p-6 flex flex-col relative overflow-hidden group col-span-1">
-                        <div class="flex justify-between items-start mb-5">
-                            <h3 class="text-lg font-extrabold text-[#242424]">Barcode Routine</h3>
-                            <div class="w-8 h-8 rounded-full bg-white/40 flex items-center justify-center">
-                                <svg class="w-4 h-4 text-neutral-600" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z">
-                                    </path>
+                    <!-- CARD 1: Barcode Routine -->
+                    <div class="bento-card bg-white border border-neutral-100/80 rounded-[2rem] p-6 flex flex-col justify-between shadow-sm relative overflow-hidden group">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <h3 class="text-lg font-extrabold text-[#1a1a1a]">Barcode Routine</h3>
+                                <p class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mt-1">H2 STOCK AUDIT SCHEDULE</p>
+                            </div>
+                            <div class="w-8 h-8 rounded-full bg-neutral-50 flex items-center justify-center text-neutral-500">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
                                 </svg>
                             </div>
                         </div>
-
-                        <p class="text-[10px] font-bold text-neutral-500 uppercase tracking-widest mb-4">H2 Stock Audit Schedule</p>
-
-                        <div id="barcode-routine-list" class="flex flex-col gap-3 flex-grow relative z-10">
-                            <!-- Items injected via JS to dynamically highlight today -->
+                        <div id="barcode-routine-list" class="flex flex-col gap-3.5 my-auto py-2">
+                            <!-- Injected via renderBarcodeRoutine() -->
                         </div>
                     </div>
 
-                    <!-- TOOL 2: Store Routine Schedule Chart (Mimicking Crextio's Progress block) -->
-                    <div onclick="navigateTo('schedule')"
-                        class="bento-card cursor-pointer bg-white border border-neutral-200 rounded-[2rem] p-6 flex flex-col justify-between shadow-sm relative overflow-hidden group col-span-1 lg:col-span-2">
+                    <!-- CARD 2: Store Routine -->
+                    <div onclick="navigateTo('schedule')" class="bento-card cursor-pointer bg-white border border-neutral-100/80 rounded-[2rem] p-6 flex flex-col justify-between shadow-sm relative overflow-hidden group">
                         <div class="flex justify-between items-start mb-2">
                             <div>
-                                <h3 class="text-lg font-extrabold text-[#242424] mb-1">Store Routine</h3>
+                                <h3 class="text-lg font-extrabold text-[#1a1a1a] mb-0.5">Store Routine</h3>
                                 <div class="flex items-baseline gap-2">
-                                    <span class="text-3xl font-light text-[#242424]" id="store-routine-week">Week
-                                        2</span>
-                                    <span
-                                        class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Active</span>
+                                    <span class="text-3xl font-light text-[#1a1a1a]" id="store-routine-week">Week 2</span>
+                                    <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">ACTIVE</span>
                                 </div>
                             </div>
                             <div class="relative" onclick="event.stopPropagation()">
-                                <button onclick="toggleStoreRoutineDropdown(event)"
-                                    class="w-8 h-8 rounded-full bg-neutral-50 flex items-center justify-center hover:bg-neutral-200 transition-colors">
-                                    <svg class="w-5 h-5 text-[#242424]" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z">
-                                        </path>
+                                <button onclick="toggleStoreRoutineDropdown(event)" class="w-8 h-8 rounded-full bg-neutral-50 flex items-center justify-center text-neutral-500 hover:bg-neutral-200 transition-colors">
+                                    <svg class="w-4 h-4 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
                                     </svg>
                                 </button>
-                                <div id="storeRoutineDropdown"
-                                    class="hidden absolute right-0 top-10 w-48 bg-white rounded-xl shadow-lg border border-neutral-100 z-50 overflow-hidden">
-                                    <button onclick="openEditRoutineModal(event)"
-                                        class="w-full text-left px-4 py-3 text-sm font-semibold text-[#242424] hover:bg-neutral-50 transition-colors flex items-center gap-2">
-                                        <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
-                                            </path>
+                                <div id="storeRoutineDropdown" class="hidden absolute right-0 top-10 w-48 bg-white rounded-xl shadow-lg border border-neutral-100 z-50 overflow-hidden">
+                                    <button onclick="openEditRoutineModal(event)" class="w-full text-left px-4 py-3 text-sm font-semibold text-[#1a1a1a] hover:bg-neutral-50 transition-colors flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
                                         </svg>
                                         Edit Routine
                                     </button>
@@ -1695,103 +1866,53 @@
                             </div>
                         </div>
 
-                        <!-- Dynamic Chart Elements -->
+                        <!-- Store Routine Dynamic Chart Elements -->
                         <div id="store-routine-chart" class="flex-grow flex items-end justify-between py-6 gap-2 px-2">
                         </div>
                     </div>
 
-                    <!-- TOOL 3: Daily Tasks (Charcoal Dark Card matching Onboarding Task in Crextio) -->
-                    <div class="bento-card bento-dark bg-[#242424] rounded-[2rem] p-6 flex flex-col shadow-xl shadow-neutral-900/10 relative overflow-hidden group col-span-1 lg:row-span-2"
-                        style="min-height:0;">
-                        <div
-                            class="absolute -right-8 -top-8 w-32 h-32 bg-white/5 rounded-full blur-2xl pointer-events-none">
-                        </div>
-
-                        <div class="flex justify-between items-center mb-6 relative z-10">
+                    <!-- CARD 3: Daily Tasks -->
+                    <div class="bento-card bg-[#1b1c20] rounded-[2rem] p-6 flex flex-col justify-between shadow-xl shadow-neutral-900/10 relative overflow-hidden group min-h-[300px]">
+                        <div class="flex justify-between items-center mb-4 relative z-10">
                             <h3 class="text-lg font-extrabold text-white">Daily Tasks</h3>
                             <div class="flex items-center gap-3">
-                                <span class="text-2xl font-light text-white"><span id="completed-count">0</span><span
-                                        class="text-neutral-500 text-lg" id="total-count">/4</span></span>
+                                <span class="text-sm font-semibold text-neutral-300">
+                                    <span id="completed-count">0</span><span class="text-neutral-500" id="total-count">/0</span>
+                                </span>
                                 <button onclick="openAddTaskModal()" id="addTaskBtn" title="Add Task"
-                                    style="width:36px;height:36px;border-radius:50%;background:#FACC15;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 0 rgba(250,204,21,0.5);animation:addTaskPulse 2s infinite;transition:transform 0.18s,box-shadow 0.18s;flex-shrink:0;"
-                                    onmouseover="this.style.transform='scale(1.15)';this.style.boxShadow='0 4px 18px rgba(250,204,21,0.6)'"
-                                    onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 0 0 0 rgba(250,204,21,0.5)'">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a"
-                                        stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                                        <line x1="12" y1="5" x2="12" y2="19" />
-                                        <line x1="5" y1="12" x2="19" y2="12" />
+                                    class="w-8 h-8 rounded-full bg-[#f4c74a] text-[#1a1a1a] flex items-center justify-center font-bold text-lg hover:scale-105 transition flex-shrink-0 shadow-md">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="12" y1="5" x2="12" y2="19"/>
+                                        <line x1="5" y1="12" x2="19" y2="12"/>
                                     </svg>
                                 </button>
                             </div>
                         </div>
 
-                        <div class="flex flex-col gap-3 relative z-10 overflow-y-auto tasks-scroll" id="tasks-container"
-                            style="flex: 1 1 0; min-height: 0; padding-right: 2px;">
-                            <!-- Tasks rendered here -->
+                        <!-- Tasks container: When tasks exist, renders items; when 0, renders mockup empty state -->
+                        <div class="flex flex-col gap-3 relative z-10 overflow-y-auto tasks-scroll flex-1 my-auto" id="tasks-container">
+                            <!-- Injected via renderTasks() -->
                         </div>
-
-
-                    </div>
-
-                    <!-- Task Management Modal -->
-                    <div id="taskModal"
-                        class="hidden fixed inset-0 flex items-end sm:items-center justify-center z-50 modal-overlay">
-                        <div class="modal-content bg-white rounded-2xl shadow-2xl w-full sm:max-w-md m-4">
-                            <div class="p-6">
-                                <div class="flex justify-between items-center mb-4">
-                                    <h3 class="text-lg font-bold" id="modalTitle">Add New Task</h3>
-                                    <button onclick="closeTaskModal()" class="text-neutral-500 hover:text-neutral-700">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M6 18L18 6M6 6l12 12"></path>
-                                        </svg>
-                                    </button>
-                                </div>
-
-                                <div class="space-y-4">
-                                    <div>
-                                        <label class="block text-sm font-semibold text-neutral-700 mb-2">Task
-                                            Name</label>
-                                        <input type="text" id="taskName"
-                                            class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#242424]"
-                                            placeholder="Enter task name">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-semibold text-neutral-700 mb-2">Time</label>
-                                        <input type="time" id="taskTime"
-                                            class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#242424]">
-                                    </div>
-                                </div>
-
-                                <div class="flex gap-3 mt-6">
-                                    <button onclick="closeTaskModal()"
-                                        class="flex-1 py-2 px-4 rounded-lg border border-neutral-300 text-neutral-700 font-semibold hover:bg-neutral-50 transition-colors">
-                                        Cancel
-                                    </button>
-                                    <button onclick="saveTask()"
-                                        class="flex-1 py-2 px-4 rounded-lg bg-[#242424] text-white font-semibold hover:bg-neutral-800 transition-colors">
-                                        Save Task
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ====  DYNAMICALLY RENDERED PINNED APP CARDS (injected by JS) ==== -->
-                    <!-- Tool cards are injected here by renderDashboardApps() based on pin state -->
-                    <div id="pinned-apps-placeholder"
-                        class="hidden col-span-1 md:col-span-2 lg:col-span-3 xl:col-span-4 flex flex-col items-center justify-center py-12 gap-3 rounded-[2rem] border-2 border-dashed border-neutral-200 text-center">
-                        <div class="text-4xl mb-1">📌</div>
-                        <p class="text-sm font-bold text-neutral-500">No apps pinned to home</p>
-                        <p class="text-xs text-neutral-400 font-medium">Go to <strong>Tools</strong> and pin your
-                            favourite apps to see them here.</p>
                     </div>
 
                 </div>
 
+                <!-- ===== QUICK ACCESS SECTION ===== -->
+                <div class="mt-8 mb-4">
+                    <h2 class="text-base font-extrabold text-[#1a1a1a] mb-3.5">Quick Access</h2>
+                    <div id="quickAccessGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3.5 sm:gap-4" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));">
+                        <!-- Rendered by renderDashboardApps() -->
+                    </div>
+                    <div id="pinned-apps-placeholder" class="hidden flex flex-col items-center justify-center py-10 gap-2 rounded-2xl border-2 border-dashed border-neutral-200 text-center">
+                        <div class="text-3xl">📌</div>
+                        <p class="text-sm font-bold text-neutral-500">No apps pinned to Quick Access</p>
+                        <p class="text-xs text-neutral-400 font-medium">Go to <strong>Tools</strong> and pin your favourite apps.</p>
+                    </div>
+                </div>
+
             </div> <!-- end dashboardPanel -->
 
-            <!-- ===== TOOLS PANEL ===== -->
+<!-- ===== TOOLS PANEL ===== -->
             <div id="toolsPanel" class="panel">
                 <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
                     <div>
@@ -2084,16 +2205,50 @@
 
 
             </div> <!-- end toolsPanel -->
+        </main>
 
-
-        </div>
-
-        <div class="mt-6 text-center text-neutral-400 text-[10px] font-extrabold uppercase tracking-widest">
+        <div class="mt-auto py-4 text-center text-neutral-400 text-[10px] font-extrabold uppercase tracking-widest">
             Manager &copy; 2026
         </div>
-    </div>
 
-    <!-- Session Lock Modal -->
+    </div> <!-- end main content column -->
+
+    <!-- Task Management Modal -->
+    <div id="taskModal" class="hidden fixed inset-0 flex items-end sm:items-center justify-center z-50 modal-overlay">
+        <div class="modal-content bg-white rounded-2xl shadow-2xl w-full sm:max-w-md m-4">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold" id="modalTitle">Add New Task</h3>
+                    <button onclick="closeTaskModal()" class="text-neutral-500 hover:text-neutral-700">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-neutral-700 mb-2">Task Name</label>
+                        <input type="text" id="taskName" class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#242424]" placeholder="Enter task name">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-neutral-700 mb-2">Time</label>
+                        <input type="time" id="taskTime" class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#242424]">
+                    </div>
+                </div>
+
+                <div class="flex gap-3 mt-6">
+                    <button onclick="closeTaskModal()" class="flex-1 py-2 px-4 rounded-lg border border-neutral-300 text-neutral-700 font-semibold hover:bg-neutral-50 transition-colors">
+                        Cancel
+                    </button>
+                    <button onclick="saveTask()" class="flex-1 py-2 px-4 rounded-lg bg-[#242424] text-white font-semibold hover:bg-neutral-800 transition-colors">
+                        Save Task
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- Session Lock Modal -->
     <div id="lockOverlay" class="lock-overlay hidden">
         <div class="lock-modal">
             <div class="lock-icon">🔒</div>
@@ -2112,19 +2267,28 @@
             const panels = document.querySelectorAll('.panel');
             panels.forEach(p => p.classList.remove('active'));
 
-            const navBtns = document.querySelectorAll('#navDashboard, #navTools');
-            navBtns.forEach(btn => {
-                btn.className = btn.className.replace('pill-nav-active', 'pill-nav');
-            });
+            const navDashboard = document.getElementById('navDashboard');
+            const navTools = document.getElementById('navTools');
+            if (navDashboard) navDashboard.classList.remove('active');
+            if (navTools) navTools.classList.remove('active');
 
             if (panelName === 'tools') {
-                document.getElementById('toolsPanel').classList.add('active');
-                document.getElementById('navTools').className = document.getElementById('navTools').className.replace('pill-nav', 'pill-nav-active');
+                const toolsPanel = document.getElementById('toolsPanel');
+                if (toolsPanel) toolsPanel.classList.add('active');
+                if (navTools) navTools.classList.add('active');
                 applyToolsPinState(); // sync pin buttons on tools page
             } else {
-                document.getElementById('dashboardPanel').classList.add('active');
-                document.getElementById('navDashboard').className = document.getElementById('navDashboard').className.replace('pill-nav', 'pill-nav-active');
+                const dashboardPanel = document.getElementById('dashboardPanel');
+                if (dashboardPanel) dashboardPanel.classList.add('active');
+                if (navDashboard) navDashboard.classList.add('active');
                 renderDashboardApps(); // re-render pinned cards on dashboard
+            }
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) {
+                sidebar.classList.toggle('sidebar-collapsed');
             }
         }
 
@@ -2183,58 +2347,78 @@
         // ---- Dashboard dynamic render ----
         function buildBentoCard(appId) {
             const meta = APP_META[appId];
+            if (!meta) return '';
             const icon = APP_ICONS[appId];
-            const badgeHtml = meta.badge
-                ? `<span class="text-[9px] font-bold bg-[#f4c74a] text-[#242424] px-2 py-1 rounded-md">${meta.badge}</span>`
-                : '';
+            const isQuotation = (appId === 'quotation');
+
+            const cardBg = isQuotation 
+                ? 'bg-[#f4c74a] text-[#1a1a1a] shadow-sm' 
+                : 'bg-white border border-neutral-100 shadow-sm text-[#1a1a1a]';
+
+            const iconBox = isQuotation
+                ? 'bg-white/40 text-[#1a1a1a]'
+                : `${meta.iconBg} ${meta.iconColor}`;
+
+            const titleColor = isQuotation
+                ? '#1a1a1a'
+                : (meta.accentColor || '#1a1a1a');
+
+            const descColor = isQuotation
+                ? 'text-[#1a1a1a]/70 font-semibold'
+                : 'text-neutral-400 font-medium';
+
+            const arrowBtn = isQuotation
+                ? 'bg-white text-[#1a1a1a] shadow-xs hover:scale-105'
+                : 'bg-neutral-50 border border-neutral-100 text-neutral-600 group-hover:bg-neutral-100 hover:scale-105';
+
+            const sparkColor = isQuotation ? 'text-[#1a1a1a]/40' : 'text-neutral-300';
 
             return `
             <div onclick="navigateTo('${meta.nav}')"
-                class="bento-card cursor-pointer ${meta.bg} rounded-[2rem] p-6 flex flex-col justify-between shadow-sm relative overflow-hidden group is-pinned"
+                class="quick-access-card cursor-pointer ${cardBg} rounded-2xl p-4 sm:p-4.5 flex flex-col justify-between relative overflow-hidden group min-h-[120px] sm:min-h-[125px]"
                 data-app-id="${appId}"
                 id="dash-card-${appId}">
                 <!-- Pin Button -->
-                <button class="pin-btn pinned" onclick="togglePin(event,'${appId}')" title="Unpin this app">
+                <button class="pin-btn pinned" onclick="togglePin(event,'${appId}')" title="Unpin from Quick Access">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
                     </svg>
                 </button>
                 <div>
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="w-12 h-12 ${meta.iconBg} rounded-full flex items-center justify-center">
-                            <svg class="w-5 h-5 ${meta.iconColor}" fill="none" stroke="currentColor" viewBox="0 0 24 24">${icon}</svg>
+                    <div class="flex justify-between items-start mb-2.5 sm:mb-3">
+                        <div class="w-9 h-9 sm:w-10 sm:h-10 ${iconBox} rounded-xl flex items-center justify-center flex-shrink-0 shadow-xs">
+                            <svg class="w-4.5 h-4.5 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">${icon}</svg>
                         </div>
-                        ${badgeHtml}
                     </div>
-                    <h3 class="text-lg font-extrabold mb-1" style="color:${meta.accentColor || '#242424'}">${meta.label}</h3>
-                    <p class="text-xs font-semibold ${meta.descColor} leading-relaxed">${meta.desc}</p>
+                    <h3 class="text-xs sm:text-[13.5px] font-extrabold mb-0.5 leading-snug tracking-tight" style="color:${titleColor}">${meta.label}</h3>
+                    <p class="text-[11px] sm:text-[11.5px] ${descColor} leading-tight line-clamp-2">${meta.desc}</p>
+                </div>
+                <div class="w-6.5 h-6.5 sm:w-7 sm:h-7 rounded-full ${arrowBtn} flex items-center justify-center transition-all ml-auto mt-2 sm:mt-2.5 flex-shrink-0">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                    </svg>
                 </div>
             </div>`;
         }
 
         function renderDashboardApps() {
             const pinned = getEffectivePinned();
-            const grid = document.getElementById('dashboardGrid');
+            const grid = document.getElementById('quickAccessGrid');
             const placeholder = document.getElementById('pinned-apps-placeholder');
             if (!grid) return;
 
-            // Remove existing dynamic cards (leave static widget cards)
-            grid.querySelectorAll('[id^="dash-card-"]').forEach(el => el.remove());
+            grid.innerHTML = '';
 
             if (pinned.length === 0) {
-                placeholder.classList.remove('hidden');
+                if (placeholder) placeholder.classList.remove('hidden');
             } else {
-                placeholder.classList.add('hidden');
-                // Insert in the defined order
-                const fragment = document.createDocumentFragment();
+                if (placeholder) placeholder.classList.add('hidden');
                 ALL_APP_IDS.forEach(id => {
                     if (pinned.includes(id)) {
-                        const div = document.createElement('div');
-                        div.innerHTML = buildBentoCard(id).trim();
-                        fragment.appendChild(div.firstChild);
+                        const html = buildBentoCard(id);
+                        grid.insertAdjacentHTML('beforeend', html);
                     }
                 });
-                grid.appendChild(fragment);
             }
         }
 
@@ -2336,7 +2520,7 @@
         function updateClock() {
             const now = new Date();
             const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-            const dateStr = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+            const dateStr = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }).toUpperCase();
             const clockEl = document.getElementById('live-clock');
             const dateEl = document.getElementById('live-date');
             if (clockEl) clockEl.textContent = timeStr;
@@ -2590,7 +2774,10 @@
                     const d = new Date(parts[0], parts[1] - 1, parts[2]);
                     lastFoundDate = d;
                     schedule.push({
-                        date: `${String(d.getDate()).padStart(2, '0')} ${String(d.getMonth() + 1).padStart(2, '0')} ${d.getFullYear()}`,
+                        date: (() => {
+                        const m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()];
+                        return `${String(d.getDate()).padStart(2, '0')} ${m} ${d.getFullYear()}`;
+                    })(),
                         task: h2Schedule[i].task,
                         isToday: (d.getTime() === today),
                         isTomorrow: (d.getTime() - today === 86400000),
@@ -2612,7 +2799,10 @@
                 for (let i = collected; i < 4; i++) {
                     const d = new Date(fallbackStart.getTime() + (i - collected) * 7 * 86400000);
                     schedule.push({
-                        date: `${String(d.getDate()).padStart(2, '0')} ${String(d.getMonth() + 1).padStart(2, '0')} ${d.getFullYear()}`,
+                        date: (() => {
+                        const m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()];
+                        return `${String(d.getDate()).padStart(2, '0')} ${m} ${d.getFullYear()}`;
+                    })(),
                         task: fallbackCategories[(i - collected) % 4],
                         isToday: (d.getTime() === today),
                         isTomorrow: (d.getTime() - today === 86400000),
@@ -2626,6 +2816,7 @@
 
         function renderBarcodeRoutine() {
             const listContainer = document.getElementById('barcode-routine-list');
+            if (!listContainer) return;
             listContainer.innerHTML = '';
 
             const schedule = getDynamicSchedule();
@@ -2635,46 +2826,35 @@
                 const isTomorrow = item.isTomorrow;
                 const isUpcoming = item.isUpcoming;
 
-                // Highlight container for both today and tomorrow
-                const containerClasses = (isActive || isTomorrow)
-                    ? "bg-white/60 p-3 rounded-xl border border-white flex items-center gap-3 shadow-sm transform scale-[1.02] transition-transform"
-                    : "p-2 flex items-center gap-3 opacity-70 hover:opacity-100 transition-opacity";
-
-                // Green for today/tomorrow, Yellow for other upcoming, Grey for past
-                let dotStyle = "w-2 h-2 rounded-full bg-neutral-400";
+                let dotStyle = "w-2 h-2 rounded-full bg-neutral-300";
                 if (isActive || isTomorrow) {
-                    dotStyle = "w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse";
+                    dotStyle = "w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]";
                 } else if (isUpcoming) {
-                    dotStyle = "w-2.5 h-2.5 rounded-full bg-[#f4c74a] shadow-[0_0_8px_rgba(244,199,74,0.6)]";
+                    dotStyle = "w-2 h-2 rounded-full bg-amber-400";
                 }
 
-                const textStyle = (isActive || isUpcoming)
-                    ? "text-xs font-extrabold text-[#242424]"
-                    : "text-[11px] font-bold text-neutral-500";
-
-                const dateStyle = (isActive || isUpcoming)
-                    ? "text-[9px] font-bold text-neutral-500 uppercase tracking-wider"
-                    : "text-[9px] font-bold text-neutral-400 uppercase tracking-wider";
+                const textStyle = "text-xs font-bold text-[#1a1a1a] leading-tight";
+                const dateStyle = "text-[10px] font-medium text-neutral-400";
 
                 let tagHtml = '';
                 if (isActive) {
-                    tagHtml = '<span class="ml-auto text-[8px] font-black uppercase bg-[#242424] text-[#f4c74a] px-1.5 py-0.5 rounded routine-tag-today tracking-wide">Today</span>';
+                    tagHtml = '<span class="ml-auto text-[9px] font-black uppercase bg-[#1a1a1a] text-[#f4c74a] px-2 py-0.5 rounded-md tracking-wider flex-shrink-0">TODAY</span>';
                 } else if (isTomorrow) {
-                    tagHtml = '<span class="ml-auto text-[8px] font-black uppercase bg-[#242424] text-emerald-400 px-1.5 py-0.5 rounded routine-tag-tomorrow tracking-wide">Tomorrow</span>';
+                    tagHtml = '<span class="ml-auto text-[9px] font-black uppercase bg-[#1a1a1a] text-emerald-400 px-2 py-0.5 rounded-md tracking-wider flex-shrink-0">TOMORROW</span>';
                 }
 
                 const html = `
-                        <div class="${containerClasses}">
-                        <div class="flex-shrink-0 flex items-center justify-center w-4 h-4">
+                    <div class="py-1 px-1 flex items-center gap-3">
+                        <div class="flex-shrink-0 flex items-center justify-center w-3 h-3">
                             <div class="${dotStyle}"></div>
                         </div>
-                        <div class="flex flex-col">
+                        <div class="flex flex-col min-w-0 pr-1">
                             <span class="${dateStyle}">${item.date}</span>
                             <span class="${textStyle}">${item.task}</span>
                         </div>
                         ${tagHtml}
                     </div>
-                        `;
+                `;
                 listContainer.insertAdjacentHTML('beforeend', html);
             });
         }
@@ -2737,15 +2917,40 @@
 
         function renderTasks() {
             const container = document.getElementById('tasks-container');
+            if (!container) return;
             container.innerHTML = '';
 
             const completed = tasks.filter(t => t.completed).length;
             const total = tasks.length;
             const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
 
-            document.getElementById('completed-count').textContent = completed;
-            document.getElementById('total-count').textContent = `/ ${total} `;
-            document.getElementById('tasks-percentage').textContent = `${percentage}% `;
+            const completedEl = document.getElementById('completed-count');
+            const totalEl = document.getElementById('total-count');
+            const tasksPercentageEl = document.getElementById('tasks-percentage');
+
+            if (completedEl) completedEl.textContent = completed;
+            if (totalEl) totalEl.textContent = `/${total}`;
+            if (tasksPercentageEl) tasksPercentageEl.textContent = `${percentage}%`;
+
+            if (tasks.length === 0) {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center text-center py-6 my-auto">
+                        <div class="relative mb-3">
+                            <svg class="w-16 h-16 text-neutral-600/80" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                            </svg>
+                            <div class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[#f4c74a] text-[#1a1a1a] flex items-center justify-center shadow-md">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <h4 class="text-sm font-bold text-white mb-1">No tasks for today!</h4>
+                        <p class="text-xs text-neutral-400">Add a task to get started.</p>
+                    </div>
+                `;
+                return;
+            }
 
             tasks.forEach((task, index) => {
                 const isCompleted = task.completed;
@@ -2941,7 +3146,9 @@
                 'raw_csv_gcMaker',
                 'raw_csv_unconfirmedStock',
                 'raw_csv_poMaker',
-                'raw_csv_knockoffMaker'
+                'raw_csv_pendingPO',
+                'raw_csv_knockoffMaker',
+                'raw_csv_sizeStocks'
             ];
 
             let uploadedCount = 0;
@@ -2982,7 +3189,9 @@
                     'raw_csv_gcMaker',
                     'raw_csv_unconfirmedStock',
                     'raw_csv_poMaker',
-                    'raw_csv_knockoffMaker'
+                    'raw_csv_pendingPO',
+                    'raw_csv_knockoffMaker',
+                    'raw_csv_sizeStocks'
                 ];
                 let completed = 0;
                 reportKeys.forEach(key => {
@@ -3219,7 +3428,27 @@
                 });
                 
                 if (html === '') {
-                    html = '<div class="text-xs text-neutral-400 font-medium bg-white/50 px-4 py-2 rounded-xl border border-neutral-200 border-dashed cursor-pointer hover:bg-white" onclick="navigateTo(\'target\')">Upload CSV in Target</div>';
+                    html = `
+                    <div class="bg-white rounded-2xl p-4 shadow-sm border border-neutral-100 flex justify-between items-center min-w-[190px] hover:shadow-md transition-shadow cursor-pointer" onclick="navigateTo('target')">
+                        <div class="flex-grow min-w-0 pr-3 text-left">
+                            <div class="flex items-center justify-start gap-1.5 mb-1">
+                                <svg class="w-3.5 h-3.5 text-[#2563eb]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                                <span class="text-[9px] font-bold uppercase tracking-wider text-neutral-400">STORE</span>
+                            </div>
+                            <h3 class="font-extrabold text-sm text-[#1a1a1a] truncate">HUBLI</h3>
+                            <div class="flex items-baseline gap-1 mt-0.5 justify-start">
+                                <span class="text-lg font-extrabold text-[#2563eb]">452</span>
+                                <span class="text-[10px] text-neutral-400 font-medium">total</span>
+                            </div>
+                        </div>
+                        <div class="relative w-[46px] h-[46px] flex-shrink-0 flex items-center justify-center">
+                            <svg class="w-full h-full" style="transform: rotate(-90deg);" viewBox="0 0 48 48">
+                                <circle class="text-neutral-100" stroke-width="4" stroke="currentColor" fill="transparent" r="18" cx="24" cy="24" />
+                                <circle style="color:#f59e0b;" stroke-width="4" stroke-dasharray="113.1" stroke-dashoffset="50.9" stroke-linecap="round" stroke="currentColor" fill="transparent" r="18" cx="24" cy="24" />
+                            </svg>
+                            <span class="absolute text-[10px] font-bold text-amber-500">55%</span>
+                        </div>
+                    </div>`;
                 }
 
                 if (container) {
