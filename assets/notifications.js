@@ -121,7 +121,28 @@
         const timeStr = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
         window.notifications.unshift({ msg, time: timeStr, id: Date.now() });
         window.saveNotifications();
+
+        // Browser Native Notification (if permission is granted)
+        if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+            try {
+                new Notification('Smart Business Dashboard', {
+                    body: msg,
+                    icon: 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2245%22 fill=%22%23f4c74a%22/><text y=%22.65em%22 x=%2218%22 font-size=%2240%22 font-weight=%22bold%22>PNR</text></svg>'
+                });
+            } catch (e) {
+                // Ignore native notification errors
+            }
+        }
     };
+
+    // Auto-request desktop notification permission on first user interaction
+    if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
+        const askNotifPermission = function() {
+            Notification.requestPermission();
+            document.removeEventListener('click', askNotifPermission);
+        };
+        document.addEventListener('click', askNotifPermission, { once: true });
+    }
 
     window.updateNotificationUI = function() {
         const dot = document.getElementById('notification-dot');
@@ -223,5 +244,50 @@
 
     // Run the check after a short delay
     setTimeout(window.checkOutdatedReports, 2000);
+
+    // 7. Scheduled Business Reminders
+    window.checkScheduledReminders = function() {
+        const now = new Date();
+        const nowTime = now.getTime();
+        const oneHourMs = 60 * 60 * 1000;
+
+        // Helper: check if duplicate recent notification exists in last 5 mins
+        function hasRecentNotification(msg, withinMs = 5 * 60 * 1000) {
+            const currentNotifs = JSON.parse(localStorage.getItem('smart_dash_notifications') || '[]');
+            const curTime = Date.now();
+            return currentNotifs.some(n => n.msg === msg && (curTime - (n.id || 0)) < withinMs);
+        }
+
+        // --- Reminder 1: Every hour - "Add Walk-in Data" ---
+        const lastWalkinStr = localStorage.getItem('notif_last_walkin_time');
+        const lastWalkinTime = lastWalkinStr ? parseInt(lastWalkinStr, 10) : 0;
+
+        if (!lastWalkinTime || (nowTime - lastWalkinTime >= oneHourMs)) {
+            if (!hasRecentNotification('Add Walk-in Data')) {
+                window.triggerNotification('Add Walk-in Data');
+            }
+            localStorage.setItem('notif_last_walkin_time', nowTime.toString());
+        }
+
+        // --- Reminder 2: Every Tuesday morning 11 AM - "Tailoring Supervisor meeting" ---
+        // Day 2 = Tuesday. Check if it's Tuesday and at or after 11:00 AM
+        const dayOfWeek = now.getDay();
+        const currentHour = now.getHours();
+        const todayDateKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
+        if (dayOfWeek === 2 && currentHour >= 11) {
+            const lastMeetingDate = localStorage.getItem('notif_last_tuesday_meeting_date');
+            if (lastMeetingDate !== todayDateKey) {
+                if (!hasRecentNotification('Tailoring Supervisor meeting')) {
+                    window.triggerNotification('Tailoring Supervisor meeting');
+                }
+                localStorage.setItem('notif_last_tuesday_meeting_date', todayDateKey);
+            }
+        }
+    };
+
+    // Run scheduled reminders check after 1.5s, then repeat every 30 seconds
+    setTimeout(window.checkScheduledReminders, 1500);
+    setInterval(window.checkScheduledReminders, 30000);
 
 })();
