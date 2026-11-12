@@ -612,6 +612,18 @@
                 </svg>
                 <span class="nav-text">Tools</span>
             </button>
+            <button class="sidebar-nav-item" onclick="navigateTo('smartNotes')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span class="nav-text">Smart Notes</span>
+            </button>
+            <button class="sidebar-nav-item" onclick="navigateTo('allocate')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+                </svg>
+                <span class="nav-text">Allocation</span>
+            </button>
             <button class="sidebar-nav-item" onclick="navigateTo('reports')">
                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -1021,149 +1033,8 @@
             "FINISHED GARMENT READY AT STORE", "DELVERED TO CUSTOMER"
         ];
 
-        // Default Tailoring Orders matching the Smart Dashboard Mockup
-        const DEFAULT_TAILORING_ORDERS = [
-            {
-                orderNo: "SO27022650",
-                customerName: "Ramesh Kumar",
-                deliveryDate: "10-Nov-26",
-                trailDate: "05-Nov-26",
-                items: [{ product: "Shirt", woNo: "WO-9901", woOrderStatus: "QC TESTING", orderKind: "TRIAL", qty: 2 }]
-            },
-            {
-                orderNo: "SO27022855",
-                customerName: "Suresh Varma",
-                deliveryDate: "10-Nov-26",
-                trailDate: "06-Nov-26",
-                items: [{ product: "Shirt", woNo: "WO-9902", woOrderStatus: "ALLOCATED_FINSISH_TAILOR", orderKind: "FULL FINISH", qty: 1 }]
-            },
-            {
-                orderNo: "SO27022646",
-                customerName: "Praveen Patil",
-                trailDate: "11-Nov-26",
-                deliveryDate: "27-Nov-26",
-                items: [{ product: "Coat", woNo: "WO-9903", woOrderStatus: "TRIAL GARMENT READY STORE", orderKind: "TRIAL", qty: 1 }]
-            },
-            {
-                orderNo: "SO27022415",
-                customerName: "Mahesh Deshmukh",
-                trailDate: "11-Nov-26",
-                deliveryDate: "22-Nov-26",
-                items: [{ product: "Trouser", woNo: "WO-9904", woOrderStatus: "CUTTING COMPLETED", orderKind: "FULL FINISH", qty: 2 }]
-            },
-            {
-                orderNo: "SO27022694",
-                customerName: "Dinesh Patel",
-                deliveryDate: "11-Nov-26",
-                trailDate: "07-Nov-26",
-                items: [{ product: "Shirt", woNo: "WO-9905", woOrderStatus: "FINISHED GARMENT READY AT STORE", orderKind: "TRIAL", qty: 3 }]
-            },
-            {
-                orderNo: "SO27023079",
-                customerName: "Rajesh Shinde",
-                deliveryDate: "12-Nov-26",
-                trailDate: "08-Nov-26",
-                items: [{ product: "Coat", woNo: "WO-9906", woOrderStatus: "TRIAL COMPLETED AT STORE", orderKind: "TRIAL", qty: 1 }]
-            },
-            {
-                orderNo: "SO27022394",
-                customerName: "Amitabh Kulkarni",
-                deliveryDate: "13-Nov-26",
-                trailDate: "09-Nov-26",
-                items: [{ product: "Shirt", woNo: "WO-9907", woOrderStatus: "ALLOCATED_FINSISH_TAILOR", orderKind: "FULL FINISH", qty: 2 }]
-            },
-            {
-                orderNo: "SO27022922",
-                customerName: "Venkatesh Rao",
-                deliveryDate: "13-Nov-26",
-                trailDate: "08-Nov-26",
-                items: [{ product: "Trouser", woNo: "WO-9908", woOrderStatus: "BOM ISSUING FOR FINISH", orderKind: "FULL FINISH", qty: 2 }]
-            },
-            {
-                orderNo: "SO27022792",
-                customerName: "Deepak Joshi",
-                deliveryDate: "14-Nov-26",
-                trailDate: "10-Nov-26",
-                items: [{ product: "Coat", woNo: "WO-9909", woOrderStatus: "CUTTING SHIPPED TO FACTORY", orderKind: "TRIAL", qty: 1 }]
-            },
-            {
-                orderNo: "SO27023501",
-                customerName: "Santosh Hegde",
-                deliveryDate: "16-Nov-26",
-                trailDate: "12-Nov-26",
-                items: [{ product: "Shirt", woNo: "WO-9910", woOrderStatus: "FABRIC RECEIVED", orderKind: "FULL FINISH", qty: 2 }]
-            },
-            {
-                orderNo: "SO27022333",
-                customerName: "Ganesh Naik",
-                deliveryDate: "16-Nov-26",
-                trailDate: "12-Nov-26",
-                items: [{ product: "Trouser", woNo: "WO-9911", woOrderStatus: "CUTTING COMPLETED", orderKind: "FULL FINISH", qty: 1 }]
-            },
-            {
-                orderNo: "SO27022881",
-                customerName: "Naveen Bhat",
-                deliveryDate: "16-Nov-26",
-                trailDate: "11-Nov-26",
-                items: [{ product: "Kurta", woNo: "WO-9912", woOrderStatus: "TRIAL TAILOR ALLOCATION", orderKind: "TRIAL", qty: 1 }]
-            },
-            {
-                orderNo: "SO27022718",
-                customerName: "Vivek Shastry",
-                deliveryDate: "18-Nov-26",
-                trailDate: "13-Nov-26",
-                items: [{ product: "Shirt", woNo: "WO-9913", woOrderStatus: "CUTTING COMPLETED", orderKind: "TRIAL", qty: 1 }]
-            },
-            {
-                orderNo: "SO27023102",
-                customerName: "Sandeep Pai",
-                deliveryDate: "19-Nov-26",
-                trailDate: "14-Nov-26",
-                items: [{ product: "Shirt", woNo: "WO-9914", woOrderStatus: "TRIAL TAILOR ALLOCATION", orderKind: "TRIAL", qty: 2 }]
-            },
-            {
-                orderNo: "SO27022830",
-                customerName: "Rohan Mehta",
-                deliveryDate: "20-Nov-26",
-                trailDate: "15-Nov-26",
-                items: [{ product: "Shirt", woNo: "WO-9915", woOrderStatus: "FABRIC RECEIVED", orderKind: "FULL FINISH", qty: 1 }]
-            },
-            {
-                orderNo: "SO27022995",
-                customerName: "Vijay Alva",
-                deliveryDate: "24-Nov-26",
-                trailDate: "18-Nov-26",
-                items: [{ product: "Shirt", woNo: "WO-9916", woOrderStatus: "ALLOCATED_FINSISH_TAILOR", orderKind: "FULL FINISH", qty: 1 }]
-            },
-            {
-                orderNo: "SO27023241",
-                customerName: "Chetan Kadam",
-                deliveryDate: "26-Nov-26",
-                trailDate: "20-Nov-26",
-                items: [{ product: "Shirt", woNo: "WO-9917", woOrderStatus: "QC TESTING", orderKind: "TRIAL", qty: 1 }]
-            },
-            {
-                orderNo: "SO27023077",
-                customerName: "Anil Prasad",
-                trailDate: "17-Nov-26",
-                deliveryDate: "30-Nov-26",
-                items: [{ product: "Shirt", woNo: "WO-9918", woOrderStatus: "TRIAL COMPLETED AT STORE", orderKind: "TRIAL", qty: 1 }]
-            },
-            {
-                orderNo: "SO27023062",
-                customerName: "Manoj Shetty",
-                trailDate: "17-Nov-26",
-                deliveryDate: "30-Nov-26",
-                items: [{ product: "Shirt", woNo: "WO-9919", woOrderStatus: "ALLOCATED_FINSISH_TAILOR", orderKind: "FULL FINISH", qty: 2 }]
-            },
-            {
-                orderNo: "SO27022571",
-                customerName: "Kiran Hiremath",
-                deliveryDate: "07-Nov-26",
-                trailDate: "03-Nov-26",
-                items: [{ product: "Coat", woNo: "WO-9920", woOrderStatus: "FINISHED GARMENT READY AT STORE", orderKind: "TRIAL", qty: 1 }]
-            }
-        ];
+        // Default Tailoring Orders (Empty until Tailoring Tracker is updated)
+        const DEFAULT_TAILORING_ORDERS = [];
 
         // Garment & Follow-up State (Default on "← Show Filtered Month")
         let currentGarmentFilter = 'all';
@@ -1208,7 +1079,7 @@
             } catch (e) {
                 console.error("Error reading tailoring orders", e);
             }
-            return DEFAULT_TAILORING_ORDERS;
+            return [];
         }
 
         // =============================================
@@ -1430,8 +1301,8 @@
                         <svg class="w-7 h-7 mx-auto mb-1.5 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
-                        <p class="text-xs font-bold text-neutral-500">No pending follow-ups found</p>
-                        <p class="text-[10px] text-neutral-400 mt-0.5">Try selecting another garment filter or month scope</p>
+                        <p class="text-xs font-bold text-neutral-500">No pending follow-ups</p>
+                        <p class="text-[10px] text-neutral-400 mt-0.5">Orders will appear here once the Tailoring Tracker is updated</p>
                     </div>
                 `;
                 return;
@@ -1887,7 +1758,7 @@
             upcoming = upcoming.slice(0, 6);
 
             if (upcoming.length === 0) {
-                list.innerHTML = '<div class="text-center text-neutral-400 font-bold text-xs py-8 border border-dashed rounded-xl border-neutral-200">No upcoming items found!</div>';
+                list.innerHTML = '<div class="text-center text-neutral-400 font-bold text-xs py-8 border border-dashed rounded-xl border-neutral-200">No upcoming items found!<br><span class="text-[10px] font-normal text-neutral-400 mt-1 block">Awaiting Tailoring Tracker sync</span></div>';
                 return;
             }
 

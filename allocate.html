@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allocation Report – PNR Manager</title>
+    <link rel="stylesheet" href="assets/theme.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/theme.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            opacity: 0;
+            animation: pageEnter 0.4s ease-out 0.05s forwards;
+        }
+
+        @keyframes pageEnter {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        body.page-exit {
+            animation: pageExit 0.25s ease-in forwards;
+        }
+
+        @keyframes pageExit {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+        }
+
+        .theme-bg {
+            background: #faf8f5;
+        }
+
+        .gc-card {
+            background: #ffffff;
+            border-radius: 1.5rem;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03);
+            position: relative;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        select {
+            border: 1.5px solid #eaeaec;
+            background-color: #ffffff;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-sizing: border-box;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #f7d060;
+            box-shadow: 0 0 0 4px rgba(247, 208, 96, 0.2);
+        }
+
+        select,
+        input[type="date"] {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23a1a1aa' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.75rem center;
+            background-repeat: no-repeat;
+            background-size: 1rem 1.25rem;
+            padding-right: 2rem !important;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        .overflow-x-auto {
+            -webkit-overflow-scrolling: touch;
+        }
+
+        ::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #d4d4d8;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a1a1aa;
+        }
+
+        .upload-zone {
+            transition: all 0.2s ease-in-out;
+        }
+
+        .upload-zone.dragover {
+            border-color: #f7d060;
+            background-color: #fefce8;
+        }
+
+        #dashboardArea {
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        #dashboardArea:not(.hidden) {
+            animation: revealDashboard 0.5s ease-out;
+        }
+
+        @keyframes revealDashboard {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .summary-box {
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .summary-box:hover {
+            transform: translateY(-4px);
+        }
+
+        /* ===== SIDEBAR & MODERN DASHBOARD STYLES ===== */
+        .sidebar-nav {
+            background: #13151b;
+            transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sidebar-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            padding: 0.65rem 0.875rem;
+            border-radius: 0.875rem;
+            color: #94a3b8;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            text-align: left;
+            width: 100%;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .sidebar-nav-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #ffffff;
+        }
+
+        .sidebar-nav-item.active {
+            background: rgba(244, 199, 74, 0.12);
+            color: #f4c74a;
+            border: 1px solid rgba(244, 199, 74, 0.35);
+        }
+
+        .sidebar-nav-item.active svg {
+            color: #f4c74a;
+        }
+
+        .sidebar-collapsed {
+            width: 72px !important;
+        }
+
+        .sidebar-collapsed .nav-text,
+        .sidebar-collapsed .logo-text,
+        .sidebar-collapsed .profile-text,
+        .sidebar-collapsed .collapse-icon-expanded {
+            display: none !important;
+        }
+
+        .sidebar-collapsed .sidebar-header {
+            justify-content: center !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+
+        .sidebar-collapsed .sidebar-nav-item {
+            justify-content: center !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+
+        .sidebar-collapsed .user-profile-row {
+            justify-content: center !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+
+        /* ===== DARK MODE OVERRIDES ===== */
+        body.dark-mode .sidebar-nav {
+            background: #0d0f14;
+        }
+
+        body.dark-mode header {
+            background: rgba(13, 15, 20, 0.8) !important;
+            border-bottom-color: rgba(255, 255, 255, 0.05) !important;
+        }
+
+        body.dark-mode .theme-bg,
+        html.dark-mode .theme-bg {
+            background: #090a0f !important;
+            color: #f4f4f5 !important;
+        }
+
+        body.dark-mode header input {
+            background: #141720 !important;
+            border-color: #272a35 !important;
+            color: #f4f4f5 !important;
+        }
+
+        body.dark-mode header button {
+            background: #141720 !important;
+            border-color: #272a35 !important;
+            color: #94a3b8 !important;
+        }
+
+        body.dark-mode header button:hover {
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .gc-card,
+        html.dark-mode .gc-card {
+            background: #13151b !important;
+            border-color: rgba(255, 255, 255, 0.06) !important;
+            color: #f4f4f5 !important;
+        }
+
+        body.dark-mode .bg-white,
+        html.dark-mode .bg-white {
+            background: #181a24 !important;
+            border-color: rgba(255, 255, 255, 0.06) !important;
+            color: #f4f4f5 !important;
+        }
+
+        body.dark-mode h1,
+        body.dark-mode h2,
+        body.dark-mode h3,
+        body.dark-mode h4,
+        html.dark-mode h1,
+        html.dark-mode h2,
+        html.dark-mode h3,
+        html.dark-mode h4 {
+            color: #f4f4f5 !important;
+        }
+
+        body.dark-mode .text-\[\#1a1a1a\],
+        html.dark-mode .text-\[\#1a1a1a\],
+        body.dark-mode .text-\[\#242424\],
+        html.dark-mode .text-\[\#242424\],
+        body.dark-mode .text-\[\#292929\],
+        html.dark-mode .text-\[\#292929\] {
+            color: #f4f4f5 !important;
+        }
+
+        body.dark-mode table thead tr,
+        html.dark-mode table thead tr {
+            background: #141720 !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+
+        body.dark-mode table thead tr th,
+        html.dark-mode table thead tr th {
+            background: #141720 !important;
+            color: #94a3b8 !important;
+        }
+
+        body.dark-mode table tbody tr,
+        html.dark-mode table tbody tr {
+            background: #181a24 !important;
+            border-color: rgba(255, 255, 255, 0.05) !important;
+            color: #f4f4f5 !important;
+        }
+
+        body.dark-mode table tbody tr:hover,
+        html.dark-mode table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.04) !important;
+        }
+
+        body.dark-mode input,
+        body.dark-mode select,
+        html.dark-mode input,
+        html.dark-mode select {
+            background-color: #141720 !important;
+            border-color: #272a35 !important;
+            color: #f4f4f5 !important;
+        }
+
+        body.dark-mode input::placeholder {
+            color: #64748b !important;
+        }
+
+        body.dark-mode .summary-box.bg-white {
+            background: #181a24 !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+
+        body.dark-mode .summary-box.bg-white .bg-neutral-50 {
+            background: #141720 !important;
+        }
+
+        .remarks-input {
+            transition: all 0.15s ease;
+        }
+
+        .remarks-input:focus {
+            background-color: #ffffff;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+        }
+
+        body.dark-mode .remarks-input:focus {
+            background-color: #1a1e29 !important;
+            border-color: #818cf8 !important;
+        }
+    </style>
+</head>
+
+<body class="theme-bg min-h-screen text-[#242424] flex overflow-x-hidden antialiased" style="margin:0;padding:0;">
+
+    <!-- ===== LEFT SIDEBAR ===== -->
+    <aside id="sidebar" class="sidebar-nav w-56 flex-shrink-0 h-screen sticky top-0 flex flex-col py-6 px-3 z-40 border-r border-neutral-800/40 select-none">
+        <!-- Logo & Collapse Button -->
+        <div class="sidebar-header flex items-center justify-between px-2 mb-7">
+            <div class="flex items-center gap-2.5 cursor-pointer" onclick="navigateTo('index')">
+                <div class="w-8 h-8 rounded-full bg-[#f4c74a] flex items-center justify-center text-[#1a1a1a] font-extrabold text-xs shadow-inner flex-shrink-0">
+                    PNR
+                </div>
+                <span class="logo-text font-extrabold text-base tracking-tight text-white">Manager</span>
+            </div>
+            <button onclick="toggleSidebar()" class="collapse-icon-expanded p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-white/5 transition" title="Toggle Sidebar">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Main Navigation Links -->
+        <nav class="flex flex-col gap-1.5 flex-grow">
+            <button class="sidebar-nav-item" onclick="navigateTo('index')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+                <span class="nav-text">Dashboard</span>
+            </button>
+            <button class="sidebar-nav-item" onclick="navigateTo('tools')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l-7-7m7 7l-2.121 2.121m4.242 4.242a3 3 0 11-4.242-4.242m0 0a3 3 0 10-4.242-4.242m8.484 0a3 3 0 10-4.242-4.242m0 0L5 19"/>
+                </svg>
+                <span class="nav-text">Tools</span>
+            </button>
+            <button class="sidebar-nav-item" onclick="navigateTo('smartNotes')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span class="nav-text">Smart Notes</span>
+            </button>
+            <button class="sidebar-nav-item active" onclick="navigateTo('allocate')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+                </svg>
+                <span class="nav-text">Allocation</span>
+            </button>
+            <button class="sidebar-nav-item" onclick="navigateTo('reports')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span class="nav-text">Reports</span>
+            </button>
+            <button class="sidebar-nav-item" onclick="navigateTo('Pending_PO')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span class="nav-text">Pending POs</span>
+            </button>
+            <button class="sidebar-nav-item" onclick="navigateTo('calendar')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                <span class="nav-text">Calendar</span>
+            </button>
+            <button class="sidebar-nav-item" onclick="navigateTo('target')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0013 3.06V1h-2v2.06A8.994 8.994 0 003.06 11H1v2h2.06A8.994 8.994 0 0011 20.94V23h2v-2.06A8.994 8.994 0 0020.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
+                </svg>
+                <span class="nav-text">Target</span>
+            </button>
+        </nav>
+
+        <!-- Bottom Items -->
+        <div class="flex flex-col gap-1.5 pt-3 border-t border-white/10">
+            <button class="sidebar-nav-item" onclick="showToast('Settings panel', 'info')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <span class="nav-text">Settings</span>
+            </button>
+            <button id="sidebarNotificationBtn" class="sidebar-nav-item relative" onclick="toggleNotificationPanel(event)">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                </svg>
+                <span class="nav-text">Notifications</span>
+            </button>
+
+            <!-- User Profile Row -->
+            <div class="user-profile-row flex items-center gap-2.5 px-2 py-2 mt-1 pt-3 border-t border-white/10 cursor-pointer">
+                <div class="w-8 h-8 rounded-full bg-[#1b1e24] border border-neutral-700/80 flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
+                    AU
+                </div>
+                <div class="profile-text flex-grow min-w-0">
+                    <div class="text-xs font-bold text-white truncate leading-tight">Admin User</div>
+                    <div class="text-[10px] text-neutral-400 font-medium">Super Admin</div>
+                </div>
+                <svg class="profile-text w-3.5 h-3.5 text-neutral-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ===== MAIN CONTENT COLUMN ===== -->
+    <div class="flex-1 flex flex-col min-w-0 min-h-screen overflow-y-auto">
+
+        <!-- ===== TOP BAR HEADER ===== -->
+        <header class="flex items-center justify-between px-6 py-4 bg-transparent sticky top-0 z-30 backdrop-blur-md">
+            <!-- Left: Hamburger icon -->
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSidebar()" class="w-9 h-9 rounded-xl bg-white border border-neutral-200/60 shadow-xs flex items-center justify-center text-neutral-700 hover:text-black hover:bg-neutral-50 transition" title="Toggle Sidebar">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Center: Search Bar -->
+            <div class="flex-1 max-w-md mx-4">
+                <div class="relative w-full">
+                    <div class="absolute inset-y-0 left-3.5 flex items-center pointer-events-none">
+                        <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                    <input type="text" id="topNavSearch" placeholder="Search item, order, lot or remark..."
+                        class="w-full pl-10 pr-4 py-2 text-xs sm:text-sm font-medium bg-white rounded-full border border-neutral-200/80 shadow-xs focus:outline-none focus:ring-2 focus:ring-[#f4c74a]/40 focus:border-[#f4c74a] transition text-[#1a1a1a] placeholder-neutral-400">
+                </div>
+            </div>
+
+            <!-- Right: Upload CSV, Clock & Action Buttons -->
+            <div class="flex items-center gap-2.5">
+                <!-- Dropzone Pill Button -->
+                <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="handleFileSelect(event)">
+                <label for="csvFileInput" id="dropZone"
+                    class="upload-zone flex items-center justify-center px-4 py-2 rounded-full bg-[#f4c74a] hover:bg-[#e5be4f] text-[#1a1a1a] cursor-pointer transition text-xs font-bold shadow-xs gap-2 flex-shrink-0" title="Upload Allocation CSV">
+                    <svg class="w-4 h-4 text-[#1a1a1a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                        </path>
+                    </svg>
+                    <span class="font-bold text-[#1a1a1a]" id="uploadText">Upload Allocation CSV</span>
+                </label>
+
+                <div class="hidden sm:flex flex-col items-end mr-2">
+                    <span id="live-clock" class="text-xs font-bold text-[#1a1a1a] tabular-nums tracking-tight">--:-- --</span>
+                    <span id="live-date" class="text-[9px] font-bold text-neutral-400 uppercase tracking-widest">---</span>
+                </div>
+                <button class="w-9 h-9 rounded-full bg-white border border-neutral-200/80 shadow-xs flex items-center justify-center text-neutral-500 hover:text-[#1a1a1a] hover:bg-neutral-50 transition" title="Settings" onclick="showToast('Settings panel', 'info')">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                </button>
+                <button onclick="toggleTheme()" class="w-9 h-9 rounded-full bg-white border border-neutral-200/80 shadow-xs flex items-center justify-center text-neutral-500 hover:text-[#1a1a1a] hover:bg-neutral-50 transition theme-toggle relative" title="Toggle Theme">
+                    <span class="sun-icon">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1m-16 0H1m15.364 1.636l.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                    </span>
+                    <span class="moon-icon">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                        </svg>
+                    </span>
+                </button>
+                <button id="notificationBtn" onclick="toggleNotificationPanel(event)" class="w-9 h-9 rounded-full bg-white border border-neutral-200/80 shadow-xs flex items-center justify-center text-neutral-500 hover:text-[#1a1a1a] hover:bg-neutral-50 transition relative" title="Notifications">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                    </svg>
+                </button>
+                <div class="w-9 h-9 rounded-full bg-[#171920] text-white flex items-center justify-center text-xs font-bold shadow-xs cursor-pointer ml-0.5">
+                    AU
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== MAIN VIEWPORT ===== -->
+        <main class="flex-1 px-4 sm:px-8 py-6 max-w-[1600px] w-full mx-auto flex flex-col min-h-0">
+
+            <!-- Main Tool Area (Bento Box Wrapper) -->
+            <div class="gc-card rounded-[2.5rem] sm:rounded-[3rem] p-4 sm:p-8 md:p-12 border border-neutral-200/60">
+
+                <!-- Header Section -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-6">
+                    <div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase bg-amber-500/10 text-amber-600 border border-amber-500/20">
+                                Sales Order Reconciliation
+                            </span>
+                        </div>
+                        <h1 class="text-3xl sm:text-5xl font-light text-[#1a1a1a] tracking-tight mb-2">
+                            Allocation <span class="font-bold">Report</span>
+                        </h1>
+                        <p class="text-neutral-500 font-medium text-sm sm:text-base">Displaying allocated items in sales orders with lot & location tracking.</p>
+                    </div>
+
+                    <!-- Top Action Controls -->
+                    <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                        <!-- Save Remarks Button -->
+                        <button onclick="saveRemarks()" id="btnSaveRemarks"
+                            class="flex items-center gap-2 px-5 py-3 rounded-2xl bg-[#13151b] hover:bg-black text-white font-bold text-xs shadow-md transition transform active:scale-95">
+                            <svg class="w-4 h-4 text-[#f4c74a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
+                            </svg>
+                            <span>Save Remarks</span>
+                            <span id="savedRemarksBadge" class="hidden px-2 py-0.5 rounded-full text-[10px] bg-white/20 text-[#f4c74a]">0</span>
+                        </button>
+
+                        <!-- Export CSV Button -->
+                        <button onclick="exportCSV()" id="btnExport"
+                            class="flex items-center gap-2 px-5 py-3 rounded-2xl bg-white hover:bg-neutral-50 border border-neutral-200/90 text-[#1a1a1a] font-bold text-xs shadow-xs transition">
+                            <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                            </svg>
+                            <span>Export CSV</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Empty State / File Uploader (Visible when no data is loaded) -->
+                <div id="emptyUploadState" class="py-12 sm:py-16 px-4 flex flex-col items-center justify-center text-center rounded-3xl border-2 border-dashed border-neutral-200/80 bg-neutral-50/50">
+                    <div class="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200/60 flex items-center justify-center text-amber-600 mb-4 shadow-sm">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-[#1a1a1a] mb-2">No Allocation Report Loaded</h3>
+                    <p class="text-neutral-500 text-sm max-w-md mb-6 leading-relaxed">
+                        Upload your <strong>Allocation Report CSV</strong> or sync it from the Reports panel to inspect sales order allocated items with local remarks tracking.
+                    </p>
+                    <label for="csvFileInput" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#f4c74a] hover:bg-[#e5be4f] text-[#1a1a1a] font-bold text-sm cursor-pointer shadow-md transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                        </svg>
+                        Choose Allocation CSV
+                    </label>
+                    <div class="mt-8 flex flex-wrap items-center justify-center gap-2 text-[11px] font-semibold text-neutral-400">
+                        <span class="px-2.5 py-1 rounded-md bg-white border border-neutral-200/60">Site Code</span>
+                        <span class="px-2.5 py-1 rounded-md bg-white border border-neutral-200/60">Item Code</span>
+                        <span class="px-2.5 py-1 rounded-md bg-white border border-neutral-200/60">Item Description</span>
+                        <span class="px-2.5 py-1 rounded-md bg-white border border-neutral-200/60">Location Code</span>
+                        <span class="px-2.5 py-1 rounded-md bg-white border border-neutral-200/60">Lot No</span>
+                        <span class="px-2.5 py-1 rounded-md bg-white border border-neutral-200/60">Lot Sl</span>
+                        <span class="px-2.5 py-1 rounded-md bg-white border border-neutral-200/60">Ref Ser</span>
+                        <span class="px-2.5 py-1 rounded-md bg-white border border-neutral-200/60">Ref Id</span>
+                        <span class="px-2.5 py-1 rounded-md bg-white border border-neutral-200/60">Qty Allocated</span>
+                    </div>
+                </div>
+
+                <!-- Dashboard Area (Visible after CSV is loaded) -->
+                <div id="dashboardArea" class="hidden space-y-8">
+
+                    <!-- Bento Box KPIs -->
+                    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
+                        <!-- Total Allocated Records -->
+                        <div class="summary-box bg-[#13151b] p-6 rounded-3xl shadow-xl shadow-neutral-900/10 flex flex-col justify-between relative overflow-hidden text-white col-span-2 sm:col-span-1">
+                            <div class="absolute -right-8 -top-8 w-28 h-28 bg-[#f4c74a]/20 rounded-full blur-2xl"></div>
+                            <div class="flex justify-between items-start mb-4 relative z-10">
+                                <div class="p-2.5 bg-white/10 rounded-2xl backdrop-blur-sm text-[#f4c74a]">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="relative z-10">
+                                <p class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-1">Allocated Records</p>
+                                <h3 id="kpiTotalRecords" class="text-3xl font-extrabold text-white">0</h3>
+                            </div>
+                        </div>
+
+                        <!-- Total Allocated Qty -->
+                        <div class="summary-box bg-white border border-neutral-100 p-6 rounded-3xl shadow-sm flex flex-col justify-between">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="p-2.5 bg-neutral-50 rounded-2xl text-emerald-600">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-1">Total Qty Allocated</p>
+                                <h3 id="kpiTotalQty" class="text-2xl font-bold text-[#242424]">0</h3>
+                            </div>
+                        </div>
+
+                        <!-- Total Sites -->
+                        <div class="summary-box bg-white border border-neutral-100 p-6 rounded-3xl shadow-sm flex flex-col justify-between">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="p-2.5 bg-neutral-50 rounded-2xl text-blue-600">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-1">Sites / Stores</p>
+                                <h3 id="kpiTotalSites" class="text-2xl font-bold text-[#242424]">0</h3>
+                            </div>
+                        </div>
+
+                        <!-- Active Sales Orders (Ref Id) -->
+                        <div class="summary-box bg-white border border-neutral-100 p-6 rounded-3xl shadow-sm flex flex-col justify-between">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="p-2.5 bg-neutral-50 rounded-2xl text-indigo-600">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-1">Sales Orders (Ref Id)</p>
+                                <h3 id="kpiTotalOrders" class="text-2xl font-bold text-[#242424]">0</h3>
+                            </div>
+                        </div>
+
+                        <!-- Saved Remarks Count -->
+                        <div class="summary-box bg-white border border-neutral-100 p-6 rounded-3xl shadow-sm flex flex-col justify-between">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="p-2.5 bg-neutral-50 rounded-2xl text-amber-600">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-1">Remarks Saved</p>
+                                <h3 id="kpiRemarksCount" class="text-2xl font-bold text-[#242424]">0</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Table Controls & Filters Row -->
+                    <div class="flex flex-col md:flex-row justify-between items-stretch md:items-center bg-white p-4 rounded-3xl shadow-sm border border-neutral-100 gap-4">
+                        <!-- Left Dropdowns -->
+                        <div class="flex flex-wrap items-center gap-3">
+                            <!-- Site Filter -->
+                            <div class="flex items-center gap-2 bg-neutral-50/70 border border-neutral-200/80 px-4 py-2 rounded-2xl">
+                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400">Site:</span>
+                                <select id="siteFilter" onchange="applyFilters()" class="bg-transparent border-none text-xs font-bold text-[#1a1a1a] cursor-pointer focus:ring-0 p-0 pr-6">
+                                    <option value="ALL">ALL SITES</option>
+                                </select>
+                            </div>
+
+                            <!-- Location Code Filter -->
+                            <div class="flex items-center gap-2 bg-neutral-50/70 border border-neutral-200/80 px-4 py-2 rounded-2xl">
+                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400">Location:</span>
+                                <select id="locationFilter" onchange="applyFilters()" class="bg-transparent border-none text-xs font-bold text-[#1a1a1a] cursor-pointer focus:ring-0 p-0 pr-6">
+                                    <option value="ALL">ALL LOCATIONS</option>
+                                </select>
+                            </div>
+
+                            <!-- Reset Filters -->
+                            <button onclick="resetFilters()" class="text-xs font-semibold text-neutral-400 hover:text-neutral-700 underline px-2 py-1 transition">
+                                Reset
+                            </button>
+                        </div>
+
+                        <!-- Search & Record Count (Right) -->
+                        <div class="flex items-center gap-3 w-full md:w-auto">
+                            <div class="relative w-full sm:w-72">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
+                                    <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                    </svg>
+                                </div>
+                                <input type="text" id="tableSearch" oninput="applyFilters()" placeholder="SEARCH ALLOCATION..."
+                                    class="w-full bg-neutral-50/70 rounded-2xl pl-10 pr-4 py-2.5 text-xs font-bold text-[#1a1a1a] placeholder-neutral-400 border-neutral-200/80 transition-colors shadow-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Table Block -->
+                    <div class="bg-white rounded-3xl p-4 sm:p-6 shadow-sm border border-neutral-100">
+
+                        <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between px-2 gap-4">
+                            <div class="flex items-center gap-3">
+                                <h3 class="text-sm font-bold text-[#1a1a1a] whitespace-nowrap">Allocated Sales Order Items</h3>
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-neutral-100 text-neutral-600" id="recordCountPill">
+                                    0 records
+                                </span>
+                            </div>
+
+                            <p class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest whitespace-nowrap" id="recordCountText">
+                                Showing 0 of 0
+                            </p>
+                        </div>
+
+                        <div class="overflow-x-auto rounded-2xl max-h-[600px] border border-neutral-100/70">
+                            <table class="w-full text-left border-collapse whitespace-nowrap">
+                                <thead class="sticky top-0 z-10 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.02)]">
+                                    <tr class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest border-b border-neutral-100 whitespace-nowrap bg-[#f9f9f9]">
+                                        <th class="py-4 px-3 rounded-tl-2xl">SITE CODE</th>
+                                        <th class="py-4 px-3">ITEM CODE</th>
+                                        <th class="py-4 px-4">ITEM DESCRIPTION</th>
+                                        <th class="py-4 px-3">LOCATION CODE</th>
+                                        <th class="py-4 px-3">LOT NO</th>
+                                        <th class="py-4 px-3">LOT SL</th>
+                                        <th class="py-4 px-3">REF SER</th>
+                                        <th class="py-4 px-3">REF ID</th>
+                                        <th class="py-4 px-3 text-right">QTY ALLOCATED</th>
+                                        <th class="py-4 px-4 rounded-tr-2xl">REMARKS <span class="text-[9px] font-normal text-neutral-400 lowercase">(saved locally)</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dataTableBody" class="divide-y divide-neutral-50/80">
+                                    <!-- Rows populated dynamically -->
+                                </tbody>
+                            </table>
+
+                            <div id="noResultsState" class="hidden py-16 flex flex-col items-center justify-center text-center">
+                                <svg class="w-12 h-12 text-neutral-200 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                </svg>
+                                <p class="text-xs text-neutral-400 font-bold uppercase tracking-widest">No matching allocation items found</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="mt-auto py-6 text-center text-neutral-400 text-[10px] font-extrabold uppercase tracking-widest">
+                Professional Automation System &copy; 2026
+            </div>
+        </main>
+    </div> <!-- end main content column -->
+
+    <script>
+        // Storage keys
+        const STORAGE_KEY = 'raw_csv_allocation';
+        const REMARKS_KEY = 'allocation_remarks';
+
+        // State variables
+        let rawRows = [];
+        let allRows = [];
+        let filteredRows = [];
+        let remarksMap = {};
+        let COL = {};
+
+        // Live Clock & Sidebar Helpers
+        function updateClock() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+            const dateStr = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }).toUpperCase();
+            const clockEl = document.getElementById('live-clock');
+            const dateEl = document.getElementById('live-date');
+            if (clockEl) clockEl.textContent = timeStr;
+            if (dateEl) dateEl.textContent = dateStr;
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) {
+                sidebar.classList.toggle('sidebar-collapsed');
+            }
+        }
+
+        function navigateTo(pageId) {
+            document.body.classList.add('page-exit');
+            setTimeout(() => {
+                if (pageId === 'index') {
+                    window.location.href = 'index.html';
+                } else if (pageId === 'tools') {
+                    window.location.href = 'index.html?panel=tools';
+                } else if (pageId === 'reports') {
+                    window.location.href = 'reports.html';
+                } else {
+                    window.location.href = pageId + '.html';
+                }
+            }, 250);
+        }
+
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // Search synchronization
+        const topNavSearch = document.getElementById('topNavSearch');
+        const tableSearch = document.getElementById('tableSearch');
+
+        if (topNavSearch && tableSearch) {
+            topNavSearch.addEventListener('input', (e) => {
+                tableSearch.value = e.target.value;
+                applyFilters();
+            });
+            tableSearch.addEventListener('input', (e) => {
+                if (topNavSearch.value !== e.target.value) {
+                    topNavSearch.value = e.target.value;
+                }
+            });
+        }
+
+        // Dropzone drag-and-drop
+        const dropZone = document.getElementById('dropZone');
+        if (dropZone) {
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('dragover');
+            });
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('dragover');
+            });
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+                if (e.dataTransfer.files.length) {
+                    document.getElementById('csvFileInput').files = e.dataTransfer.files;
+                    handleFileSelect({ target: { files: e.dataTransfer.files } });
+                }
+            });
+        }
+
+        // Load Remarks from localStorage
+        function loadRemarks() {
+            try {
+                return JSON.parse(localStorage.getItem(REMARKS_KEY) || '{}');
+            } catch (e) {
+                console.error("Error reading remarks:", e);
+                return {};
+            }
+        }
+
+        // On document ready, load saved remarks and check for synced CSV
+        document.addEventListener('DOMContentLoaded', () => {
+            remarksMap = loadRemarks();
+            const savedCSV = localStorage.getItem(STORAGE_KEY);
+            if (savedCSV) {
+                document.getElementById('uploadText').innerText = 'Processing Synced Data...';
+                Papa.parse(savedCSV, {
+                    header: true,
+                    skipEmptyLines: true,
+                    transformHeader: function (h) {
+                        return h.trim();
+                    },
+                    complete: function (results) {
+                        document.getElementById('uploadText').innerText = 'Loaded Synced Data';
+                        processData(results.data);
+                    },
+                    error: function (err) {
+                        console.error("Error parsing synced CSV: " + err.message);
+                        document.getElementById('uploadText').innerText = 'Upload Allocation CSV';
+                    }
+                });
+            }
+        });
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            document.getElementById('uploadText').innerText = `Loading ${file.name}...`;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const csvText = e.target.result;
+                try {
+                    localStorage.setItem(STORAGE_KEY, csvText);
+                } catch (err) {
+                    console.warn("Could not save to localStorage:", err);
+                }
+
+                Papa.parse(csvText, {
+                    header: true,
+                    skipEmptyLines: true,
+                    transformHeader: function (h) {
+                        return h.trim();
+                    },
+                    complete: function (results) {
+                        document.getElementById('uploadText').innerText = file.name;
+                        showToast(`Loaded ${file.name} successfully.`, 'success');
+                        processData(results.data);
+                    },
+                    error: function (err) {
+                        alert("Error parsing CSV: " + err.message);
+                        document.getElementById('uploadText').innerText = "Upload Allocation CSV";
+                    }
+                });
+            };
+            reader.readAsText(file);
+        }
+
+        function resolveCol(keys, candidates) {
+            for (const cand of candidates) {
+                const nc = cand.toLowerCase().replace(/_/g, ' ').replace(/\s+/g, ' ').trim();
+                for (const k of keys) {
+                    if (k.trim().toLowerCase().replace(/_/g, ' ').replace(/\s+/g, ' ').trim() === nc) return k;
+                }
+            }
+            for (const cand of candidates) {
+                const nc = cand.toLowerCase().replace(/_/g, ' ').replace(/\s+/g, ' ').trim();
+                for (const k of keys) {
+                    const nk = k.trim().toLowerCase().replace(/_/g, ' ').replace(/\s+/g, ' ').trim();
+                    if (nk.includes(nc) || nc.includes(nk)) return k;
+                }
+            }
+            return null;
+        }
+
+        function processData(data) {
+            if (!data || data.length === 0) return;
+
+            rawRows = data;
+            const keys = Object.keys(data[0]);
+
+            // Resolve exact columns matching the user's Allocation Report specification
+            COL = {
+                siteCode:        resolveCol(keys, ['site code', 'sitecode', 'site_code', 'site', 'store']),
+                itemCode:        resolveCol(keys, ['item code', 'itemcode', 'item_code', 'item id', 'sku_code', 'sku']),
+                itemDescription: resolveCol(keys, ['item description', 'itemdescription', 'item_description', 'item_ser_descr', 'item desc', 'description']),
+                locationCode:    resolveCol(keys, ['location code', 'locationcode', 'location_code', 'loc code', 'loc_code', 'location']),
+                lotNo:           resolveCol(keys, ['lot no', 'lotno', 'lot_no', 'lot number', 'lot_number', 'batch no', 'batch_no']),
+                lotSl:           resolveCol(keys, ['lot sl', 'lotsl', 'lot_sl', 'lot serial', 'lot_serial', 'serial no', 'sl no', 'serial']),
+                refSer:          resolveCol(keys, ['ref ser', 'refser', 'ref_ser', 'ref series', 'reference series', 'series']),
+                refId:           resolveCol(keys, ['ref id', 'refid', 'ref_id', 'reference id', 'sales order', 'sale order', 'sale_order', 'so no', 'order no']),
+                qtyAllocated:    resolveCol(keys, ['qty allocated', 'qtyallocated', 'qty_allocated', 'allocated qty', 'allocated_qty', 'quantity allocated', 'qty', 'quantity']),
+                remarks:         resolveCol(keys, ['remarks', 'remark', 'comments', 'comment', 'notes', 'user remarks'])
+            };
+
+            remarksMap = loadRemarks();
+
+            allRows = data.map((row, idx) => {
+                const siteCode        = (row[COL.siteCode] || '').trim();
+                const itemCode        = (row[COL.itemCode] || '').trim();
+                const itemDescription = (row[COL.itemDescription] || '').trim();
+                const locationCode    = (row[COL.locationCode] || '').trim();
+                const lotNo           = (row[COL.lotNo] || '').trim();
+                const lotSl           = (row[COL.lotSl] || '').trim();
+                const refSer          = (row[COL.refSer] || '').trim();
+                const refId           = (row[COL.refId] || '').trim();
+                const qtyRaw          = row[COL.qtyAllocated];
+                const qtyAllocated    = parseFloat(qtyRaw) || 0;
+
+                // Composite stable key for local remarks association
+                const _rowKey = `${siteCode}|${itemCode}|${lotNo}|${lotSl}|${refSer}|${refId}`;
+                const initialRemark = (remarksMap[_rowKey] !== undefined)
+                    ? remarksMap[_rowKey]
+                    : (row[COL.remarks] || '').trim();
+
+                if (initialRemark && remarksMap[_rowKey] === undefined) {
+                    remarksMap[_rowKey] = initialRemark;
+                }
+
+                return {
+                    _rowKey,
+                    siteCode,
+                    itemCode,
+                    itemDescription,
+                    locationCode,
+                    lotNo,
+                    lotSl,
+                    refSer,
+                    refId,
+                    qtyAllocated,
+                    remarks: initialRemark
+                };
+            });
+
+            populateFilterDropdowns();
+            applyFilters();
+
+            document.getElementById('emptyUploadState').classList.add('hidden');
+            document.getElementById('dashboardArea').classList.remove('hidden');
+            updateRemarksCount();
+        }
+
+        function populateFilterDropdowns() {
+            // Site filter
+            const siteSelect = document.getElementById('siteFilter');
+            siteSelect.innerHTML = '<option value="ALL">ALL SITES</option>';
+            const sites = [...new Set(allRows.map(r => r.siteCode).filter(Boolean))].sort();
+            sites.forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s;
+                opt.innerText = s.toUpperCase();
+                siteSelect.appendChild(opt);
+            });
+
+            // Location filter
+            const locSelect = document.getElementById('locationFilter');
+            locSelect.innerHTML = '<option value="ALL">ALL LOCATIONS</option>';
+            const locations = [...new Set(allRows.map(r => r.locationCode).filter(Boolean))].sort();
+            locations.forEach(loc => {
+                const opt = document.createElement('option');
+                opt.value = loc;
+                opt.innerText = loc.toUpperCase();
+                locSelect.appendChild(opt);
+            });
+        }
+
+        function applyFilters() {
+            const siteFilter = document.getElementById('siteFilter').value;
+            const locFilter = document.getElementById('locationFilter').value;
+            const searchQuery = (document.getElementById('tableSearch').value || '').toLowerCase().trim();
+
+            filteredRows = allRows.filter(row => {
+                if (siteFilter !== 'ALL' && row.siteCode !== siteFilter) return false;
+                if (locFilter !== 'ALL' && row.locationCode !== locFilter) return false;
+
+                if (searchQuery) {
+                    const matchSite = (row.siteCode || '').toLowerCase().includes(searchQuery);
+                    const matchItem = (row.itemCode || '').toLowerCase().includes(searchQuery);
+                    const matchDesc = (row.itemDescription || '').toLowerCase().includes(searchQuery);
+                    const matchLoc  = (row.locationCode || '').toLowerCase().includes(searchQuery);
+                    const matchLot  = (row.lotNo || '').toLowerCase().includes(searchQuery);
+                    const matchSl   = (row.lotSl || '').toLowerCase().includes(searchQuery);
+                    const matchSer  = (row.refSer || '').toLowerCase().includes(searchQuery);
+                    const matchRef  = (row.refId || '').toLowerCase().includes(searchQuery);
+                    const matchRem  = (row.remarks || '').toLowerCase().includes(searchQuery);
+
+                    if (!matchSite && !matchItem && !matchDesc && !matchLoc && !matchLot && !matchSl && !matchSer && !matchRef && !matchRem) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+
+            updateKPIs();
+            renderTable();
+        }
+
+        function resetFilters() {
+            document.getElementById('siteFilter').value = 'ALL';
+            document.getElementById('locationFilter').value = 'ALL';
+            document.getElementById('tableSearch').value = '';
+            const topSearch = document.getElementById('topNavSearch');
+            if (topSearch) topSearch.value = '';
+            applyFilters();
+        }
+
+        function updateKPIs() {
+            const totalRecords = filteredRows.length;
+            const totalQty = filteredRows.reduce((sum, r) => sum + (parseFloat(r.qtyAllocated) || 0), 0);
+            const distinctSites = new Set(filteredRows.map(r => r.siteCode).filter(Boolean)).size;
+            const distinctOrders = new Set(filteredRows.map(r => r.refId).filter(Boolean)).size;
+
+            document.getElementById('kpiTotalRecords').innerText = totalRecords.toLocaleString();
+            document.getElementById('kpiTotalQty').innerText = totalQty.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+            document.getElementById('kpiTotalSites').innerText = distinctSites;
+            document.getElementById('kpiTotalOrders').innerText = distinctOrders;
+
+            updateRemarksCount();
+        }
+
+        function updateRemarksCount() {
+            const count = Object.values(remarksMap).filter(v => v && v.trim() !== '').length;
+            const badge = document.getElementById('savedRemarksBadge');
+            const kpi = document.getElementById('kpiRemarksCount');
+
+            if (kpi) kpi.innerText = count.toLocaleString();
+            if (badge) {
+                badge.innerText = count;
+                if (count > 0) badge.classList.remove('hidden');
+                else badge.classList.add('hidden');
+            }
+        }
+
+        function onRemarkChange(rowKey, value) {
+            remarksMap[rowKey] = value;
+            const targetRow = allRows.find(r => r._rowKey === rowKey);
+            if (targetRow) targetRow.remarks = value;
+            updateRemarksCount();
+        }
+
+        function saveRemarks() {
+            document.querySelectorAll('.remarks-input').forEach(inp => {
+                if (inp.dataset.key) {
+                    remarksMap[inp.dataset.key] = inp.value;
+                }
+            });
+
+            try {
+                localStorage.setItem(REMARKS_KEY, JSON.stringify(remarksMap));
+                updateRemarksCount();
+                showToast('Remarks saved successfully.', 'success');
+            } catch (err) {
+                console.error("Failed to save remarks:", err);
+                showToast('Error saving remarks. Local storage might be full.', 'error');
+            }
+        }
+
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('dataTableBody');
+            const noResultsState = document.getElementById('noResultsState');
+            const recordCountText = document.getElementById('recordCountText');
+            const recordCountPill = document.getElementById('recordCountPill');
+
+            tbody.innerHTML = '';
+            recordCountPill.innerText = `${filteredRows.length.toLocaleString()} records`;
+            recordCountText.innerText = `Showing ${filteredRows.length.toLocaleString()} of ${allRows.length.toLocaleString()}`;
+
+            if (filteredRows.length === 0) {
+                noResultsState.classList.remove('hidden');
+            } else {
+                noResultsState.classList.add('hidden');
+
+                const fragment = document.createDocumentFragment();
+
+                filteredRows.forEach((row, idx) => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-neutral-50/60 transition-colors bg-white group';
+
+                    const safeRowKey = row._rowKey.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+                    const currentRemark = remarksMap[row._rowKey] !== undefined ? remarksMap[row._rowKey] : (row.remarks || '');
+
+                    tr.innerHTML = `
+                        <td class="py-3.5 px-3 text-xs font-bold text-[#1a1a1a] whitespace-nowrap">${escapeHtml(row.siteCode || '—')}</td>
+                        <td class="py-3.5 px-3 text-xs font-mono font-bold text-neutral-700 whitespace-nowrap">${escapeHtml(row.itemCode || '—')}</td>
+                        <td class="py-3.5 px-4 text-xs font-medium text-neutral-600 truncate max-w-[220px]" title="${escapeHtml(row.itemDescription)}">${escapeHtml(row.itemDescription || '—')}</td>
+                        <td class="py-3.5 px-3 whitespace-nowrap">
+                            <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-neutral-100 text-neutral-600 border border-neutral-200/60">
+                                ${escapeHtml(row.locationCode || '—')}
+                            </span>
+                        </td>
+                        <td class="py-3.5 px-3 text-xs font-mono text-neutral-600 whitespace-nowrap">${escapeHtml(row.lotNo || '—')}</td>
+                        <td class="py-3.5 px-3 text-xs font-mono text-neutral-600 whitespace-nowrap">${escapeHtml(row.lotSl || '—')}</td>
+                        <td class="py-3.5 px-3 text-xs font-semibold text-neutral-500 whitespace-nowrap">${escapeHtml(row.refSer || '—')}</td>
+                        <td class="py-3.5 px-3 text-xs font-bold text-indigo-600 whitespace-nowrap">${escapeHtml(row.refId || '—')}</td>
+                        <td class="py-3.5 px-3 text-xs font-bold text-emerald-600 text-right font-mono whitespace-nowrap bg-emerald-50/30">
+                            ${row.qtyAllocated.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
+                        </td>
+                        <td class="py-2.5 px-4">
+                            <input type="text"
+                                data-key="${safeRowKey}"
+                                value="${escapeHtml(currentRemark)}"
+                                placeholder="Add remark..."
+                                oninput="onRemarkChange('${safeRowKey}', this.value)"
+                                class="remarks-input w-full bg-neutral-50/80 border border-neutral-200/80 focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 rounded-xl px-3 py-1.5 text-xs font-medium text-[#242424] placeholder-neutral-400 transition-all outline-none min-w-[200px]">
+                        </td>
+                    `;
+                    fragment.appendChild(tr);
+                });
+
+                tbody.appendChild(fragment);
+            }
+        }
+
+        function exportCSV() {
+            if (filteredRows.length === 0) {
+                showToast('Nothing to export.', 'warning');
+                return;
+            }
+
+            // Sync all remarks inputs prior to export
+            document.querySelectorAll('.remarks-input').forEach(inp => {
+                if (inp.dataset.key) {
+                    remarksMap[inp.dataset.key] = inp.value;
+                }
+            });
+
+            const headers = ['Site Code', 'Item Code', 'Item Description', 'Location Code', 'Lot No', 'Lot Sl', 'Ref Ser', 'Ref Id', 'Qty Allocated', 'Remarks'];
+            const csvRows = [headers.map(h => `"${h}"`).join(',')];
+
+            filteredRows.forEach(row => {
+                const remarkVal = remarksMap[row._rowKey] !== undefined ? remarksMap[row._rowKey] : (row.remarks || '');
+                const values = [
+                    row.siteCode,
+                    row.itemCode,
+                    row.itemDescription,
+                    row.locationCode,
+                    row.lotNo,
+                    row.lotSl,
+                    row.refSer,
+                    row.refId,
+                    row.qtyAllocated,
+                    remarkVal
+                ];
+                csvRows.push(values.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(','));
+            });
+
+            const csvString = '\uFEFF' + csvRows.join('\n');
+            const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+
+            const siteName = (document.getElementById('siteFilter').value || 'ALL').replace(/\s+/g, '_');
+            const d = new Date();
+            const dateStr = `${d.getDate().toString().padStart(2, '0')}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getFullYear()}`;
+
+            link.setAttribute("download", `Allocation_Report_${siteName}_${dateStr}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            showToast('Allocation report exported successfully.', 'success');
+        }
+    </script>
+    <script src="assets/notifications.js"></script>
+</body>
+
+</html>
+

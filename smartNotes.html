@@ -1,0 +1,1742 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Notes – PNR Manager</title>
+    <link rel="stylesheet" href="assets/theme.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/theme.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            opacity: 0;
+            animation: pageEnter 0.35s ease-out 0.05s forwards;
+        }
+
+        @keyframes pageEnter {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        body.page-exit {
+            animation: pageExit 0.25s ease-in forwards;
+        }
+
+        @keyframes pageExit {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+        }
+
+        .theme-bg {
+            background: #faf8f5;
+        }
+
+        .sn-card {
+            background: #ffffff;
+            border-radius: 1.5rem;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03);
+            position: relative;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        select,
+        textarea {
+            border: 1.5px solid #eaeaec;
+            background-color: #ffffff;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-sizing: border-box;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #f7d060;
+            box-shadow: 0 0 0 4px rgba(247, 208, 96, 0.2);
+        }
+
+        select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23a1a1aa' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.75rem center;
+            background-repeat: no-repeat;
+            background-size: 1rem 1.25rem;
+            padding-right: 2rem !important;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            cursor: pointer;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator:hover {
+            opacity: 1;
+        }
+
+        body.dark-mode input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.85);
+        }
+
+        ::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #d4d4d8;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a1a1aa;
+        }
+
+        /* ===== SIDEBAR STYLES ===== */
+        .sidebar-nav {
+            background: #13151b;
+            transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sidebar-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            padding: 0.65rem 0.875rem;
+            border-radius: 0.875rem;
+            color: #94a3b8;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            text-align: left;
+            width: 100%;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .sidebar-nav-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #ffffff;
+        }
+
+        .sidebar-nav-item.active {
+            background: rgba(244, 199, 74, 0.12);
+            color: #f4c74a;
+            border: 1px solid rgba(244, 199, 74, 0.35);
+        }
+
+        .sidebar-nav-item.active svg {
+            color: #f4c74a;
+        }
+
+        .sidebar-collapsed {
+            width: 72px !important;
+        }
+
+        .sidebar-collapsed .nav-text,
+        .sidebar-collapsed .logo-text,
+        .sidebar-collapsed .profile-text,
+        .sidebar-collapsed .collapse-icon-expanded {
+            display: none !important;
+        }
+
+        .sidebar-collapsed .sidebar-header {
+            justify-content: center !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+
+        .sidebar-collapsed .sidebar-nav-item {
+            justify-content: center !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+
+        .sidebar-collapsed .user-profile-row {
+            justify-content: center !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+
+        /* ===== NOTE ITEM ACCENT INDICATORS ===== */
+        .note-row {
+            transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .note-row::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 12px;
+            bottom: 12px;
+            width: 4px;
+            border-radius: 0 4px 4px 0;
+            transition: all 0.18s ease;
+        }
+
+        .note-row.indicator-red::before {
+            background: #ef4444;
+        }
+
+        .note-row.indicator-blue::before {
+            background: #3b82f6;
+        }
+
+        .note-row.indicator-amber::before {
+            background: #f59e0b;
+        }
+
+        .note-row.indicator-green::before {
+            background: #10b981;
+        }
+
+        .note-row.indicator-purple::before {
+            background: #8b5cf6;
+        }
+
+        .note-row:hover {
+            transform: translateX(2px);
+            background-color: rgba(244, 199, 74, 0.05);
+        }
+
+        .note-row.active-note {
+            background-color: #fbf8f0;
+            border-color: #f4c74a;
+            box-shadow: 0 4px 14px rgba(244, 199, 74, 0.12);
+        }
+
+        /* Category Tabs */
+        .category-tab {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .category-tab.active {
+            background: #13151b;
+            color: #ffffff;
+            border-color: #13151b;
+            box-shadow: 0 4px 12px rgba(19, 21, 27, 0.18);
+        }
+
+        .category-tab.active .count-badge {
+            background: #ffffff;
+            color: #13151b;
+        }
+
+        /* ===== TOAST NOTIFICATIONS ===== */
+        #toastContainer {
+            position: fixed;
+            bottom: 5.5rem;
+            right: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            z-index: 99999;
+            pointer-events: none;
+        }
+
+        /* Floating New Note Button */
+        #floatingNewNoteBtn {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body.dark-mode #floatingNewNoteBtn {
+            background: #f4c74a !important;
+            color: #12141a !important;
+            border-color: #f4c74a !important;
+        }
+
+        body.dark-mode #floatingNewNoteBtn span {
+            color: #12141a !important;
+        }
+
+        body.dark-mode #floatingNewNoteBtn .icon-box {
+            background: #12141a !important;
+            color: #f4c74a !important;
+        }
+
+        .toast-item {
+            pointer-events: auto;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: #181a24;
+            color: #ffffff;
+            border-radius: 1rem;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: translateY(12px) scale(0.96);
+            opacity: 0;
+            transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .toast-item.toast-show {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        .toast-item.toast-hide {
+            transform: translateY(-8px) scale(0.96);
+            opacity: 0;
+        }
+
+        .toast-item.toast-success {
+            border-left: 4px solid #10b981;
+        }
+
+        .toast-item.toast-error {
+            border-left: 4px solid #ef4444;
+        }
+
+        .toast-item.toast-info {
+            border-left: 4px solid #f4c74a;
+        }
+
+        /* ===== DARK MODE OVERRIDES ===== */
+        body.dark-mode .sidebar-nav {
+            background: #0d0f14;
+        }
+
+        body.dark-mode header {
+            background: rgba(13, 15, 20, 0.8) !important;
+            border-bottom-color: rgba(255, 255, 255, 0.05) !important;
+        }
+
+        body.dark-mode .theme-bg,
+        html.dark-mode .theme-bg {
+            background: #090a0f !important;
+            color: #f4f4f5 !important;
+        }
+
+        body.dark-mode header input,
+        body.dark-mode input[type="text"],
+        body.dark-mode input[type="date"],
+        body.dark-mode select,
+        body.dark-mode textarea {
+            background-color: #141720 !important;
+            border-color: #272a35 !important;
+            color: #f4f4f5 !important;
+        }
+
+        body.dark-mode header button {
+            background: #141720 !important;
+            border-color: #272a35 !important;
+            color: #94a3b8 !important;
+        }
+
+        body.dark-mode header button:hover {
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .sn-card,
+        html.dark-mode .sn-card {
+            background: #13151b !important;
+            border-color: rgba(255, 255, 255, 0.06) !important;
+            color: #f4f4f5 !important;
+        }
+
+        body.dark-mode .bg-white,
+        html.dark-mode .bg-white {
+            background: #181a24 !important;
+            border-color: rgba(255, 255, 255, 0.06) !important;
+            color: #f4f4f5 !important;
+        }
+
+        body.dark-mode h1,
+        body.dark-mode h2,
+        body.dark-mode h3,
+        body.dark-mode h4,
+        html.dark-mode h1,
+        html.dark-mode h2,
+        html.dark-mode h3,
+        html.dark-mode h4 {
+            color: #f4f4f5 !important;
+        }
+
+        body.dark-mode .text-\[\#1a1a1a\],
+        html.dark-mode .text-\[\#1a1a1a\],
+        body.dark-mode .text-\[\#242424\],
+        html.dark-mode .text-\[\#242424\],
+        body.dark-mode .text-\[\#292929\],
+        html.dark-mode .text-\[\#292929\] {
+            color: #f4f4f5 !important;
+        }
+
+        body.dark-mode .category-tab {
+            background: #181a24;
+            border-color: #272a35;
+            color: #cbd5e1;
+        }
+
+        body.dark-mode .category-tab .count-badge {
+            background: #272a35;
+            color: #cbd5e1;
+        }
+
+        body.dark-mode .category-tab.active {
+            background: #f4c74a !important;
+            color: #12141a !important;
+            border-color: #f4c74a !important;
+        }
+
+        body.dark-mode .category-tab.active .count-badge {
+            background: #12141a !important;
+            color: #f4c74a !important;
+        }
+
+        body.dark-mode .note-row {
+            background: #141720;
+            border-color: rgba(255, 255, 255, 0.06);
+        }
+
+        body.dark-mode .note-row:hover {
+            background: #1c202d;
+        }
+
+        body.dark-mode .note-row.active-note {
+            background: #1e2230 !important;
+            border-color: #f4c74a !important;
+        }
+
+        body.dark-mode .note-content-box {
+            background: #141720 !important;
+            border-color: #272a35 !important;
+            color: #e2e8f0 !important;
+        }
+
+        body.dark-mode .bg-neutral-50 {
+            background-color: #141720 !important;
+        }
+
+        body.dark-mode .border-neutral-200,
+        body.dark-mode .border-neutral-200\/80,
+        body.dark-mode .border-neutral-100 {
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+
+        body.dark-mode .text-neutral-500,
+        body.dark-mode .text-neutral-600 {
+            color: #94a3b8 !important;
+        }
+
+        body.dark-mode .modal-card {
+            background: #181a24 !important;
+            border-color: #272a35 !important;
+        }
+    </style>
+</head>
+
+<body class="theme-bg min-h-screen text-[#1a1a1a] flex antialiased">
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer"></div>
+
+    <!-- ===== SIDEBAR NAVIGATION ===== -->
+    <aside id="sidebar" class="sidebar-nav w-56 flex-shrink-0 h-screen sticky top-0 flex flex-col py-6 px-3 z-40 border-r border-neutral-800/40 select-none">
+        <!-- Logo & Collapse Button -->
+        <div class="sidebar-header flex items-center justify-between px-2 mb-7">
+            <div class="flex items-center gap-2.5 cursor-pointer" onclick="navigateTo('index')">
+                <div class="w-8 h-8 rounded-full bg-[#f4c74a] flex items-center justify-center text-[#1a1a1a] font-extrabold text-xs shadow-inner flex-shrink-0">
+                    PNR
+                </div>
+                <span class="logo-text font-extrabold text-base tracking-tight text-white">Manager</span>
+            </div>
+            <button onclick="toggleSidebar()" class="collapse-icon-expanded p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-white/5 transition" title="Toggle Sidebar">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Main Navigation Links -->
+        <nav class="flex flex-col gap-1.5 flex-grow">
+            <button class="sidebar-nav-item" onclick="navigateTo('index')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+                <span class="nav-text">Dashboard</span>
+            </button>
+            <button class="sidebar-nav-item" onclick="navigateTo('tools')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l-7-7m7 7l-2.121 2.121m4.242 4.242a3 3 0 11-4.242-4.242m0 0a3 3 0 10-4.242-4.242m8.484 0a3 3 0 10-4.242-4.242m0 0L5 19"/>
+                </svg>
+                <span class="nav-text">Tools</span>
+            </button>
+            <button class="sidebar-nav-item active" onclick="navigateTo('smartNotes')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span class="nav-text">Smart Notes</span>
+            </button>
+            <button class="sidebar-nav-item" onclick="navigateTo('allocate')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+                </svg>
+                <span class="nav-text">Allocation</span>
+            </button>
+            <button class="sidebar-nav-item" onclick="navigateTo('reports')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span class="nav-text">Reports</span>
+            </button>
+            <button class="sidebar-nav-item" onclick="navigateTo('Pending_PO')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span class="nav-text">Pending POs</span>
+            </button>
+            <button class="sidebar-nav-item" onclick="navigateTo('calendar')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                <span class="nav-text">Calendar</span>
+            </button>
+            <button class="sidebar-nav-item" onclick="navigateTo('target')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0013 3.06V1h-2v2.06A8.994 8.994 0 003.06 11H1v2h2.06A8.994 8.994 0 0011 20.94V23h2v-2.06A8.994 8.994 0 0020.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
+                </svg>
+                <span class="nav-text">Target</span>
+            </button>
+        </nav>
+
+        <!-- Bottom Items -->
+        <div class="flex flex-col gap-1.5 pt-3 border-t border-white/10">
+            <button class="sidebar-nav-item" onclick="showToast('Settings panel', 'info')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <span class="nav-text">Settings</span>
+            </button>
+            <button id="sidebarNotificationBtn" class="sidebar-nav-item relative" onclick="toggleNotificationPanel(event)">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                </svg>
+                <span class="nav-text">Notifications</span>
+            </button>
+
+            <!-- User Profile Row -->
+            <div class="user-profile-row flex items-center gap-2.5 px-2 py-2 mt-1 pt-3 border-t border-white/10 cursor-pointer">
+                <div class="w-8 h-8 rounded-full bg-[#1b1e24] border border-neutral-700/80 flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
+                    AU
+                </div>
+                <div class="profile-text flex-grow min-w-0">
+                    <div class="text-xs font-bold text-white truncate leading-tight">Admin User</div>
+                    <div class="text-[10px] text-neutral-400 font-medium">Super Admin</div>
+                </div>
+                <svg class="profile-text w-3.5 h-3.5 text-neutral-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ===== MAIN CONTENT COLUMN ===== -->
+    <div class="flex-1 flex flex-col min-w-0 min-h-screen overflow-y-auto">
+
+        <!-- ===== TOP BAR HEADER ===== -->
+        <header class="flex items-center justify-between px-6 py-4 bg-transparent sticky top-0 z-30 backdrop-blur-md">
+            <!-- Left: Sidebar Toggle -->
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSidebar()" class="w-9 h-9 rounded-xl bg-white border border-neutral-200/60 shadow-xs flex items-center justify-center text-neutral-700 hover:text-black hover:bg-neutral-50 transition" title="Toggle Sidebar">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Center: Search Bar -->
+            <div class="flex-1 max-w-md mx-4">
+                <div class="relative w-full">
+                    <div class="absolute inset-y-0 left-3.5 flex items-center pointer-events-none">
+                        <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                    <input type="text" id="topNavSearch" placeholder="Search anything in notes..."
+                        class="w-full pl-10 pr-4 py-2 text-xs sm:text-sm font-medium bg-white rounded-full border border-neutral-200/80 shadow-xs focus:outline-none focus:ring-2 focus:ring-[#f4c74a]/40 focus:border-[#f4c74a] transition text-[#1a1a1a] placeholder-neutral-400">
+                </div>
+            </div>
+
+            <!-- Right: Action Buttons & Avatar -->
+            <div class="flex items-center gap-2.5">
+                <div class="hidden sm:flex flex-col items-end mr-2">
+                    <span id="live-clock" class="text-xs font-bold text-[#1a1a1a] tabular-nums tracking-tight">--:-- --</span>
+                    <span id="live-date" class="text-[9px] font-bold text-neutral-400 uppercase tracking-widest">---</span>
+                </div>
+
+                <!-- Notifications Button -->
+                <button id="notificationBtn" onclick="toggleNotificationPanel(event)" class="w-9 h-9 rounded-full bg-white border border-neutral-200/80 shadow-xs flex items-center justify-center text-neutral-600 hover:text-[#1a1a1a] hover:bg-neutral-50 transition relative" title="Notifications">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                    </svg>
+                </button>
+
+                <!-- Calendar Link -->
+                <button onclick="navigateTo('calendar')" class="w-9 h-9 rounded-full bg-white border border-neutral-200/80 shadow-xs flex items-center justify-center text-neutral-600 hover:text-[#1a1a1a] hover:bg-neutral-50 transition" title="Calendar">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                </button>
+
+                <!-- Theme Toggle -->
+                <button onclick="toggleTheme()" class="w-9 h-9 rounded-full bg-white border border-neutral-200/80 shadow-xs flex items-center justify-center text-neutral-600 hover:text-[#1a1a1a] hover:bg-neutral-50 transition theme-toggle relative" title="Toggle Theme">
+                    <span class="sun-icon">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1m-16 0H1m15.364 1.636l.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                    </span>
+                    <span class="moon-icon">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                        </svg>
+                    </span>
+                </button>
+
+                <!-- Settings Button -->
+                <button class="w-9 h-9 rounded-full bg-white border border-neutral-200/80 shadow-xs flex items-center justify-center text-neutral-600 hover:text-[#1a1a1a] hover:bg-neutral-50 transition" title="Settings" onclick="showToast('Settings panel', 'info')">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                </button>
+
+                <!-- Avatar AU -->
+                <div class="w-9 h-9 rounded-full bg-[#171920] text-white flex items-center justify-center text-xs font-bold shadow-xs cursor-pointer ml-0.5">
+                    AU
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== MAIN VIEWPORT ===== -->
+        <main class="flex-1 px-4 sm:px-8 py-5 max-w-[1600px] w-full mx-auto flex flex-col min-h-0">
+
+            <!-- App Title Row (Mockup Header) -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-12 h-12 rounded-2xl bg-white border border-neutral-200/80 shadow-xs flex items-center justify-center text-[#1a1a1a] flex-shrink-0">
+                        <svg class="w-6 h-6 text-neutral-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <rect x="4" y="3" width="16" height="18" rx="3" stroke-width="2"/>
+                            <path stroke-linecap="round" stroke-width="2" d="M8 8h8M8 12h8M8 16h5"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-[#1a1a1a]">Smart Notes</h1>
+                        <p class="text-xs sm:text-sm font-medium text-neutral-500">Stay Organized. Stay Ahead.</p>
+                    </div>
+                </div>
+
+                <!-- Right Quick Actions -->
+                <div class="flex items-center gap-2.5 self-end sm:self-auto">
+                    <button onclick="openNoteModal()" class="px-4 py-2 rounded-xl bg-[#13151b] hover:bg-neutral-800 text-white transition text-xs font-bold shadow-xs flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        <span>New Note</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ===== CATEGORY PILL TABS ===== -->
+            <div class="flex items-center gap-2.5 mb-6 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-none" id="categoryTabsContainer">
+                <!-- Injected via JavaScript -->
+            </div>
+
+            <!-- ===== WORKSPACE: TWO COLUMN SPLIT VIEW ===== -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 min-h-[580px] items-start">
+
+                <!-- Left Column: Notes List (7 cols) -->
+                <div class="lg:col-span-7 bg-white rounded-3xl p-5 sm:p-6 border border-neutral-200/80 shadow-xs flex flex-col min-h-[580px]">
+                    <!-- Header of Notes List -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-neutral-100 gap-3">
+                        <div>
+                            <h2 id="activeCategoryTitle" class="text-lg font-bold text-[#1a1a1a]">Tailoring Notes</h2>
+                            <p id="activeCategorySubtitle" class="text-xs text-neutral-500 font-medium">Track tailoring related updates and reminders</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <!-- Filter Dropdown -->
+                            <select id="timeFilterSelect" onchange="applyFilters()" class="text-xs font-semibold py-1.5 px-3 rounded-xl border border-neutral-200/80 bg-white text-neutral-700 cursor-pointer shadow-xs focus:ring-0">
+                                <option value="all" selected>All Notes</option>
+                                <option value="today">Today</option>
+                                <option value="this_week">This Week</option>
+                                <option value="this_month">This Month</option>
+                            </select>
+
+                            <!-- Priority Filter -->
+                            <select id="priorityFilterSelect" onchange="applyFilters()" class="text-xs font-semibold py-1.5 px-2.5 rounded-xl border border-neutral-200/80 bg-white text-neutral-700 cursor-pointer shadow-xs focus:ring-0">
+                                <option value="all">All Priority</option>
+                                <option value="High">High</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Normal">Normal</option>
+                                <option value="Low">Low</option>
+                            </select>
+
+                            <!-- Status Filter -->
+                            <select id="statusFilterSelect" onchange="applyFilters()" class="text-xs font-semibold py-1.5 px-2.5 rounded-xl border border-neutral-200/80 bg-white text-neutral-700 cursor-pointer shadow-xs focus:ring-0">
+                                <option value="all">All Status</option>
+                                <option value="Pending">Pending</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Completed">Completed</option>
+                                <option value="On Hold">On Hold</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Scrollable Notes List Container -->
+                    <div id="notesListContainer" class="flex flex-col gap-2.5 py-4 overflow-y-auto max-h-[580px] pr-1">
+                        <!-- Note Items Injected via JS -->
+                    </div>
+
+                    <!-- List Footer / Meta -->
+                    <div class="pt-3 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-400 mt-auto">
+                        <span id="notesCountStatus">0 notes</span>
+                        <button onclick="openNoteModal()" class="text-xs font-semibold text-neutral-700 hover:text-black hover:underline flex items-center gap-1">
+                            <span>+ Add quick note</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Column: Note Details (5 cols) -->
+                <div class="lg:col-span-5 bg-white rounded-3xl p-5 sm:p-6 border border-neutral-200/80 shadow-xs flex flex-col min-h-[580px] sticky top-24">
+                    <!-- Note Details Card Header -->
+                    <div class="flex items-center justify-between pb-3 border-b border-neutral-100">
+                        <h3 class="text-base font-bold text-[#1a1a1a]">Note Details</h3>
+                        <span id="detailPriorityBadge" class="hidden px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-600 border border-rose-200">
+                            High Priority
+                        </span>
+                    </div>
+
+                    <!-- Main Detail Body -->
+                    <div id="detailViewContent" class="flex flex-col flex-1">
+                        <!-- Note Title -->
+                        <div class="mt-4 mb-5">
+                            <h2 id="detailTitle" class="text-lg sm:text-xl font-bold text-[#1a1a1a] leading-snug">
+                                Select a note to view details
+                            </h2>
+                        </div>
+
+                        <!-- Metadata Grid (2x2) -->
+                        <div id="detailMetadataGrid" class="grid grid-cols-2 gap-4 pb-5 mb-5 border-b border-neutral-100">
+                            <div>
+                                <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-400 block mb-1">Date</span>
+                                <span id="detailDate" class="text-xs sm:text-sm font-semibold text-[#1a1a1a]">--</span>
+                            </div>
+                            <div>
+                                <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-400 block mb-1">Assigned To</span>
+                                <span id="detailAssigned" class="text-xs sm:text-sm font-semibold text-[#1a1a1a]">--</span>
+                            </div>
+                            <div>
+                                <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-400 block mb-1">Related Order</span>
+                                <span id="detailOrder" class="text-xs sm:text-sm font-semibold text-[#1a1a1a]">--</span>
+                            </div>
+                            <div>
+                                <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-400 block mb-1">Note Status</span>
+                                <span id="detailStatusBadge" class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-neutral-100 text-neutral-500 border border-neutral-200">
+                                    --
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Note Content Body -->
+                        <div class="flex-grow flex flex-col mb-4">
+                            <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-400 block mb-1.5">Note</span>
+                            <div id="detailContent" class="note-content-box p-4 rounded-2xl bg-neutral-50/90 border border-neutral-100 text-xs sm:text-sm text-neutral-600 leading-relaxed min-h-[90px]">
+                                No note selected. Select a note from the left list or click "+ New Note" to create one.
+                            </div>
+                        </div>
+
+                        <!-- Comments / Timeline Feed -->
+                        <div id="detailCommentsWrapper" class="mb-4 hidden">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-400">Comments & Activity</span>
+                                <span id="detailCommentCount" class="text-[10px] font-bold text-neutral-400">0 updates</span>
+                            </div>
+                            <div id="detailCommentsList" class="flex flex-col gap-2 max-h-36 overflow-y-auto pr-1 text-xs">
+                                <!-- Comments injected here -->
+                            </div>
+                        </div>
+
+                        <!-- Actions Footer (Mark as Done, Add Comment, Edit, Delete) -->
+                        <div id="detailActionsFooter" class="pt-4 border-t border-neutral-100 flex items-center justify-between gap-2 mt-auto hidden">
+                            <div class="flex items-center gap-1.5">
+                                <button id="editNoteBtn" onclick="editCurrentNote()" class="p-2 rounded-xl text-neutral-500 hover:text-black hover:bg-neutral-100 transition" title="Edit Note">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </button>
+                                <button id="deleteNoteBtn" onclick="deleteCurrentNote()" class="p-2 rounded-xl text-neutral-400 hover:text-rose-600 hover:bg-rose-50 transition" title="Delete Note">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <button id="toggleDoneBtn" onclick="toggleCurrentNoteStatus()" class="px-3.5 py-2 rounded-xl border border-neutral-200/90 hover:bg-neutral-50 text-neutral-700 transition text-xs font-semibold flex items-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                    <span id="toggleDoneText">Mark as Done</span>
+                                </button>
+                                <button onclick="promptAddComment()" class="px-3.5 py-2 rounded-xl bg-[#13151b] hover:bg-neutral-800 text-white transition text-xs font-bold shadow-xs flex items-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                    </svg>
+                                    <span>Add Comment</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ===== FLOATING ACTION BUTTON (BOTTOM-RIGHT ACCESSIBILITY) ===== -->
+    <button onclick="openNoteModal()" id="floatingNewNoteBtn"
+        class="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 z-40 px-5 py-3 rounded-2xl bg-[#13151b] hover:bg-neutral-800 text-white font-bold text-xs sm:text-sm shadow-2xl hover:shadow-3xl transition-all duration-200 flex items-center gap-2.5 hover:scale-105 active:scale-95 border border-white/10 group cursor-pointer"
+        title="Create New Note (Ctrl+N)">
+        <div class="icon-box w-6 h-6 rounded-lg bg-[#f4c74a] text-[#1a1a1a] flex items-center justify-center font-bold shadow-xs">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+            </svg>
+        </div>
+        <span class="tracking-tight font-extrabold text-white">New Note</span>
+    </button>
+
+    <!-- ===== CREATE / EDIT NOTE MODAL ===== -->
+    <div id="noteModal" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs hidden flex items-center justify-center p-4">
+        <div class="modal-card bg-white w-full max-w-lg rounded-3xl p-6 sm:p-7 shadow-2xl border border-neutral-200/80 animate-in fade-in zoom-in-95 duration-200">
+            <div class="flex items-center justify-between pb-3 border-b border-neutral-100">
+                <h3 id="modalHeading" class="text-base font-bold text-[#1a1a1a]">Create New Note</h3>
+                <button onclick="closeNoteModal()" class="w-8 h-8 rounded-full bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center text-neutral-500 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <form id="noteForm" onsubmit="saveNote(event)" class="mt-4 flex flex-col gap-3.5 text-xs">
+                <input type="hidden" id="noteId">
+
+                <!-- Title -->
+                <div>
+                    <label class="font-bold text-neutral-700 block mb-1">Note Title <span class="text-rose-500">*</span></label>
+                    <input type="text" id="formTitle" required placeholder="e.g. Customer requested sleeve length change"
+                        class="w-full px-3 py-2 rounded-xl border border-neutral-200 text-xs font-medium">
+                </div>
+
+                <!-- Category & Priority Row -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="font-bold text-neutral-700 block mb-1">Category</label>
+                        <select id="formCategory" class="w-full px-3 py-2 rounded-xl border border-neutral-200 text-xs font-semibold">
+                            <option value="tailoring">Tailoring Notes</option>
+                            <option value="cash">Cash Adjustments Notes</option>
+                            <option value="store">Store Requirements</option>
+                            <option value="dopo">DO or PO Followup Notes</option>
+                            <option value="mail">Mail Followups Notes</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="font-bold text-neutral-700 block mb-1">Priority</label>
+                        <select id="formPriority" class="w-full px-3 py-2 rounded-xl border border-neutral-200 text-xs font-semibold">
+                            <option value="High">High Priority</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Normal" selected>Normal</option>
+                            <option value="Low">Low</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Status & Date Row -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="font-bold text-neutral-700 block mb-1">Status</label>
+                        <select id="formStatus" class="w-full px-3 py-2 rounded-xl border border-neutral-200 text-xs font-semibold">
+                            <option value="Pending" selected>Pending</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                            <option value="On Hold">On Hold</option>
+                        </select>
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="font-bold text-neutral-700 block">Date</label>
+                            <span class="text-[10px] text-neutral-400 font-medium">Optional (defaults to today)</span>
+                        </div>
+                        <input type="date" id="formDate"
+                            class="w-full px-3 py-2 rounded-xl border border-neutral-200 text-xs font-medium cursor-pointer">
+                    </div>
+                </div>
+
+                <!-- Assigned To & Related Order Row -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="font-bold text-neutral-700 block mb-1">Assigned To</label>
+                        <input type="text" id="formAssigned" placeholder="e.g. Stylist Team"
+                            class="w-full px-3 py-2 rounded-xl border border-neutral-200 text-xs font-medium">
+                    </div>
+                    <div>
+                        <label class="font-bold text-neutral-700 block mb-1">Related Order / Reference</label>
+                        <input type="text" id="formOrder" placeholder="e.g. SO27024657"
+                            class="w-full px-3 py-2 rounded-xl border border-neutral-200 text-xs font-medium">
+                    </div>
+                </div>
+
+                <!-- Content Area -->
+                <div>
+                    <label class="font-bold text-neutral-700 block mb-1">Note Description</label>
+                    <textarea id="formContent" rows="3" placeholder="Enter note details, observations or instructions..."
+                        class="w-full px-3 py-2 rounded-xl border border-neutral-200 text-xs font-medium leading-relaxed"></textarea>
+                </div>
+
+                <!-- Modal Actions -->
+                <div class="flex items-center justify-end gap-2 pt-3 border-t border-neutral-100">
+                    <button type="button" onclick="closeNoteModal()" class="px-4 py-2 rounded-xl border border-neutral-200 hover:bg-neutral-50 text-neutral-600 font-semibold transition">
+                        Cancel
+                    </button>
+                    <button type="button" onclick="saveNote(event)" class="px-5 py-2 rounded-xl bg-[#13151b] hover:bg-neutral-800 text-white font-bold transition shadow-xs cursor-pointer">
+                        Save Note
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== ADD COMMENT MODAL ===== -->
+    <div id="commentModal" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs hidden flex items-center justify-center p-4">
+        <div class="modal-card bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl border border-neutral-200/80">
+            <div class="flex items-center justify-between pb-3 border-b border-neutral-100">
+                <h3 class="text-base font-bold text-[#1a1a1a]">Add Comment</h3>
+                <button onclick="closeCommentModal()" class="w-8 h-8 rounded-full bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center text-neutral-500 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="mt-4 flex flex-col gap-3">
+                <textarea id="newCommentText" rows="3" placeholder="Write an update, note, or remark..." class="w-full px-3 py-2 rounded-xl border border-neutral-200 text-xs font-medium leading-relaxed"></textarea>
+                <div class="flex items-center justify-end gap-2 pt-2">
+                    <button onclick="closeCommentModal()" class="px-4 py-2 rounded-xl border border-neutral-200 text-xs font-semibold text-neutral-600 hover:bg-neutral-50 transition">Cancel</button>
+                    <button onclick="submitComment()" class="px-4 py-2 rounded-xl bg-[#13151b] text-white text-xs font-bold hover:bg-neutral-800 transition">Post Comment</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SCRIPT LOGIC ===== -->
+    <script>
+        // Category Definitions matching user prompt and mockup
+        const CATEGORIES = [
+            {
+                id: 'tailoring',
+                name: 'Tailoring Notes',
+                subtitle: 'Track tailoring related updates and reminders'
+            },
+            {
+                id: 'cash',
+                name: 'Cash Adjustments Notes',
+                subtitle: 'Track cash variances, petty cash and settlement records'
+            },
+            {
+                id: 'store',
+                name: 'Store Requirements',
+                subtitle: 'Track inventory needs, packing materials and facility supplies'
+            },
+            {
+                id: 'dopo',
+                name: 'DO or PO Followup Notes',
+                subtitle: 'Track delivery orders, supplier followups and purchase dispatches'
+            },
+            {
+                id: 'mail',
+                name: 'Mail Followups Notes',
+                subtitle: 'Track critical emails, customer enquiries and management requests'
+            }
+        ];
+
+        // Global State - Empty by default (no dummy notes)
+        let notesData = [];
+        let activeCategoryId = 'tailoring';
+        let selectedNoteId = null;
+
+        // Toast Notification Function
+        function showToast(message, type = 'info', duration = 3000) {
+            let container = document.getElementById('toastContainer');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toastContainer';
+                document.body.appendChild(container);
+            }
+
+            const toast = document.createElement('div');
+            toast.className = `toast-item toast-${type}`;
+
+            let icon = '💡';
+            if (type === 'success') icon = '✅';
+            else if (type === 'error') icon = '❌';
+            else if (type === 'warning') icon = '⚠️';
+
+            toast.innerHTML = `
+                <span class="text-base flex-shrink-0">${icon}</span>
+                <span class="flex-1">${message}</span>
+            `;
+
+            container.appendChild(toast);
+            requestAnimationFrame(() => {
+                toast.classList.add('toast-show');
+            });
+
+            setTimeout(() => {
+                toast.classList.remove('toast-show');
+                toast.classList.add('toast-hide');
+                setTimeout(() => toast.remove(), 250);
+            }, duration);
+        }
+        window.showToast = showToast;
+
+        // Initialize App
+        function initApp() {
+            loadNotes();
+            renderCategoryTabs();
+            renderNotesList();
+            updateClock();
+            setInterval(updateClock, 1000);
+
+            // Connect top nav search
+            const topSearch = document.getElementById('topNavSearch');
+            if (topSearch) {
+                topSearch.addEventListener('input', (e) => {
+                    renderNotesList(e.target.value);
+                });
+            }
+        }
+
+        // Load Notes from LocalStorage (with one-time purge of old dummy data)
+        function loadNotes() {
+            try {
+                // One-time cleanup of previous dummy notes
+                const hasPurgedDummies = localStorage.getItem('smart_notes_cleaned_dummy_v2');
+                if (!hasPurgedDummies) {
+                    localStorage.removeItem('smart_notes_data');
+                    localStorage.setItem('smart_notes_cleaned_dummy_v2', 'true');
+                    notesData = [];
+                    return;
+                }
+
+                const stored = localStorage.getItem('smart_notes_data');
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    if (Array.isArray(parsed)) {
+                        // Keep only real user-created notes, remove any remnant dummy notes
+                        notesData = parsed.filter(n => !n.id || (!n.id.startsWith('note-t-') && !n.id.startsWith('note-c-') && !n.id.startsWith('note-s-') && !n.id.startsWith('note-d-') && !n.id.startsWith('note-m-')));
+                    } else {
+                        notesData = [];
+                    }
+                } else {
+                    notesData = [];
+                }
+            } catch (e) {
+                console.error('Failed to load smart_notes_data', e);
+                notesData = [];
+            }
+        }
+
+        // Save Notes to LocalStorage
+        function saveNotes() {
+            try {
+                localStorage.setItem('smart_notes_data', JSON.stringify(notesData));
+            } catch (e) {
+                console.error('Failed to save smart_notes_data', e);
+            }
+        }
+
+        // Render Category Tabs
+        function renderCategoryTabs() {
+            const container = document.getElementById('categoryTabsContainer');
+            if (!container) return;
+
+            let html = '';
+            CATEGORIES.forEach(cat => {
+                const count = notesData.filter(n => n.category === cat.id).length;
+                const isActive = cat.id === activeCategoryId;
+                html += `
+                    <button onclick="switchCategory('${cat.id}')"
+                        class="category-tab ${isActive ? 'active' : ''} flex items-center px-4 py-2.5 rounded-full border border-neutral-200/80 bg-white font-semibold text-xs sm:text-sm whitespace-nowrap shadow-xs cursor-pointer">
+                        <span>${cat.name}</span>
+                        <span class="count-badge ml-2 px-2 py-0.5 rounded-full text-xs font-bold bg-neutral-100 text-neutral-700">${count}</span>
+                    </button>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Switch Active Category
+        function switchCategory(catId) {
+            activeCategoryId = catId;
+            selectedNoteId = null;
+            renderCategoryTabs();
+
+            const cat = CATEGORIES.find(c => c.id === catId);
+            if (cat) {
+                document.getElementById('activeCategoryTitle').textContent = cat.name;
+                document.getElementById('activeCategorySubtitle').textContent = cat.subtitle;
+            }
+
+            renderNotesList();
+        }
+
+        // Render Notes List based on current filters
+        function renderNotesList(searchQuery = '') {
+            const listContainer = document.getElementById('notesListContainer');
+            if (!listContainer) return;
+
+            const timeFilter = document.getElementById('timeFilterSelect') ? document.getElementById('timeFilterSelect').value : 'all';
+            const priorityFilter = document.getElementById('priorityFilterSelect') ? document.getElementById('priorityFilterSelect').value : 'all';
+            const statusFilter = document.getElementById('statusFilterSelect') ? document.getElementById('statusFilterSelect').value : 'all';
+            const topSearch = document.getElementById('topNavSearch') ? document.getElementById('topNavSearch').value.toLowerCase().trim() : '';
+
+            const query = (searchQuery || topSearch).toLowerCase();
+
+            // Filter notes for active category
+            let filtered = notesData.filter(n => n.category === activeCategoryId);
+
+            // Filter by Priority
+            if (priorityFilter !== 'all') {
+                filtered = filtered.filter(n => n.priority && n.priority.toLowerCase() === priorityFilter.toLowerCase());
+            }
+
+            // Filter by Status
+            if (statusFilter !== 'all') {
+                filtered = filtered.filter(n => n.status && n.status.toLowerCase() === statusFilter.toLowerCase());
+            }
+
+            // Search filter
+            if (query) {
+                filtered = filtered.filter(n =>
+                    (n.title && n.title.toLowerCase().includes(query)) ||
+                    (n.order && n.order.toLowerCase().includes(query)) ||
+                    (n.assigned && n.assigned.toLowerCase().includes(query)) ||
+                    (n.content && n.content.toLowerCase().includes(query))
+                );
+            }
+
+            // Time filter
+            if (timeFilter === 'today') {
+                const todayStr = formatCurrentDate().toLowerCase();
+                filtered = filtered.filter(n => n.date && n.date.toLowerCase() === todayStr);
+            } else if (timeFilter === 'this_month') {
+                const d = new Date();
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                const monthYear = `${months[d.getMonth()]} ${d.getFullYear()}`.toLowerCase();
+                filtered = filtered.filter(n => n.date && n.date.toLowerCase().includes(monthYear));
+            }
+
+            // Update status count text
+            const countText = document.getElementById('notesCountStatus');
+            if (countText) {
+                countText.textContent = `${filtered.length} note${filtered.length === 1 ? '' : 's'}`;
+            }
+
+            // Empty state handling
+            if (filtered.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-16 text-center text-neutral-400">
+                        <div class="w-14 h-14 rounded-2xl bg-neutral-100 flex items-center justify-center text-neutral-400 mb-3">
+                            <svg class="w-7 h-7 stroke-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                        </div>
+                        <p class="text-sm font-semibold text-neutral-700 mb-1">No notes in this category yet</p>
+                        <p class="text-xs text-neutral-400 max-w-xs mb-4">Click "New Note" to record customer requests, reminders, or order followups.</p>
+                        <button onclick="openNoteModal()" class="px-4 py-2 rounded-xl bg-[#13151b] hover:bg-neutral-800 text-white font-bold text-xs transition shadow-xs flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                            <span>Add First Note</span>
+                        </button>
+                    </div>
+                `;
+                selectedNoteId = null;
+                clearNoteDetails();
+                return;
+            }
+
+            // Determine selected note
+            if (!selectedNoteId || !filtered.some(n => n.id === selectedNoteId)) {
+                selectedNoteId = filtered[0].id;
+            }
+
+            // Generate Note List Rows
+            let html = '';
+            filtered.forEach(note => {
+                const isSelected = note.id === selectedNoteId;
+
+                // Priority Badge Color Styles
+                let priorityClass = 'bg-blue-50 text-blue-600 border-blue-200';
+                if (note.priority === 'High') priorityClass = 'bg-rose-50 text-rose-600 border-rose-200';
+                else if (note.priority === 'Medium') priorityClass = 'bg-blue-50 text-blue-600 border-blue-200';
+                else if (note.priority === 'Normal') priorityClass = 'bg-amber-50 text-amber-700 border-amber-200';
+                else if (note.priority === 'Low') priorityClass = 'bg-emerald-50 text-emerald-600 border-emerald-200';
+
+                // Status Badge Color Styles
+                let statusClass = 'bg-rose-50 text-rose-600 border-rose-200';
+                if (note.status === 'Completed') statusClass = 'bg-emerald-50 text-emerald-600 border-emerald-200';
+                else if (note.status === 'In Progress') statusClass = 'bg-blue-50 text-blue-600 border-blue-200';
+                else if (note.status === 'On Hold') statusClass = 'bg-amber-50 text-amber-700 border-amber-200';
+                else if (note.status === 'Pending') statusClass = 'bg-rose-50 text-rose-600 border-rose-200';
+
+                // Indicator bar
+                let indicatorClass = note.indicator || 'indicator-amber';
+                if (note.priority === 'High') indicatorClass = 'indicator-red';
+                else if (note.status === 'Completed') indicatorClass = 'indicator-green';
+                else if (note.priority === 'Medium') indicatorClass = 'indicator-blue';
+
+                html += `
+                    <div onclick="selectNote('${note.id}')"
+                        class="note-row ${indicatorClass} ${isSelected ? 'active-note' : ''} flex items-center justify-between p-3.5 pl-5 rounded-2xl border border-neutral-200/70 bg-white cursor-pointer shadow-xs gap-3">
+                        
+                        <!-- Title (truncated) -->
+                        <div class="flex-1 min-w-0 pr-2">
+                            <span class="text-xs sm:text-sm font-semibold text-[#1a1a1a] block truncate">${escapeHtml(note.title)}</span>
+                        </div>
+
+                        <!-- Date with Calendar Icon -->
+                        <div class="flex items-center gap-1.5 text-neutral-400 text-xs flex-shrink-0 font-medium whitespace-nowrap">
+                            <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            <span class="text-neutral-600">${escapeHtml(note.date || '')}</span>
+                        </div>
+
+                        <!-- Priority Badge -->
+                        <div class="flex-shrink-0">
+                            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${priorityClass}">
+                                ${escapeHtml(note.priority || 'Normal')}
+                            </span>
+                        </div>
+
+                        <!-- Status Badge -->
+                        <div class="flex-shrink-0">
+                            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${statusClass}">
+                                ${escapeHtml(note.status || 'Pending')}
+                            </span>
+                        </div>
+
+                        <!-- Actions: Individual Delete & Chevron -->
+                        <div class="flex items-center gap-1.5 flex-shrink-0">
+                            <button onclick="deleteNoteById('${note.id}', event)" class="p-1 rounded-lg text-neutral-300 hover:text-rose-500 hover:bg-rose-50 transition" title="Delete this note">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                            </button>
+                            <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                    </div>
+                `;
+            });
+
+            listContainer.innerHTML = html;
+
+            // Render selected note details
+            renderNoteDetails(selectedNoteId);
+        }
+
+        // Select a Note
+        function selectNote(noteId) {
+            selectedNoteId = noteId;
+            renderNotesList();
+        }
+
+        // Render Details Pane for Selected Note
+        function renderNoteDetails(noteId) {
+            const priorityBadge = document.getElementById('detailPriorityBadge');
+            const commentsWrapper = document.getElementById('detailCommentsWrapper');
+            const actionsFooter = document.getElementById('detailActionsFooter');
+
+            if (!noteId) {
+                clearNoteDetails();
+                return;
+            }
+
+            const note = notesData.find(n => n.id === noteId);
+            if (!note) {
+                clearNoteDetails();
+                return;
+            }
+
+            // Reveal active details components
+            priorityBadge.classList.remove('hidden');
+            commentsWrapper.classList.remove('hidden');
+            actionsFooter.classList.remove('hidden');
+
+            // Title
+            document.getElementById('detailTitle').textContent = note.title;
+
+            // Priority Badge
+            priorityBadge.textContent = `${note.priority || 'Normal'} Priority`;
+            priorityBadge.className = 'px-3 py-1 rounded-full text-xs font-semibold border ';
+            if (note.priority === 'High') {
+                priorityBadge.className += 'bg-rose-50 text-rose-600 border-rose-200';
+            } else if (note.priority === 'Medium') {
+                priorityBadge.className += 'bg-blue-50 text-blue-600 border-blue-200';
+            } else if (note.priority === 'Normal') {
+                priorityBadge.className += 'bg-amber-50 text-amber-700 border-amber-200';
+            } else {
+                priorityBadge.className += 'bg-emerald-50 text-emerald-600 border-emerald-200';
+            }
+
+            // Metadata Grid
+            document.getElementById('detailDate').textContent = note.date || '--';
+            document.getElementById('detailAssigned').textContent = note.assigned || 'Unassigned';
+            document.getElementById('detailOrder').textContent = note.order || 'General';
+
+            // Status Badge
+            const statusBadge = document.getElementById('detailStatusBadge');
+            statusBadge.textContent = note.status || 'Pending';
+            statusBadge.className = 'inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold border ';
+            if (note.status === 'Completed') {
+                statusBadge.className += 'bg-emerald-50 text-emerald-600 border-emerald-200';
+            } else if (note.status === 'In Progress') {
+                statusBadge.className += 'bg-blue-50 text-blue-600 border-blue-200';
+            } else if (note.status === 'On Hold') {
+                statusBadge.className += 'bg-amber-50 text-amber-700 border-amber-200';
+            } else {
+                statusBadge.className += 'bg-rose-50 text-rose-600 border-rose-200';
+            }
+
+            // Note Content
+            document.getElementById('detailContent').textContent = note.content || 'No details provided.';
+
+            // Toggle Done Button Label
+            const toggleText = document.getElementById('toggleDoneText');
+            if (note.status === 'Completed') {
+                toggleText.textContent = 'Mark as Pending';
+            } else {
+                toggleText.textContent = 'Mark as Done';
+            }
+
+            // Comments Feed
+            renderComments(note);
+        }
+
+        // Render comments for active note
+        function renderComments(note) {
+            const commentsContainer = document.getElementById('detailCommentsList');
+            const commentCount = document.getElementById('detailCommentCount');
+            if (!commentsContainer) return;
+
+            const comments = note.comments || [];
+            commentCount.textContent = `${comments.length} update${comments.length === 1 ? '' : 's'}`;
+
+            if (comments.length === 0) {
+                commentsContainer.innerHTML = `<span class="text-neutral-400 italic text-[11px]">No comments posted yet.</span>`;
+                return;
+            }
+
+            let html = '';
+            comments.forEach(c => {
+                html += `
+                    <div class="p-2.5 rounded-xl bg-neutral-50 border border-neutral-100/90 text-xs">
+                        <div class="flex items-center justify-between text-[10px] text-neutral-400 font-semibold mb-1">
+                            <span class="text-neutral-700 font-bold">${escapeHtml(c.author)}</span>
+                            <span>${escapeHtml(c.time)}</span>
+                        </div>
+                        <p class="text-neutral-700 leading-snug">${escapeHtml(c.text)}</p>
+                    </div>
+                `;
+            });
+            commentsContainer.innerHTML = html;
+        }
+
+        // Clear Details when no note selected
+        function clearNoteDetails() {
+            document.getElementById('detailTitle').textContent = 'Select a note to view details';
+            document.getElementById('detailPriorityBadge').classList.add('hidden');
+            document.getElementById('detailDate').textContent = '--';
+            document.getElementById('detailAssigned').textContent = '--';
+            document.getElementById('detailOrder').textContent = '--';
+            document.getElementById('detailStatusBadge').textContent = '--';
+            document.getElementById('detailStatusBadge').className = 'inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-neutral-100 text-neutral-500 border border-neutral-200';
+            document.getElementById('detailContent').textContent = 'No note selected. Select a note from the left list or click "+ New Note" to create one.';
+            document.getElementById('detailCommentsWrapper').classList.add('hidden');
+            document.getElementById('detailActionsFooter').classList.add('hidden');
+        }
+
+        // Toggle Status between Completed & Pending
+        function toggleCurrentNoteStatus() {
+            if (!selectedNoteId) return;
+            const note = notesData.find(n => n.id === selectedNoteId);
+            if (!note) return;
+
+            if (note.status === 'Completed') {
+                note.status = 'Pending';
+                showToast('Note marked as Pending', 'info');
+            } else {
+                note.status = 'Completed';
+                showToast('Note marked as Completed', 'success');
+            }
+
+            saveNotes();
+            renderCategoryTabs();
+            renderNotesList();
+        }
+
+        // Filter dropdown changed
+        function applyFilters() {
+            renderNotesList();
+        }
+
+        // Open Note Modal (New Note)
+        function openNoteModal(isEdit = false) {
+            const modal = document.getElementById('noteModal');
+            const heading = document.getElementById('modalHeading');
+            modal.classList.remove('hidden');
+
+            if (!isEdit) {
+                heading.textContent = 'Create New Note';
+                document.getElementById('noteId').value = '';
+                document.getElementById('formTitle').value = '';
+                document.getElementById('formCategory').value = activeCategoryId;
+                document.getElementById('formPriority').value = 'Normal';
+                document.getElementById('formStatus').value = 'Pending';
+                document.getElementById('formAssigned').value = 'Stylist Team';
+                document.getElementById('formOrder').value = '';
+                document.getElementById('formDate').value = getTodayIsoDate();
+                document.getElementById('formContent').value = '';
+                setTimeout(() => {
+                    document.getElementById('formTitle').focus();
+                }, 100);
+            }
+        }
+
+        // Edit Current Note
+        function editCurrentNote() {
+            if (!selectedNoteId) return;
+            const note = notesData.find(n => n.id === selectedNoteId);
+            if (!note) return;
+
+            openNoteModal(true);
+            document.getElementById('modalHeading').textContent = 'Edit Note';
+            document.getElementById('noteId').value = note.id;
+            document.getElementById('formTitle').value = note.title || '';
+            document.getElementById('formCategory').value = note.category || activeCategoryId;
+            document.getElementById('formPriority').value = note.priority || 'Normal';
+            document.getElementById('formStatus').value = note.status || 'Pending';
+            document.getElementById('formAssigned').value = note.assigned || '';
+            document.getElementById('formOrder').value = note.order || '';
+            document.getElementById('formDate').value = parseDisplayDateToInput(note.date) || getTodayIsoDate();
+            document.getElementById('formContent').value = note.content || '';
+        }
+
+        // Close Note Modal
+        function closeNoteModal() {
+            document.getElementById('noteModal').classList.add('hidden');
+        }
+
+        // Save Note Form Submission
+        function saveNote(e) {
+            if (e && e.preventDefault) e.preventDefault();
+
+            const id = document.getElementById('noteId').value;
+            const title = document.getElementById('formTitle').value.trim();
+            const category = document.getElementById('formCategory').value;
+            const priority = document.getElementById('formPriority').value;
+            const status = document.getElementById('formStatus').value;
+            const assigned = document.getElementById('formAssigned').value.trim();
+            const order = document.getElementById('formOrder').value.trim();
+            const rawDate = document.getElementById('formDate').value;
+            const date = rawDate ? formatDateToDisplay(rawDate) : formatCurrentDate();
+            const content = document.getElementById('formContent').value.trim();
+
+            if (!title) {
+                showToast('Please enter a note title', 'error');
+                document.getElementById('formTitle').focus();
+                return;
+            }
+
+            let indicator = 'indicator-amber';
+            if (priority === 'High') indicator = 'indicator-red';
+            else if (priority === 'Medium') indicator = 'indicator-blue';
+            else if (priority === 'Low') indicator = 'indicator-green';
+
+            if (id) {
+                // Update existing note
+                const note = notesData.find(n => n.id === id);
+                if (note) {
+                    note.title = title;
+                    note.category = category;
+                    note.priority = priority;
+                    note.status = status;
+                    note.assigned = assigned;
+                    note.order = order;
+                    note.date = date;
+                    note.content = content;
+                    note.indicator = indicator;
+                    showToast('Note updated successfully', 'success');
+                }
+            } else {
+                // Create new note
+                const newNote = {
+                    id: 'note-' + Date.now(),
+                    category: category,
+                    title: title,
+                    date: date,
+                    priority: priority,
+                    status: status,
+                    assigned: assigned,
+                    order: order,
+                    content: content,
+                    indicator: indicator,
+                    comments: []
+                };
+                notesData.unshift(newNote);
+                selectedNoteId = newNote.id;
+                showToast('Note created successfully', 'success');
+            }
+
+            saveNotes();
+            closeNoteModal();
+
+            // If user created note in another category, switch to it
+            if (category !== activeCategoryId) {
+                switchCategory(category);
+            } else {
+                renderCategoryTabs();
+                renderNotesList();
+            }
+        }
+
+        // Delete Note by ID (Individual note deletion)
+        function deleteNoteById(noteId, e) {
+            if (e && e.stopPropagation) e.stopPropagation();
+            if (!noteId) return;
+
+            const note = notesData.find(n => n.id === noteId);
+            if (!note) return;
+
+            if (confirm(`Are you sure you want to delete note "${note.title}"?`)) {
+                notesData = notesData.filter(n => n.id !== noteId);
+                if (selectedNoteId === noteId) {
+                    selectedNoteId = null;
+                }
+                saveNotes();
+                renderCategoryTabs();
+                renderNotesList();
+                showToast('Note deleted', 'info');
+            }
+        }
+
+        // Delete currently selected note
+        function deleteCurrentNote() {
+            if (!selectedNoteId) return;
+            deleteNoteById(selectedNoteId);
+        }
+
+        // Prompt Add Comment
+        function promptAddComment() {
+            if (!selectedNoteId) {
+                showToast('Please select a note first', 'error');
+                return;
+            }
+            document.getElementById('newCommentText').value = '';
+            document.getElementById('commentModal').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('newCommentText').focus();
+            }, 100);
+        }
+
+        function closeCommentModal() {
+            document.getElementById('commentModal').classList.add('hidden');
+        }
+
+        function submitComment() {
+            const text = document.getElementById('newCommentText').value.trim();
+            if (!text) {
+                showToast('Please enter comment text', 'error');
+                return;
+            }
+
+            const note = notesData.find(n => n.id === selectedNoteId);
+            if (!note) return;
+
+            if (!note.comments) note.comments = [];
+            note.comments.push({
+                author: 'Admin User',
+                text: text,
+                time: formatCurrentDateTime()
+            });
+
+            saveNotes();
+            closeCommentModal();
+            renderNoteDetails(selectedNoteId);
+            showToast('Comment posted', 'success');
+        }
+
+        // Helper: Escape HTML to prevent XSS
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        // Date Helpers
+        function getTodayIsoDate() {
+            const now = new Date();
+            const y = now.getFullYear();
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            const d = String(now.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function formatDateToDisplay(isoStr) {
+            if (!isoStr) return formatCurrentDate();
+            if (isoStr.includes(' ') && !isoStr.includes('-')) return isoStr;
+            const parts = isoStr.split('-');
+            if (parts.length === 3) {
+                const y = parseInt(parts[0], 10);
+                const m = parseInt(parts[1], 10) - 1;
+                const d = parseInt(parts[2], 10);
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                if (!isNaN(y) && !isNaN(m) && !isNaN(d) && months[m]) {
+                    return `${d} ${months[m]} ${y}`;
+                }
+            }
+            return isoStr;
+        }
+
+        function parseDisplayDateToInput(displayStr) {
+            if (!displayStr) return '';
+            if (/^\d{4}-\d{2}-\d{2}$/.test(displayStr)) return displayStr;
+            const months = {
+                'jan': '01', 'feb': '02', 'mar': '03', 'apr': '04', 'may': '05', 'jun': '06',
+                'jul': '07', 'aug': '08', 'sep': '09', 'oct': '10', 'nov': '11', 'dec': '12'
+            };
+            const parts = displayStr.trim().split(/\s+/);
+            if (parts.length === 3) {
+                const day = String(parts[0]).padStart(2, '0');
+                const monthKey = parts[1].slice(0, 3).toLowerCase();
+                const month = months[monthKey];
+                const year = parts[2];
+                if (month && year) {
+                    return `${year}-${month}-${day}`;
+                }
+            }
+            return '';
+        }
+
+        function formatCurrentDate() {
+            const d = new Date();
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+        }
+
+        function formatCurrentDateTime() {
+            const d = new Date();
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            let hours = d.getHours();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            const minutes = String(d.getMinutes()).padStart(2, '0');
+            return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}, ${hours}:${minutes} ${ampm}`;
+        }
+
+        // Clock display
+        function updateClock() {
+            const clockEl = document.getElementById('live-clock');
+            const dateEl = document.getElementById('live-date');
+            if (!clockEl || !dateEl) return;
+
+            const now = new Date();
+            let hours = now.getHours();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+
+            clockEl.textContent = `${hours}:${minutes} ${ampm}`;
+
+            const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+            const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+            dateEl.textContent = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]}`;
+        }
+
+        // Navigation
+        function navigateTo(pageId) {
+            document.body.classList.add('page-exit');
+            setTimeout(() => {
+                if (pageId === 'index') {
+                    window.location.href = 'index.html';
+                } else if (pageId === 'tools') {
+                    window.location.href = 'index.html?panel=tools';
+                } else if (pageId === 'reports') {
+                    window.location.href = 'reports.html';
+                } else {
+                    window.location.href = pageId + '.html';
+                }
+            }, 250);
+        }
+
+        // Sidebar Toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('sidebar-collapsed');
+        }
+
+        // Global Shortcut: Ctrl+N or Cmd+N to open New Note
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'n') {
+                e.preventDefault();
+                openNoteModal();
+            }
+        });
+
+        // Start on load
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+    <script src="assets/notifications.js"></script>
+</body>
+
+</html>

@@ -1638,6 +1638,18 @@
                 </svg>
                 <span class="nav-text">Tools</span>
             </button>
+            <button class="sidebar-nav-item" onclick="navigateTo('smartNotes')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span class="nav-text">Smart Notes</span>
+            </button>
+            <button class="sidebar-nav-item" onclick="navigateTo('allocation')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+                </svg>
+                <span class="nav-text">Allocation</span>
+            </button>
             <button class="sidebar-nav-item" onclick="navigateTo('reports')">
                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -2200,6 +2212,64 @@
                         </div>
                     </a>
 
+                    <!-- Allocation Report — Amber -->
+                    <a href="allocate.html" data-app-id="allocation" class="tc-card tc-amber group no-underline">
+                        <button class="pin-btn" id="pin-tools-allocation" onclick="togglePin(event,'allocation')"
+                            title="Pin / Unpin">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                            </svg>
+                        </button>
+                        <div class="tc-icon tc-bg-amber" style="background:#FEF3C7;">
+                            <svg class="w-6 h-6" style="color:#D97706;" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                            </svg>
+                        </div>
+                        <div class="tc-body">
+                            <div class="tc-title" style="color:#D97706;">Allocation Report</div>
+                            <div class="tc-desc">Sales order allocated items &amp; remarks.</div>
+                        </div>
+                        <div class="tc-arrow">
+                            <svg class="w-3.5 h-3.5" style="color:#D97706;" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </div>
+                    </a>
+
+                    <!-- Smart Notes — Indigo -->
+                    <a href="smartNotes.html" data-app-id="smartNotes" class="tc-card tc-indigo group no-underline">
+                        <button class="pin-btn" id="pin-tools-smartNotes" onclick="togglePin(event,'smartNotes')"
+                            title="Pin / Unpin">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                            </svg>
+                        </button>
+                        <div class="tc-icon tc-bg-indigo" style="background:#EEF2FF;">
+                            <svg class="w-6 h-6" style="color:#4F46E5;" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                        <div class="tc-body">
+                            <div class="tc-title" style="color:#4F46E5;">Smart Notes</div>
+                            <div class="tc-desc">Categorized notes &amp; business followups.</div>
+                        </div>
+                        <div class="tc-arrow">
+                            <svg class="w-3.5 h-3.5" style="color:#4F46E5;" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </div>
+                    </a>
+
                 </div>
 
 
@@ -2299,7 +2369,7 @@
         const PINNED_STORAGE_KEY = 'pinned_apps_v2';
 
         // All app IDs that can be pinned/unpinned
-        const ALL_APP_IDS = ['quotation', 'global-count', 'dsrmaker', 'knockoff', 'unconfirmed', 'poMaker', 'tailoring', 'size-stocks'];
+        const ALL_APP_IDS = ['quotation', 'global-count', 'dsrmaker', 'knockoff', 'unconfirmed', 'poMaker', 'tailoring', 'size-stocks', 'allocation', 'smartNotes'];
 
         // SVG icon paths for each app
         const APP_ICONS = {
@@ -2311,6 +2381,8 @@
             'poMaker': `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>`,
             'tailoring': `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l-7-7m7 7l-2.121 2.121m4.242 4.242a3 3 0 11-4.242-4.242m0 0a3 3 0 10-4.242-4.242m8.484 0a3 3 0 10-4.242-4.242m0 0L5 19"/>`,
             'size-stocks': `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 6h18M3 14h18M3 18h18"/>`,
+            'allocation': `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>`,
+            'smartNotes': `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>`,
         };
 
         const APP_META = {
@@ -2322,6 +2394,8 @@
             'poMaker': { label: 'Know DO or PO', desc: 'Search purchase, transfer orders.', nav: 'poMaker', bg: 'bg-white border border-neutral-200', accentColor: '#2563EB', iconColor: 'text-[#2563EB]', iconBg: 'bg-[#EEF2FF] border border-blue-100', descColor: 'text-neutral-400' },
             'tailoring': { label: 'Tailoring Tracker', desc: 'Track and manage tailoring jobs.', nav: 'tailoring', bg: 'bg-white border border-neutral-200', accentColor: '#7C3AED', iconColor: 'text-[#7C3AED]', iconBg: 'bg-[#F3EEFF] border border-purple-100', descColor: 'text-neutral-400' },
             'size-stocks': { label: 'Size Stocks', desc: 'Pivot stock report by size & site.', nav: 'size-stocks', bg: 'bg-white border border-neutral-200', accentColor: '#0891B2', iconColor: 'text-[#0891B2]', iconBg: 'bg-[#CFFAFE] border border-cyan-100', descColor: 'text-neutral-400' },
+            'allocation': { label: 'Allocation Report', desc: 'Sales order allocated items.', nav: 'allocation', bg: 'bg-white border border-neutral-200', accentColor: '#D97706', iconColor: 'text-[#D97706]', iconBg: 'bg-[#FEF3C7] border border-amber-100', descColor: 'text-neutral-400' },
+            'smartNotes': { label: 'Smart Notes', desc: 'Categorized business notes & reminders.', nav: 'smartNotes', bg: 'bg-white border border-neutral-200', accentColor: '#4F46E5', iconColor: 'text-[#4F46E5]', iconBg: 'bg-[#EEF2FF] border border-indigo-100', descColor: 'text-neutral-400' },
         };
 
         // ---- Storage helpers ----
@@ -2870,6 +2944,8 @@
                 'poMaker': 'poMaker.html',
                 'tailoring': 'Tailoring_Tracker.html',
                 'size-stocks': 'size_stocks.html',
+                'allocation': 'allocate.html',
+                'smartNotes': 'smartNotes.html',
                 'calendar': 'calendar.html',
                 'reports': 'reports.html',
                 'Pending_PO': 'Pending_PO.html',

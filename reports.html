@@ -333,6 +333,30 @@
             color: #ffffff !important;
         }
 
+        .purge-btn {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .purge-btn:hover {
+            transform: scale(1.08);
+        }
+
+        .purge-btn:active {
+            transform: scale(0.95);
+        }
+
+        body.dark-mode .purge-btn {
+            background: #141720 !important;
+            border-color: #272a35 !important;
+            color: #94a3b8 !important;
+        }
+
+        body.dark-mode .purge-btn:hover {
+            background: rgba(244, 63, 94, 0.15) !important;
+            border-color: rgba(244, 63, 94, 0.35) !important;
+            color: #fb7185 !important;
+        }
+
     </style>
 </head>
 
@@ -368,6 +392,18 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l-7-7m7 7l-2.121 2.121m4.242 4.242a3 3 0 11-4.242-4.242m0 0a3 3 0 10-4.242-4.242m8.484 0a3 3 0 10-4.242-4.242m0 0L5 19"/>
                 </svg>
                 <span class="nav-text">Tools</span>
+            </button>
+            <button class="sidebar-nav-item" onclick="window.location.href='smartNotes.html'">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span class="nav-text">Smart Notes</span>
+            </button>
+            <button class="sidebar-nav-item" onclick="window.location.href='allocate.html'">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+                </svg>
+                <span class="nav-text">Allocation</span>
             </button>
             <button class="sidebar-nav-item active" onclick="window.location.href='reports.html'">
                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -554,9 +590,18 @@
                             <p class="text-xs text-neutral-500 font-medium">For Tailoring Tracker & Calendar</p>
                         </div>
                     </div>
-                    <div class="text-right hidden timestamp-container mt-1">
-                        <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-0.5">Uploaded</p>
-                        <p class="text-[11px] text-neutral-500 font-semibold timestamp-text"></p>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <div class="text-right hidden timestamp-container">
+                            <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-0.5">Uploaded</p>
+                            <p class="text-[11px] text-neutral-500 font-semibold timestamp-text"></p>
+                        </div>
+                        <button type="button" onclick="clearSingleReport(event, 'raw_csv_tailoring', 'dz-tailoring', 'Tailoring Data')"
+                            class="purge-btn w-8 h-8 rounded-xl bg-neutral-100/80 hover:bg-rose-50 text-neutral-400 hover:text-rose-600 border border-neutral-200/70 hover:border-rose-200 transition-all flex items-center justify-center cursor-pointer flex-shrink-0 shadow-xs"
+                            title="Clear Tailoring Data">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                        </button>
                     </div>
                 </div>
                 <div class="upload-zone rounded-2xl p-6 text-center cursor-pointer flex-grow flex flex-col justify-center items-center gap-3 relative"
@@ -590,9 +635,18 @@
                             <p class="text-xs text-neutral-500 font-medium">For GC Maker</p>
                         </div>
                     </div>
-                    <div class="text-right hidden timestamp-container mt-1">
-                        <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-0.5">Uploaded</p>
-                        <p class="text-[11px] text-neutral-500 font-semibold timestamp-text"></p>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <div class="text-right hidden timestamp-container">
+                            <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-0.5">Uploaded</p>
+                            <p class="text-[11px] text-neutral-500 font-semibold timestamp-text"></p>
+                        </div>
+                        <button type="button" onclick="clearSingleReport(event, 'raw_csv_gcMaker', 'dz-gcMaker', 'Global Count Data')"
+                            class="purge-btn w-8 h-8 rounded-xl bg-neutral-100/80 hover:bg-rose-50 text-neutral-400 hover:text-rose-600 border border-neutral-200/70 hover:border-rose-200 transition-all flex items-center justify-center cursor-pointer flex-shrink-0 shadow-xs"
+                            title="Clear Global Count Data">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                        </button>
                     </div>
                 </div>
                 <div class="upload-zone rounded-2xl p-6 text-center cursor-pointer flex-grow flex flex-col justify-center items-center gap-3 relative"
@@ -625,9 +679,18 @@
                             <p class="text-xs text-neutral-500 font-medium">For Distribution Tracker</p>
                         </div>
                     </div>
-                    <div class="text-right hidden timestamp-container mt-1">
-                        <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-0.5">Uploaded</p>
-                        <p class="text-[11px] text-neutral-500 font-semibold timestamp-text"></p>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <div class="text-right hidden timestamp-container">
+                            <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-0.5">Uploaded</p>
+                            <p class="text-[11px] text-neutral-500 font-semibold timestamp-text"></p>
+                        </div>
+                        <button type="button" onclick="clearSingleReport(event, 'raw_csv_unconfirmedStock', 'dz-unconfirmedStock', 'Unconfirmed Stock')"
+                            class="purge-btn w-8 h-8 rounded-xl bg-neutral-100/80 hover:bg-rose-50 text-neutral-400 hover:text-rose-600 border border-neutral-200/70 hover:border-rose-200 transition-all flex items-center justify-center cursor-pointer flex-shrink-0 shadow-xs"
+                            title="Clear Unconfirmed Stock Data">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                        </button>
                     </div>
                 </div>
                 <div class="upload-zone rounded-2xl p-6 text-center cursor-pointer flex-grow flex flex-col justify-center items-center gap-3 relative"
@@ -662,9 +725,18 @@
                             <p class="text-xs text-neutral-500 font-medium">For Know DO or PO</p>
                         </div>
                     </div>
-                    <div class="text-right hidden timestamp-container mt-1">
-                        <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-0.5">Uploaded</p>
-                        <p class="text-[11px] text-neutral-500 font-semibold timestamp-text"></p>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <div class="text-right hidden timestamp-container">
+                            <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-0.5">Uploaded</p>
+                            <p class="text-[11px] text-neutral-500 font-semibold timestamp-text"></p>
+                        </div>
+                        <button type="button" onclick="clearSingleReport(event, 'raw_csv_poMaker', 'dz-poMaker', 'KnowPOorDO Data')"
+                            class="purge-btn w-8 h-8 rounded-xl bg-neutral-100/80 hover:bg-rose-50 text-neutral-400 hover:text-rose-600 border border-neutral-200/70 hover:border-rose-200 transition-all flex items-center justify-center cursor-pointer flex-shrink-0 shadow-xs"
+                            title="Clear KnowPOorDO Data">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                        </button>
                     </div>
                 </div>
                 <div class="upload-zone rounded-2xl p-6 text-center cursor-pointer flex-grow flex flex-col justify-center items-center gap-3 relative"
@@ -698,9 +770,18 @@
                             <p class="text-xs text-neutral-500 font-medium">For Pending POs Dashboard</p>
                         </div>
                     </div>
-                    <div class="text-right hidden timestamp-container mt-1">
-                        <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-0.5">Uploaded</p>
-                        <p class="text-[11px] text-neutral-500 font-semibold timestamp-text"></p>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <div class="text-right hidden timestamp-container">
+                            <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-0.5">Uploaded</p>
+                            <p class="text-[11px] text-neutral-500 font-semibold timestamp-text"></p>
+                        </div>
+                        <button type="button" onclick="clearSingleReport(event, 'raw_csv_pendingPO', 'dz-pendingPO', 'Pending Purchase Orders')"
+                            class="purge-btn w-8 h-8 rounded-xl bg-neutral-100/80 hover:bg-rose-50 text-neutral-400 hover:text-rose-600 border border-neutral-200/70 hover:border-rose-200 transition-all flex items-center justify-center cursor-pointer flex-shrink-0 shadow-xs"
+                            title="Clear Pending Purchase Orders Data">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                        </button>
                     </div>
                 </div>
                 <div class="upload-zone rounded-2xl p-6 text-center cursor-pointer flex-grow flex flex-col justify-center items-center gap-3 relative"
@@ -734,9 +815,18 @@
                             <p class="text-xs text-neutral-500 font-medium">For Knockoff Maker</p>
                         </div>
                     </div>
-                    <div class="text-right hidden timestamp-container mt-1">
-                        <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-0.5">Uploaded</p>
-                        <p class="text-[11px] text-neutral-500 font-semibold timestamp-text"></p>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <div class="text-right hidden timestamp-container">
+                            <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-0.5">Uploaded</p>
+                            <p class="text-[11px] text-neutral-500 font-semibold timestamp-text"></p>
+                        </div>
+                        <button type="button" onclick="clearSingleReport(event, 'raw_csv_knockoffMaker', 'dz-knockoffMaker', 'Knockoff Data')"
+                            class="purge-btn w-8 h-8 rounded-xl bg-neutral-100/80 hover:bg-rose-50 text-neutral-400 hover:text-rose-600 border border-neutral-200/70 hover:border-rose-200 transition-all flex items-center justify-center cursor-pointer flex-shrink-0 shadow-xs"
+                            title="Clear Knockoff Data">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                        </button>
                     </div>
                 </div>
                 <div class="upload-zone rounded-2xl p-6 text-center cursor-pointer flex-grow flex flex-col justify-center items-center gap-3 relative"
@@ -770,9 +860,18 @@
                             <p class="text-xs text-neutral-500 font-medium">For Size Stocks Pivot Analyzer</p>
                         </div>
                     </div>
-                    <div class="text-right hidden timestamp-container mt-1">
-                        <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-0.5">Uploaded</p>
-                        <p class="text-[11px] text-neutral-500 font-semibold timestamp-text"></p>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <div class="text-right hidden timestamp-container">
+                            <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-0.5">Uploaded</p>
+                            <p class="text-[11px] text-neutral-500 font-semibold timestamp-text"></p>
+                        </div>
+                        <button type="button" onclick="clearSingleReport(event, 'raw_csv_sizeStocks', 'dz-sizeStocks', 'Size Stocks Data')"
+                            class="purge-btn w-8 h-8 rounded-xl bg-neutral-100/80 hover:bg-rose-50 text-neutral-400 hover:text-rose-600 border border-neutral-200/70 hover:border-rose-200 transition-all flex items-center justify-center cursor-pointer flex-shrink-0 shadow-xs"
+                            title="Clear Size Stocks Data">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                        </button>
                     </div>
                 </div>
                 <div class="upload-zone rounded-2xl p-6 text-center cursor-pointer flex-grow flex flex-col justify-center items-center gap-3 relative"
@@ -786,6 +885,55 @@
                             </svg>
                         </div>
                         <p class="text-sm font-bold text-neutral-700 status-text">Drop Size Stocks CSV</p>
+                        <p class="text-xs text-neutral-400 font-medium">or click to browse</p>
+                    </div>
+                </div>
+
+                <!-- Allocation Report Card -->
+                <div
+                    class="upload-card bg-white rounded-3xl p-6 border border-neutral-200/80 shadow-xs flex flex-col justify-between hover:shadow-md transition">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-10 h-10 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 flex-shrink-0">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-neutral-800 text-sm">Allocation Report</h3>
+                                <p class="text-xs text-neutral-400 font-medium">For Allocation App (allocate.html)</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 flex-shrink-0">
+                            <div class="timestamp-container hidden flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-neutral-50 border border-neutral-200/60">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <div>
+                                    <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-0.5">Uploaded</p>
+                                    <p class="text-[11px] text-neutral-500 font-semibold timestamp-text"></p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="clearSingleReport(event, 'raw_csv_allocation', 'dz-allocation', 'Allocation Report')"
+                                class="purge-btn w-8 h-8 rounded-xl bg-neutral-100/80 hover:bg-rose-50 text-neutral-400 hover:text-rose-600 border border-neutral-200/70 hover:border-rose-200 transition-all flex items-center justify-center cursor-pointer flex-shrink-0 shadow-xs"
+                                title="Clear Allocation Report Data">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="upload-zone rounded-2xl p-6 text-center cursor-pointer flex-grow flex flex-col justify-center items-center gap-3 relative"
+                        id="dz-allocation" data-key="raw_csv_allocation">
+                        <input type="file" id="fi-allocation" accept=".csv" class="hidden">
+                        <div
+                            class="status-icon w-10 h-10 bg-indigo-50 text-indigo-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                            </svg>
+                        </div>
+                        <p class="text-sm font-bold text-neutral-700 status-text">Drop Allocation CSV</p>
                         <p class="text-xs text-neutral-400 font-medium">or click to browse</p>
                     </div>
                 </div>
@@ -957,7 +1105,8 @@
                 'raw_csv_poMaker',
                 'raw_csv_pendingPO',
                 'raw_csv_knockoffMaker',
-                'raw_csv_sizeStocks'
+                'raw_csv_sizeStocks',
+                'raw_csv_allocation'
             ];
             let completed = 0;
             reportKeys.forEach(key => {
@@ -1028,20 +1177,24 @@
             updateReportsKPI();
         }
 
-        function resetZones() {
-            document.querySelectorAll('.upload-zone').forEach(zone => {
-                zone.classList.remove('success');
-                const icon = zone.querySelector('.status-icon');
+        function resetSingleZone(zoneOrId) {
+            const zone = typeof zoneOrId === 'string' ? document.getElementById(zoneOrId) : zoneOrId;
+            if (!zone) return;
+            zone.classList.remove('success');
+            const icon = zone.querySelector('.status-icon');
+            if (icon) {
                 icon.classList.remove('bg-green-100', 'text-green-600');
                 icon.classList.add('bg-indigo-50', 'text-indigo-500');
                 icon.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>`;
+            }
 
-                const input = zone.querySelector('input[type="file"]');
-                input.value = '';
+            const input = zone.querySelector('input[type="file"]');
+            if (input) input.value = '';
 
-                // Restore original texts based on ID
-                const text = zone.querySelector('.status-text');
-                const id = zone.id;
+            // Restore original texts based on ID
+            const text = zone.querySelector('.status-text');
+            const id = zone.id;
+            if (text) {
                 if (id === 'dz-tailoring') text.textContent = "Drop Tailoring CSV";
                 else if (id === 'dz-gcMaker') text.textContent = "Drop Stock CSV";
                 else if (id === 'dz-unconfirmedStock') text.textContent = "Drop Unconfirmed CSV";
@@ -1049,16 +1202,48 @@
                 else if (id === 'dz-pendingPO') text.textContent = "Drop Pending PO CSV";
                 else if (id === 'dz-knockoffMaker') text.textContent = "Drop Knockoff CSV";
                 else if (id === 'dz-sizeStocks') text.textContent = "Drop Size Stocks CSV";
+                else if (id === 'dz-allocation') text.textContent = "Drop Allocation CSV";
+            }
 
-                const subtext = zone.querySelector('p:last-child');
-                subtext.textContent = "or click to browse";
-                const card = zone.closest('.upload-card');
-                if (card) {
-                    const tsContainer = card.querySelector('.timestamp-container');
-                    if (tsContainer) tsContainer.classList.add('hidden');
-                }
+            const subtext = zone.querySelector('p:last-child');
+            if (subtext) subtext.textContent = "or click to browse";
+            const card = zone.closest('.upload-card');
+            if (card) {
+                const tsContainer = card.querySelector('.timestamp-container');
+                if (tsContainer) tsContainer.classList.add('hidden');
+            }
+        }
+
+        function resetZones() {
+            document.querySelectorAll('.upload-zone').forEach(zone => {
+                resetSingleZone(zone);
             });
             updateReportsKPI();
+        }
+
+        function clearSingleReport(event, key, zoneId, reportTitle) {
+            if (event) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
+
+            if (!localStorage.getItem(key)) {
+                showToast(`No saved data for ${reportTitle}.`, 'info');
+                return;
+            }
+
+            if (confirm(`Are you sure you want to clear the stored data for ${reportTitle}?`)) {
+                localStorage.removeItem(key);
+                localStorage.removeItem(key + '_timestamp');
+
+                if (key === 'raw_csv_tailoring') {
+                    localStorage.removeItem('tailoring_orders');
+                }
+
+                resetSingleZone(zoneId);
+                updateReportsKPI();
+                showToast(`${reportTitle} data cleared.`, 'success');
+            }
         }
 
         function clearAllData() {
@@ -1071,7 +1256,8 @@
                     'raw_csv_poMaker',
                     'raw_csv_pendingPO',
                     'raw_csv_knockoffMaker',
-                    'raw_csv_sizeStocks'
+                    'raw_csv_sizeStocks',
+                    'raw_csv_allocation'
                 ];
 
                 keysToClear.forEach(key => { localStorage.removeItem(key); localStorage.removeItem(key + '_timestamp'); });
