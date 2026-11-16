@@ -1765,11 +1765,11 @@
             } else {
                 // Fallback: Styled HTML-based Excel file (.xls) with identical borders, fills, and formatting
                 let html = `
-                    <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
-                    <head>
-                        <meta charset="utf-8">
-                        <!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Global Count</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
-                        <style>
+                    \x3Chtml xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+                    \x3Chead>
+                        \x3Cmeta charset="utf-8">
+                        \x3C!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Global Count</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--\x3E
+                        \x3Cstyle>
                             table { border-collapse: collapse; font-family: Calibri, sans-serif; font-size: 11pt; }
                             td, th { padding: 4px 8px; }
                             .meta-cell { border: 1px solid #000; font-weight: bold; }
@@ -1782,10 +1782,10 @@
                             .out-l { border-left: 2px solid #000 !important; }
                             .out-r { border-right: 2px solid #000 !important; }
                             .num { text-align: right; }
-                        </style>
-                    </head>
-                    <body>
-                        <table>
+                        \x3C/style>
+                    \x3C/head>
+                    \x3Cbody>
+                        \x3Ctable>
                 `;
 
                 rows.forEach((row, r) => {
@@ -1830,7 +1830,7 @@
                     html += '</tr>';
                 });
 
-                html += '</table></body></html>';
+                html += '\x3C/table>\x3C/body>\x3C/html>';
 
                 const blob = new Blob([html], { type: 'application/vnd.ms-excel;charset=utf-8' });
                 const link = document.createElement("a");
