@@ -218,18 +218,22 @@
                         Know <span class="font-bold">DO or PO</span>
                     </h1>
                     <p class="text-neutral-500 font-medium text-sm sm:text-base">Search by Purchase Order, Transfer
-                        Order, or Sale Order to fetch details</p>
+                        Order, Sale Order, or Customer Name to fetch details</p>
                 </div>
 
                 <div class="w-full md:w-auto flex items-center bg-white px-4 py-2 rounded-2xl shadow-sm border border-neutral-100 hidden"
                     id="searchContainer">
-                    <svg class="w-5 h-5 text-neutral-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 text-neutral-400 mr-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
-                    <input type="text" id="searchInput" onkeyup="searchOrders()"
-                        class="w-full md:w-[300px] border-none bg-transparent focus:ring-0 text-sm font-semibold py-2"
-                        placeholder="Enter PO, TO, or SO number...">
+                    <input type="text" id="searchInput" oninput="searchOrders()" onkeyup="searchOrders()"
+                        class="w-full md:w-[320px] border-none bg-transparent focus:ring-0 text-sm font-semibold py-2"
+                        style="border: none !important; outline: none !important; box-shadow: none !important; background: transparent !important;"
+                        placeholder="Search PO, TO, SO, or Customer...">
+                    <button type="button" id="clearSearchBtn" onclick="clearSearch()" class="hidden text-neutral-400 hover:text-neutral-600 p-1 shrink-0 transition-colors" title="Clear search">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
                 </div>
             </div>
 
@@ -394,7 +398,7 @@
             columnMappings = {
                 orderDate: findCol(['order_date', 'order date', 'orderdate', 'date']),
                 saleOrder: findCol(['sale order', 'order no', 'order num']),
-                customerName: findCol(['customer name', 'customer']),
+                customerName: findCol(['customer_name', 'customer name', 'cust_name', 'cust name', 'party_name', 'party name', 'customer', 'party', 'client name', 'client', 'buyer name', 'buyer']),
                 fulfillMethod: findCol(['fulfill method', 'fulfillment', 'method']),
                 itemDesc: findCol(['item description', 'itemser', 'description']),
                 quantity: findCol(['quantity', 'qty', 'order quantity']),
@@ -416,32 +420,77 @@
             renderTable([]); // Start empty
         }
 
+        function clearSearch() {
+            const input = document.getElementById('searchInput');
+            if (input) {
+                input.value = '';
+                searchOrders();
+                input.focus();
+            }
+        }
+
         function searchOrders() {
-            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            const searchInput = document.getElementById('searchInput');
+            const clearBtn = document.getElementById('clearSearchBtn');
+            const query = (searchInput ? searchInput.value : '').trim().toLowerCase();
+
+            if (clearBtn) {
+                clearBtn.classList.toggle('hidden', query.length === 0);
+            }
+
             if (query.length < 2) {
                 renderTable([]);
                 return;
             }
 
-            const { po, to, so, saleOrder, fulfillMethod } = columnMappings;
+            const { po, to, so, saleOrder, customerName, fulfillMethod } = columnMappings;
+            const queryWords = query.split(/\s+/).filter(Boolean);
 
             const results = rawData.filter(row => {
-                const poVal = (row[po] || '').toLowerCase();
-                const toVal = (row[to] || '').toLowerCase();
-                const soVal = (row[so] || row[saleOrder] || '').toLowerCase();
-                const fmVal = (row[fulfillMethod] || '').trim().toUpperCase();
-
+                const fmVal = (fulfillMethod && row[fulfillMethod] ? String(row[fulfillMethod]) : '').trim().toUpperCase();
                 if (fmVal === 'TLR') return false;
 
-                return poVal.includes(query) || toVal.includes(query) || soVal.includes(query);
+                const poVal = (po && row[po] ? String(row[po]) : '').toLowerCase();
+                const toVal = (to && row[to] ? String(row[to]) : '').toLowerCase();
+                const soVal = ((so && row[so]) || (saleOrder && row[saleOrder]) || '').toLowerCase();
+                const custVal = (customerName && row[customerName] ? String(row[customerName]) : '').toLowerCase();
+
+                // 1. Direct match on PO, TO, SO, or Customer Name
+                if (poVal.includes(query) || toVal.includes(query) || soVal.includes(query) || custVal.includes(query)) {
+                    return true;
+                }
+
+                // 2. Flexible multi-word matching for Customer Name (matches all words entered, in any order)
+                if (custVal && queryWords.length > 1 && queryWords.every(w => custVal.includes(w))) {
+                    return true;
+                }
+
+                // 3. Fallback: inspect any column key with 'cust', 'party', or 'client' if not mapped above
+                if (!customerName) {
+                    for (const [k, v] of Object.entries(row)) {
+                        const lk = k.toLowerCase();
+                        if (lk.includes('cust') || lk.includes('party') || lk.includes('client')) {
+                            const val = String(v || '').toLowerCase();
+                            if (val.includes(query) || (queryWords.length > 1 && queryWords.every(w => val.includes(w)))) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+
+                return false;
             });
 
-            renderTable(results.slice(0, 50)); // Limit to 50 for performance
+            renderTable(results.slice(0, 100), results.length);
         }
 
-        function renderTable(data) {
+        function renderTable(data, totalCount) {
             const tbody = document.getElementById('tableBody');
-            document.getElementById('resultsCount').textContent = `${data.length} Results Found`;
+            const total = totalCount !== undefined ? totalCount : data.length;
+            const countText = total > data.length 
+                ? `${total} Results Found (showing first ${data.length})` 
+                : `${total} Results Found`;
+            document.getElementById('resultsCount').textContent = countText;
             tbody.innerHTML = '';
 
             if (data.length === 0) {
@@ -455,11 +504,19 @@
                 const tr = document.createElement('tr');
                 tr.className = 'border-b border-neutral-100 hover:bg-neutral-50 transition-colors';
 
+                const custVal = (customerName && row[customerName]) || (function() {
+                    for (const [k, v] of Object.entries(row)) {
+                        const lk = k.toLowerCase();
+                        if (lk.includes('cust') || lk.includes('party') || lk.includes('client')) return v;
+                    }
+                    return '—';
+                })();
+
                 const cells = [
                     row[orderDate] || '—',
                     row[po] || '—',
                     row[saleOrder] || '—',
-                    row[customerName] || '—',
+                    custVal || '—',
                     row[fulfillMethod] || '—',
                     row[itemDesc] || '—',
                     row[quantity] || '—',

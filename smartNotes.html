@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="assets/theme.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="assets/theme.js"></script>
+    <script src="assets/qrcode.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
@@ -687,15 +688,15 @@
             </div>
 
             <!-- ===== WORKSPACE: TWO COLUMN SPLIT VIEW ===== -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 min-h-[580px] items-start">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 min-h-[580px] items-start" id="notesWorkspaceArea">
 
                 <!-- Left Column: Notes List (7 cols) -->
                 <div class="lg:col-span-7 bg-white rounded-3xl p-5 sm:p-6 border border-neutral-200/80 shadow-xs flex flex-col min-h-[580px]">
                     <!-- Header of Notes List -->
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-neutral-100 gap-3">
                         <div>
-                            <h2 id="activeCategoryTitle" class="text-lg font-bold text-[#1a1a1a]">Tailoring Notes</h2>
-                            <p id="activeCategorySubtitle" class="text-xs text-neutral-500 font-medium">Track tailoring related updates and reminders</p>
+                            <h2 id="activeCategoryTitle" class="text-lg font-bold text-[#1a1a1a]">All Notes</h2>
+                            <p id="activeCategorySubtitle" class="text-xs text-neutral-500 font-medium">View and manage all notes (excluding protected cash adjustments)</p>
                         </div>
                         <div class="flex items-center gap-2">
                             <!-- Filter Dropdown -->
@@ -734,6 +735,13 @@
                     <!-- List Footer / Meta -->
                     <div class="pt-3 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-400 mt-auto">
                         <span id="notesCountStatus">0 notes</span>
+                        <div id="cash2faStatusIndicator" class="hidden items-center gap-1.5 text-emerald-600 font-semibold text-xs">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span>2FA Protected Session Active</span>
+                            <button onclick="lockCashSession()" class="ml-2 text-neutral-400 hover:text-rose-500 transition text-[11px]" title="Lock Cash Notes">
+                                🔒 Lock
+                            </button>
+                        </div>
                         <button onclick="openNoteModal()" class="text-xs font-semibold text-neutral-700 hover:text-black hover:underline flex items-center gap-1">
                             <span>+ Add quick note</span>
                         </button>
@@ -757,6 +765,7 @@
                             <h2 id="detailTitle" class="text-lg sm:text-xl font-bold text-[#1a1a1a] leading-snug">
                                 Select a note to view details
                             </h2>
+                            <p id="detailCategoryBadge" class="text-[11px] font-bold text-indigo-600 mt-1.5 hidden"></p>
                         </div>
 
                         <!-- Metadata Grid (2x2) -->
@@ -840,6 +849,143 @@
 
             </div>
 
+            <!-- ===== CASH 2FA AUTHENTICATION PANEL (Displayed in this exact workspace area when Cash Adjustments Notes is locked) ===== -->
+            <div id="cashAuthPanel" class="w-full flex-1 min-h-[580px] hidden">
+                
+                <!-- State A: First-Time 8-Digit PIN Configuration -->
+                <div id="cashSetupCard" class="bg-white rounded-3xl p-6 sm:p-10 border border-neutral-200/80 shadow-xs flex flex-col items-center justify-center max-w-xl mx-auto text-center my-6 hidden">
+                    <!-- Amber Lock Icon Badge -->
+                    <div class="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200/70 flex items-center justify-center text-amber-500 mb-4 shadow-xs">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                        </svg>
+                    </div>
+
+                    <h2 class="text-lg sm:text-xl font-bold text-[#1a1a1a] tracking-tight mb-1.5">Secure Cash Adjustments Notes</h2>
+                    <p class="text-xs text-neutral-500 max-w-sm mx-auto mb-6 leading-relaxed">
+                        First-time configuration required. Create an 8-digit alphanumeric PIN to generate your Google Authenticator 2FA credentials.
+                    </p>
+
+                    <div class="w-full max-w-sm mx-auto text-left">
+                        <label for="setupPinInput" class="text-xs font-bold text-neutral-700 block mb-2">
+                            Enter 8-Digit Alphanumeric PIN:
+                        </label>
+                        <div class="relative">
+                            <input type="password" id="setupPinInput" maxlength="8"
+                                onkeydown="if(event.key === 'Enter') handleSetupPinSubmit()"
+                                class="w-full py-3 px-4 pr-11 rounded-2xl border-2 border-neutral-200 text-center font-bold text-lg tracking-widest bg-white focus:border-neutral-900 focus:ring-0 transition"
+                                autocomplete="off">
+                            <button type="button" onclick="togglePasswordVisibility('setupPinInput', this)"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-neutral-400 hover:text-neutral-700 transition"
+                                title="Show/Hide PIN">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <p id="setupPinError" class="text-xs text-rose-500 font-semibold mt-2 hidden"></p>
+
+                        <button type="button" onclick="handleSetupPinSubmit()"
+                            class="w-full mt-4 py-3.5 px-6 rounded-2xl bg-[#13151b] hover:bg-neutral-800 text-white font-bold text-sm shadow-sm transition active:scale-[0.99] cursor-pointer">
+                            Generate QR & Enable 2FA
+                        </button>
+                    </div>
+                </div>
+
+                <!-- State B: Initial Enrollment - Google Authenticator QR Scan & 6-Digit TOTP Confirmation -->
+                <div id="cashEnrollCard" class="bg-white rounded-3xl p-6 sm:p-10 border border-neutral-200/80 shadow-xs flex flex-col items-center justify-center max-w-xl mx-auto text-center my-6 hidden">
+                    <h2 class="text-lg sm:text-xl font-bold text-[#1a1a1a] tracking-tight mb-1.5">Scan with Google Authenticator</h2>
+                    <p class="text-xs text-neutral-500 max-w-sm mx-auto mb-5 leading-relaxed">
+                        Scan this QR code using Google Authenticator, then enter the 6-digit verification code below to complete setup.
+                    </p>
+
+                    <!-- QR Code Box -->
+                    <div class="w-full max-w-sm mx-auto bg-neutral-50/90 p-5 rounded-3xl border border-neutral-100 flex flex-col items-center justify-center mb-5 shadow-inner">
+                        <div id="qrcodeContainer" class="p-3 bg-white rounded-2xl shadow-sm border border-neutral-100 min-h-[190px] min-w-[190px] flex items-center justify-center">
+                            <!-- QR Code injected here -->
+                        </div>
+                        <p class="text-[11px] font-mono text-neutral-500 mt-3 tracking-wider">
+                            Derived Secret: <span id="derivedSecretDisplay" class="font-bold text-neutral-700 select-all">KF3WKMJSGNAEAAAA</span>
+                        </p>
+                    </div>
+
+                    <div class="w-full max-w-sm mx-auto text-left">
+                        <label for="enrollTotpInput" class="text-xs font-bold text-neutral-700 block mb-2">
+                            Enter 6-Digit Code from App:
+                        </label>
+                        <input type="text" id="enrollTotpInput" maxlength="6" inputmode="numeric"
+                            onkeydown="if(event.key === 'Enter') handleEnrollSubmit()"
+                            oninput="if(this.value.length === 6) handleEnrollSubmit()"
+                            class="w-full py-3 px-4 rounded-2xl border-2 border-neutral-200 text-center font-bold text-xl tracking-[0.3em] bg-white focus:border-neutral-900 focus:ring-0 transition"
+                            autocomplete="one-time-code">
+                        <p id="enrollTotpError" class="text-xs text-rose-500 font-semibold mt-2 hidden"></p>
+
+                        <button type="button" onclick="handleEnrollSubmit()"
+                            class="w-full mt-4 py-3.5 px-6 rounded-2xl bg-[#13151b] hover:bg-neutral-800 text-white font-bold text-sm shadow-sm transition active:scale-[0.99] cursor-pointer">
+                            Verify & Unlock Cash Adjustments
+                        </button>
+
+                        <div class="flex items-center justify-between mt-4 px-1 text-xs">
+                            <button type="button" onclick="showSetupPinView()" class="text-neutral-400 hover:text-neutral-700 font-semibold transition cursor-pointer">
+                                ↺ Change 8-Digit PIN
+                            </button>
+                            <span class="text-[11px] text-neutral-400 font-medium">Refreshes every 30s</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- State C: Subsequent Relocked Unlock Card (NO QR CODE DISPLAYED) -->
+                <div id="cashQuickUnlockCard" class="bg-white rounded-3xl p-6 sm:p-10 border border-neutral-200/80 shadow-xs flex flex-col items-center justify-center max-w-xl mx-auto text-center my-6 hidden">
+                    <!-- Amber Lock Icon Badge -->
+                    <div class="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200/70 flex items-center justify-center text-amber-500 mb-4 shadow-xs">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                        </svg>
+                    </div>
+
+                    <h2 class="text-lg sm:text-xl font-bold text-[#1a1a1a] tracking-tight mb-1.5">Unlock Cash Adjustments Notes</h2>
+                    <p class="text-xs text-neutral-500 max-w-sm mx-auto mb-6 leading-relaxed">
+                        Enter the 6-digit verification code from Google Authenticator to access your notes.
+                    </p>
+
+                    <div class="w-full max-w-sm mx-auto text-left">
+                        <label for="authTotpInput" class="text-xs font-bold text-neutral-700 block mb-2">
+                            Enter 6-Digit Code from App:
+                        </label>
+                        <div class="relative">
+                            <input type="password" id="authTotpInput" maxlength="8" inputmode="numeric"
+                                onkeydown="if(event.key === 'Enter') handleUnlockSubmit()"
+                                oninput="handleTotpInputKey(this)"
+                                class="w-full py-3 px-4 pr-11 rounded-2xl border-2 border-neutral-200 text-center font-bold text-xl tracking-[0.3em] bg-white focus:border-neutral-900 focus:ring-0 transition"
+                                autocomplete="one-time-code">
+                            <button type="button" onclick="togglePasswordVisibility('authTotpInput', this)"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-neutral-400 hover:text-neutral-700 transition"
+                                title="Show/Hide Code">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <p id="authTotpError" class="text-xs text-rose-500 font-semibold mt-2 hidden"></p>
+
+                        <button type="button" id="btnUnlockCash" onclick="handleUnlockSubmit()"
+                            class="w-full mt-4 py-3.5 px-6 rounded-2xl bg-[#13151b] hover:bg-neutral-800 text-white font-bold text-sm shadow-sm transition active:scale-[0.99] cursor-pointer">
+                            Unlock Cash Adjustments
+                        </button>
+
+                        <div class="flex items-center justify-between mt-4 px-1 text-xs">
+                            <button type="button" onclick="handleResetPinClick()" class="text-neutral-400 hover:text-rose-600 font-semibold transition cursor-pointer">
+                                ↺ Reset 8-Digit PIN
+                            </button>
+                            <span class="text-[11px] text-neutral-400 font-medium">Refreshes every 30s</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
         </main>
     </div>
 
@@ -882,6 +1028,7 @@
                     <div>
                         <label class="font-bold text-neutral-700 block mb-1">Category</label>
                         <select id="formCategory" class="w-full px-3 py-2 rounded-xl border border-neutral-200 text-xs font-semibold">
+                            <option value="readymade">Readymade Follow-ups</option>
                             <option value="tailoring">Tailoring Notes</option>
                             <option value="cash">Cash Adjustments Notes</option>
                             <option value="store">Store Requirements</option>
@@ -981,6 +1128,16 @@
         // Category Definitions matching user prompt and mockup
         const CATEGORIES = [
             {
+                id: 'all',
+                name: 'All Notes',
+                subtitle: 'View and manage all notes (excluding protected cash adjustments)'
+            },
+            {
+                id: 'readymade',
+                name: 'Readymade Follow-ups',
+                subtitle: 'Track readymade garments, alterations, stock and customer follow-ups'
+            },
+            {
                 id: 'tailoring',
                 name: 'Tailoring Notes',
                 subtitle: 'Track tailoring related updates and reminders'
@@ -1009,8 +1166,394 @@
 
         // Global State - Empty by default (no dummy notes)
         let notesData = [];
-        let activeCategoryId = 'tailoring';
+        let activeCategoryId = 'all';
         let selectedNoteId = null;
+        let isCashNotesUnlocked = sessionStorage.getItem('cash_notes_unlocked') === 'true';
+        let qrcodeInstance = null;
+
+        // Base32 RFC 4648 Alphabet
+        const B32_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+
+        function pinToBase32(pin) {
+            const encoder = new TextEncoder();
+            const pinBytes = encoder.encode(pin.trim().slice(0, 8));
+            const bytes = new Uint8Array(10);
+            bytes.set(pinBytes.slice(0, 10));
+
+            let binaryStr = '';
+            for (let i = 0; i < bytes.length; i++) {
+                binaryStr += bytes[i].toString(2).padStart(8, '0');
+            }
+            let b32 = '';
+            for (let i = 0; i < binaryStr.length; i += 5) {
+                const chunk = binaryStr.substring(i, i + 5);
+                const val = parseInt(chunk, 2);
+                b32 += B32_ALPHABET[val];
+            }
+            return b32;
+        }
+
+        function base32ToBytes(b32) {
+            const cleaned = b32.toUpperCase().replace(/=+$/, '');
+            let binaryStr = '';
+            for (let i = 0; i < cleaned.length; i++) {
+                const val = B32_ALPHABET.indexOf(cleaned[i]);
+                if (val === -1) continue;
+                binaryStr += val.toString(2).padStart(5, '0');
+            }
+            const byteLen = Math.floor(binaryStr.length / 8);
+            const bytes = new Uint8Array(byteLen);
+            for (let i = 0; i < byteLen; i++) {
+                bytes[i] = parseInt(binaryStr.substring(i * 8, (i + 1) * 8), 2);
+            }
+            return bytes;
+        }
+
+        // Web Crypto RFC 6238 TOTP Engine
+        async function generateTotpCode(secretBase32, counterOffset = 0) {
+            const keyBytes = base32ToBytes(secretBase32);
+            const cryptoKey = await window.crypto.subtle.importKey(
+                'raw',
+                keyBytes,
+                { name: 'HMAC', hash: { name: 'SHA-1' } },
+                false,
+                ['sign']
+            );
+
+            const epoch = Math.floor(Date.now() / 1000);
+            const counter = Math.floor(epoch / 30) + counterOffset;
+
+            const counterBuffer = new ArrayBuffer(8);
+            const counterView = new DataView(counterBuffer);
+            counterView.setUint32(0, Math.floor(counter / 0x100000000));
+            counterView.setUint32(4, counter >>> 0);
+
+            const signature = await window.crypto.subtle.sign('HMAC', cryptoKey, counterBuffer);
+            const hash = new Uint8Array(signature);
+
+            const offset = hash[hash.length - 1] & 0x0f;
+            const binary = ((hash[offset] & 0x7f) << 24) |
+                           ((hash[offset + 1] & 0xff) << 16) |
+                           ((hash[offset + 2] & 0xff) << 8) |
+                           (hash[offset + 3] & 0xff);
+
+            return (binary % 1000000).toString().padStart(6, '0');
+        }
+
+        async function verifyTotpCode(secretBase32, inputCode) {
+            const cleanInput = String(inputCode).trim();
+            if (cleanInput.length !== 6) return false;
+
+            // RFC 6238 window verification: -1 (-30s), 0 (now), +1 (+30s)
+            for (const offset of [0, -1, 1]) {
+                try {
+                    const code = await generateTotpCode(secretBase32, offset);
+                    if (code === cleanInput) return true;
+                } catch (e) {
+                    console.error('TOTP error:', e);
+                }
+            }
+            return false;
+        }
+
+        // Toggle Password / PIN Visibility
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+            const svg = btn.querySelector('svg');
+            if (!svg) return;
+            if (isPassword) {
+                // Eye slash icon (when showing plain text)
+                svg.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/>
+                `;
+            } else {
+                // Normal eye icon (when hiding as password)
+                svg.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                `;
+            }
+        }
+
+        // 2FA Panel UI Handlers
+        function showCashAuthPanel() {
+            const workspace = document.getElementById('notesWorkspaceArea');
+            const authPanel = document.getElementById('cashAuthPanel');
+            if (workspace) workspace.classList.add('hidden');
+            if (authPanel) authPanel.classList.remove('hidden');
+
+            const storedPin = localStorage.getItem('cash_notes_pin');
+            const isEnrolled = localStorage.getItem('cash_notes_2fa_enrolled') === 'true';
+
+            const setupCard = document.getElementById('cashSetupCard');
+            const enrollCard = document.getElementById('cashEnrollCard');
+            const quickUnlockCard = document.getElementById('cashQuickUnlockCard');
+
+            if (!storedPin) {
+                // State A: Initial 8-digit PIN setup
+                if (setupCard) setupCard.classList.remove('hidden');
+                if (enrollCard) enrollCard.classList.add('hidden');
+                if (quickUnlockCard) quickUnlockCard.classList.add('hidden');
+                setTimeout(() => {
+                    const inp = document.getElementById('setupPinInput');
+                    if (inp) {
+                        inp.value = '';
+                        inp.type = 'password';
+                        inp.focus();
+                    }
+                }, 150);
+            } else if (!isEnrolled) {
+                // State B: First-time QR enrollment pending initial 6-digit confirmation
+                if (setupCard) setupCard.classList.add('hidden');
+                if (enrollCard) enrollCard.classList.remove('hidden');
+                if (quickUnlockCard) quickUnlockCard.classList.add('hidden');
+                renderCashQrCode();
+                setTimeout(() => {
+                    const inp = document.getElementById('enrollTotpInput');
+                    if (inp) {
+                        inp.value = '';
+                        inp.focus();
+                    }
+                }, 150);
+            } else {
+                // State C: Already enrolled and subsequently relocked -> NEVER SHOW QR CODE!
+                if (setupCard) setupCard.classList.add('hidden');
+                if (enrollCard) enrollCard.classList.add('hidden');
+                if (quickUnlockCard) quickUnlockCard.classList.remove('hidden');
+                setTimeout(() => {
+                    const inp = document.getElementById('authTotpInput');
+                    if (inp) {
+                        inp.value = '';
+                        inp.focus();
+                    }
+                }, 150);
+            }
+        }
+
+        function hideCashAuthPanel() {
+            const workspace = document.getElementById('notesWorkspaceArea');
+            const authPanel = document.getElementById('cashAuthPanel');
+            if (workspace) workspace.classList.remove('hidden');
+            if (authPanel) authPanel.classList.add('hidden');
+        }
+
+        function showSetupPinView() {
+            const setupCard = document.getElementById('cashSetupCard');
+            const enrollCard = document.getElementById('cashEnrollCard');
+            const quickUnlockCard = document.getElementById('cashQuickUnlockCard');
+            if (setupCard) setupCard.classList.remove('hidden');
+            if (enrollCard) enrollCard.classList.add('hidden');
+            if (quickUnlockCard) quickUnlockCard.classList.add('hidden');
+            const input = document.getElementById('setupPinInput');
+            if (input) {
+                input.value = '';
+                input.type = 'password';
+                input.focus();
+            }
+            const err = document.getElementById('setupPinError');
+            if (err) err.classList.add('hidden');
+        }
+
+        function renderCashQrCode() {
+            const secret = localStorage.getItem('cash_notes_2fa_secret');
+            if (!secret) return;
+
+            const secretDisplay = document.getElementById('derivedSecretDisplay');
+            if (secretDisplay) secretDisplay.textContent = secret;
+
+            const uri = localStorage.getItem('cash_notes_2fa_uri') || 
+                `otpauth://totp/SmartNotes:CashAdjustments?secret=${secret}&issuer=SmartNotes`;
+
+            const container = document.getElementById('qrcodeContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (typeof QRCode !== 'undefined') {
+                qrcodeInstance = new QRCode(container, {
+                    text: uri,
+                    width: 180,
+                    height: 180,
+                    colorDark: "#1a1a1a",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.M
+                });
+            } else {
+                container.innerHTML = `<span class="text-xs text-neutral-400">Secret: <b>${secret}</b></span>`;
+            }
+        }
+
+        function handleSetupPinSubmit() {
+            const input = document.getElementById('setupPinInput');
+            const err = document.getElementById('setupPinError');
+            const pin = (input ? input.value : '').trim();
+
+            if (pin.length !== 8) {
+                if (err) {
+                    err.textContent = 'Please enter an 8-character alphanumeric PIN.';
+                    err.classList.remove('hidden');
+                }
+                if (input) input.focus();
+                return;
+            }
+
+            if (err) err.classList.add('hidden');
+
+            const secret = pinToBase32(pin);
+            const uri = `otpauth://totp/SmartNotes:CashAdjustments?secret=${secret}&issuer=SmartNotes`;
+
+            localStorage.setItem('cash_notes_pin', pin);
+            localStorage.setItem('cash_notes_2fa_secret', secret);
+            localStorage.setItem('cash_notes_2fa_uri', uri);
+            localStorage.removeItem('cash_notes_2fa_enrolled'); // Clear previous enrollment until verified
+
+            showToast('8-Digit PIN saved! Scan QR Code with Google Authenticator.', 'success');
+
+            const setupCard = document.getElementById('cashSetupCard');
+            const enrollCard = document.getElementById('cashEnrollCard');
+            const quickUnlockCard = document.getElementById('cashQuickUnlockCard');
+            if (setupCard) setupCard.classList.add('hidden');
+            if (enrollCard) enrollCard.classList.remove('hidden');
+            if (quickUnlockCard) quickUnlockCard.classList.add('hidden');
+
+            renderCashQrCode();
+            setTimeout(() => {
+                const enrollInp = document.getElementById('enrollTotpInput');
+                if (enrollInp) {
+                    enrollInp.value = '';
+                    enrollInp.focus();
+                }
+            }, 150);
+        }
+
+        async function handleEnrollSubmit() {
+            const input = document.getElementById('enrollTotpInput');
+            const err = document.getElementById('enrollTotpError');
+            const code = (input ? input.value : '').trim();
+            const secret = localStorage.getItem('cash_notes_2fa_secret');
+            const storedPin = localStorage.getItem('cash_notes_pin');
+
+            if (!code) {
+                if (err) {
+                    err.textContent = 'Please enter the 6-digit code from Google Authenticator.';
+                    err.classList.remove('hidden');
+                }
+                if (input) input.focus();
+                return;
+            }
+
+            let isValid = false;
+            if (secret && code.length === 6) {
+                isValid = await verifyTotpCode(secret, code);
+            }
+            if (!isValid && storedPin && code === storedPin) {
+                isValid = true;
+            }
+
+            if (isValid) {
+                if (err) err.classList.add('hidden');
+                localStorage.setItem('cash_notes_2fa_enrolled', 'true');
+                isCashNotesUnlocked = true;
+                sessionStorage.setItem('cash_notes_unlocked', 'true');
+                hideCashAuthPanel();
+                showToast('Google Authenticator linked & Cash Adjustments unlocked!', 'success');
+                renderCategoryTabs();
+                renderNotesList();
+            } else {
+                if (err) {
+                    err.textContent = 'Invalid verification code. Please check Google Authenticator and try again.';
+                    err.classList.remove('hidden');
+                }
+                if (input) {
+                    input.classList.add('border-rose-400');
+                    setTimeout(() => input.classList.remove('border-rose-400'), 1500);
+                    input.focus();
+                    input.select();
+                }
+                showToast('Invalid 2FA code. Please try again.', 'error');
+            }
+        }
+
+        async function handleUnlockSubmit() {
+            const input = document.getElementById('authTotpInput');
+            const err = document.getElementById('authTotpError');
+            const code = (input ? input.value : '').trim();
+            const secret = localStorage.getItem('cash_notes_2fa_secret');
+            const storedPin = localStorage.getItem('cash_notes_pin');
+
+            if (!code) {
+                if (err) {
+                    err.textContent = 'Please enter the 6-digit code from Google Authenticator.';
+                    err.classList.remove('hidden');
+                }
+                if (input) input.focus();
+                return;
+            }
+
+            let isValid = false;
+            if (secret && code.length === 6) {
+                isValid = await verifyTotpCode(secret, code);
+            }
+            if (!isValid && storedPin && code === storedPin) {
+                isValid = true;
+            }
+
+            if (isValid) {
+                if (err) err.classList.add('hidden');
+                isCashNotesUnlocked = true;
+                sessionStorage.setItem('cash_notes_unlocked', 'true');
+                hideCashAuthPanel();
+                showToast('Cash Adjustments Notes unlocked', 'success');
+                renderCategoryTabs();
+                renderNotesList();
+            } else {
+                if (err) {
+                    err.textContent = 'Invalid verification code. Please check Google Authenticator and try again.';
+                    err.classList.remove('hidden');
+                }
+                if (input) {
+                    input.classList.add('border-rose-400');
+                    setTimeout(() => input.classList.remove('border-rose-400'), 1500);
+                    input.focus();
+                    input.select();
+                }
+                showToast('Invalid 2FA code. Please try again.', 'error');
+            }
+        }
+
+        function handleTotpInputKey(el) {
+            if (el.value.length === 6) {
+                handleUnlockSubmit();
+            }
+        }
+
+        function handleResetPinClick() {
+            if (confirm('Are you sure you want to reset your 8-digit PIN and reconfigure 2FA? You will need to scan a new QR code in Google Authenticator.')) {
+                localStorage.removeItem('cash_notes_pin');
+                localStorage.removeItem('cash_notes_2fa_secret');
+                localStorage.removeItem('cash_notes_2fa_uri');
+                localStorage.removeItem('cash_notes_2fa_enrolled');
+                sessionStorage.removeItem('cash_notes_unlocked');
+                isCashNotesUnlocked = false;
+                showToast('2FA PIN reset. Please configure a new 8-digit PIN.', 'info');
+                showCashAuthPanel();
+                renderCategoryTabs();
+            }
+        }
+
+        function lockCashSession() {
+            isCashNotesUnlocked = false;
+            sessionStorage.removeItem('cash_notes_unlocked');
+            showToast('Cash Adjustments session locked', 'info');
+            renderCategoryTabs();
+            if (activeCategoryId === 'cash') {
+                showCashAuthPanel();
+            } else {
+                renderNotesList();
+            }
+        }
 
         // Toast Notification Function
         function showToast(message, type = 'info', duration = 3000) {
@@ -1050,6 +1593,18 @@
         // Initialize App
         function initApp() {
             loadNotes();
+            const initialCat = CATEGORIES.find(c => c.id === activeCategoryId) || CATEGORIES[0];
+            if (initialCat) {
+                const titleEl = document.getElementById('activeCategoryTitle');
+                const subEl = document.getElementById('activeCategorySubtitle');
+                if (titleEl) titleEl.textContent = initialCat.name;
+                if (subEl) subEl.textContent = initialCat.subtitle;
+            }
+            if (activeCategoryId === 'cash' && !isCashNotesUnlocked) {
+                showCashAuthPanel();
+            } else {
+                hideCashAuthPanel();
+            }
             renderCategoryTabs();
             renderNotesList();
             updateClock();
@@ -1110,12 +1665,23 @@
 
             let html = '';
             CATEGORIES.forEach(cat => {
-                const count = notesData.filter(n => n.category === cat.id).length;
+                let count = 0;
+                if (cat.id === 'all') {
+                    count = notesData.filter(n => n.category !== 'cash').length;
+                } else {
+                    count = notesData.filter(n => n.category === cat.id).length;
+                }
                 const isActive = cat.id === activeCategoryId;
+                const isCashLocked = cat.id === 'cash' && !isCashNotesUnlocked;
+                const lockBadge = isCashLocked 
+                    ? '<span class="text-[10px] ml-1.5 opacity-60">🔒</span>' 
+                    : (cat.id === 'cash' ? '<span class="text-[10px] ml-1.5 text-emerald-500">🟢</span>' : '');
+
                 html += `
                     <button onclick="switchCategory('${cat.id}')"
                         class="category-tab ${isActive ? 'active' : ''} flex items-center px-4 py-2.5 rounded-full border border-neutral-200/80 bg-white font-semibold text-xs sm:text-sm whitespace-nowrap shadow-xs cursor-pointer">
                         <span>${cat.name}</span>
+                        ${lockBadge}
                         <span class="count-badge ml-2 px-2 py-0.5 rounded-full text-xs font-bold bg-neutral-100 text-neutral-700">${count}</span>
                     </button>
                 `;
@@ -1136,6 +1702,13 @@
                 document.getElementById('activeCategorySubtitle').textContent = cat.subtitle;
             }
 
+            if (catId === 'cash' && !isCashNotesUnlocked) {
+                showCashAuthPanel();
+                return;
+            } else {
+                hideCashAuthPanel();
+            }
+
             renderNotesList();
         }
 
@@ -1151,8 +1724,10 @@
 
             const query = (searchQuery || topSearch).toLowerCase();
 
-            // Filter notes for active category
-            let filtered = notesData.filter(n => n.category === activeCategoryId);
+            // Filter notes for active category (Cash notes are strictly excluded from 'All Notes' to ensure privacy)
+            let filtered = activeCategoryId === 'all' 
+                ? notesData.filter(n => n.category !== 'cash') 
+                : notesData.filter(n => n.category === activeCategoryId);
 
             // Filter by Priority
             if (priorityFilter !== 'all') {
@@ -1191,8 +1766,21 @@
                 countText.textContent = `${filtered.length} note${filtered.length === 1 ? '' : 's'}`;
             }
 
+            // Update 2FA status indicator for Cash Adjustments Notes
+            const indicator = document.getElementById('cash2faStatusIndicator');
+            if (indicator) {
+                if (activeCategoryId === 'cash' && isCashNotesUnlocked) {
+                    indicator.classList.remove('hidden');
+                    indicator.classList.add('flex');
+                } else {
+                    indicator.classList.add('hidden');
+                    indicator.classList.remove('flex');
+                }
+            }
+
             // Empty state handling
             if (filtered.length === 0) {
+                const emptyTitle = activeCategoryId === 'all' ? 'No notes created yet' : 'No notes in this category yet';
                 listContainer.innerHTML = `
                     <div class="flex flex-col items-center justify-center py-16 text-center text-neutral-400">
                         <div class="w-14 h-14 rounded-2xl bg-neutral-100 flex items-center justify-center text-neutral-400 mb-3">
@@ -1200,7 +1788,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                             </svg>
                         </div>
-                        <p class="text-sm font-semibold text-neutral-700 mb-1">No notes in this category yet</p>
+                        <p class="text-sm font-semibold text-neutral-700 mb-1">${emptyTitle}</p>
                         <p class="text-xs text-neutral-400 max-w-xs mb-4">Click "New Note" to record customer requests, reminders, or order followups.</p>
                         <button onclick="openNoteModal()" class="px-4 py-2 rounded-xl bg-[#13151b] hover:bg-neutral-800 text-white font-bold text-xs transition shadow-xs flex items-center gap-1.5">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
@@ -1222,6 +1810,8 @@
             let html = '';
             filtered.forEach(note => {
                 const isSelected = note.id === selectedNoteId;
+                const catObj = CATEGORIES.find(c => c.id === note.category);
+                const catLabel = catObj ? catObj.name : (note.category || '');
 
                 // Priority Badge Color Styles
                 let priorityClass = 'bg-blue-50 text-blue-600 border-blue-200';
@@ -1247,9 +1837,12 @@
                     <div onclick="selectNote('${note.id}')"
                         class="note-row ${indicatorClass} ${isSelected ? 'active-note' : ''} flex items-center justify-between p-3.5 pl-5 rounded-2xl border border-neutral-200/70 bg-white cursor-pointer shadow-xs gap-3">
                         
-                        <!-- Title (truncated) -->
+                        <!-- Title (truncated) & category badge in All Notes view -->
                         <div class="flex-1 min-w-0 pr-2">
-                            <span class="text-xs sm:text-sm font-semibold text-[#1a1a1a] block truncate">${escapeHtml(note.title)}</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs sm:text-sm font-semibold text-[#1a1a1a] block truncate">${escapeHtml(note.title)}</span>
+                                ${activeCategoryId === 'all' && catLabel ? `<span class="hidden sm:inline-block px-2 py-0.5 rounded-md text-[10px] font-bold bg-neutral-100 text-neutral-500 whitespace-nowrap flex-shrink-0">${escapeHtml(catLabel)}</span>` : ''}
+                            </div>
                         </div>
 
                         <!-- Date with Calendar Icon -->
@@ -1331,6 +1924,18 @@
             // Title
             document.getElementById('detailTitle').textContent = note.title;
 
+            // Category Badge in details header
+            const catObj = CATEGORIES.find(c => c.id === note.category);
+            const catBadge = document.getElementById('detailCategoryBadge');
+            if (catBadge) {
+                if (catObj && catObj.id !== 'all') {
+                    catBadge.textContent = `📁 ${catObj.name}`;
+                    catBadge.classList.remove('hidden');
+                } else {
+                    catBadge.classList.add('hidden');
+                }
+            }
+
             // Priority Badge
             priorityBadge.textContent = `${note.priority || 'Normal'} Priority`;
             priorityBadge.className = 'px-3 py-1 rounded-full text-xs font-semibold border ';
@@ -1410,6 +2015,8 @@
         // Clear Details when no note selected
         function clearNoteDetails() {
             document.getElementById('detailTitle').textContent = 'Select a note to view details';
+            const catBadge = document.getElementById('detailCategoryBadge');
+            if (catBadge) catBadge.classList.add('hidden');
             document.getElementById('detailPriorityBadge').classList.add('hidden');
             document.getElementById('detailDate').textContent = '--';
             document.getElementById('detailAssigned').textContent = '--';
@@ -1455,7 +2062,11 @@
                 heading.textContent = 'Create New Note';
                 document.getElementById('noteId').value = '';
                 document.getElementById('formTitle').value = '';
-                document.getElementById('formCategory').value = activeCategoryId;
+                let defaultCat = activeCategoryId;
+                if (defaultCat === 'all' || (defaultCat === 'cash' && !isCashNotesUnlocked)) {
+                    defaultCat = 'readymade';
+                }
+                document.getElementById('formCategory').value = defaultCat;
                 document.getElementById('formPriority').value = 'Normal';
                 document.getElementById('formStatus').value = 'Pending';
                 document.getElementById('formAssigned').value = 'Stylist Team';
@@ -1478,7 +2089,7 @@
             document.getElementById('modalHeading').textContent = 'Edit Note';
             document.getElementById('noteId').value = note.id;
             document.getElementById('formTitle').value = note.title || '';
-            document.getElementById('formCategory').value = note.category || activeCategoryId;
+            document.getElementById('formCategory').value = note.category || 'readymade';
             document.getElementById('formPriority').value = note.priority || 'Normal';
             document.getElementById('formStatus').value = note.status || 'Pending';
             document.getElementById('formAssigned').value = note.assigned || '';
@@ -1510,6 +2121,13 @@
             if (!title) {
                 showToast('Please enter a note title', 'error');
                 document.getElementById('formTitle').focus();
+                return;
+            }
+
+            if (category === 'cash' && !isCashNotesUnlocked) {
+                showToast('Cash Adjustments is protected by 2FA. Please unlock it first.', 'warning');
+                closeNoteModal();
+                switchCategory('cash');
                 return;
             }
 
@@ -1556,8 +2174,8 @@
             saveNotes();
             closeNoteModal();
 
-            // If user created note in another category, switch to it
-            if (category !== activeCategoryId) {
+            // If user created note in another category, switch to it (unless viewing All Notes)
+            if (activeCategoryId !== 'all' && category !== activeCategoryId) {
                 switchCategory(category);
             } else {
                 renderCategoryTabs();

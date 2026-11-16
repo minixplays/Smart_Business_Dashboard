@@ -11,6 +11,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="assets/theme.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+    <script>
+        if (typeof XLSX === 'undefined') {
+            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"><\/script>');
+        }
+    </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
@@ -831,6 +837,7 @@
         let currentViewData = [];
         let sites = new Set();
         let currentCategoryFilter = 'ALL';
+        let csvReportDate = null;
 
         const COL_MAPPING = {
             site: ['site_descr', 'site_description', 'site', 'store'],
@@ -912,6 +919,11 @@
             if (!data || data.length === 0) return;
 
             const firstRow = data[0];
+            const dateCol = findColumnKey(firstRow, ['date', 'stock_date', 'as_on_date', 'report_date', 'tran_date']);
+            if (dateCol && firstRow[dateCol]) {
+                csvReportDate = firstRow[dateCol];
+            }
+
             const keys = {
                 site: findColumnKey(firstRow, COL_MAPPING.site) || 'site_descr',
                 category: findColumnKey(firstRow, COL_MAPPING.category) || 'item_type_descr',
@@ -1057,10 +1069,10 @@
             if (filterKey === 'Accessories') {
                 return s.includes('ACCESS');
             }
-            if (filterKey === 'Fabric') {
+            if (filterKey === 'Fabric' || filterKey === 'Fabrics') {
                 return s.includes('FABRIC') || s.includes('CLOTH') || s.includes('SUIT LENGTH');
             }
-            if (filterKey === 'Readymade') {
+            if (filterKey === 'Readymade' || filterKey === 'Ready made') {
                 return s.includes('READY') || s.includes('RMG') || s.includes('READYMADE');
             }
             return true; // 'ALL'
@@ -1360,77 +1372,476 @@
         }
 
         function exportReconciliation() {
-            if (currentViewData.length === 0) return alert("No data to export!");
+            if (Object.keys(aggregatedData).length === 0) {
+                return alert("No data to export! Please upload or sync stock data first.");
+            }
 
-            const csvRows = [];
-            // Professional headers matching the exact table view
-            const headers = ['#', 'PRODUCT CATEGORY', 'SYSTEM STOCK', 'PHYSICAL STOCK', 'SYSTEM ADV STOCK', 'MANUAL BILLS', 'ADJUSTED QUANTITY', 'DIFFERENCE', 'REMARKS'];
-            csvRows.push(headers.map(h => `"${h}"`).join(','));
+            const selectedSite = document.getElementById('siteFilter') ? document.getElementById('siteFilter').value : 'ALL';
 
-            let tSys = 0, tPhys = 0, tAdv = 0, tBills = 0, tQty = 0, tVar = 0;
+            // Filter items by selected site
+            let siteItems = Object.values(aggregatedData);
+            if (selectedSite !== 'ALL') {
+                siteItems = siteItems.filter(item => item.site === selectedSite);
+            }
 
-            const formatNum = (num) => Number.isInteger(num) ? num : parseFloat(num.toFixed(2));
+            // Determine Store Name (e.g. "Hubli")
+            function formatStoreName(name) {
+                if (!name || name === 'ALL') return 'All Sites';
+                return name.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+            }
+            let storeName = 'Hubli';
+            if (selectedSite !== 'ALL') {
+                storeName = formatStoreName(selectedSite);
+            } else if (sites.size === 1) {
+                storeName = formatStoreName(Array.from(sites)[0]);
+            } else if (sites.size > 1) {
+                storeName = 'All Sites';
+            }
 
-            currentViewData.forEach((item, index) => {
-                const phys = item.physicalQty !== null ? formatNum(item.physicalQty) : '-';
-                const adv = item.advStock !== null ? formatNum(item.advStock) : '-';
-                const bills = item.manualBills !== null ? formatNum(item.manualBills) : '-';
-                const qty = item.finalQty !== null ? formatNum(item.finalQty) : '-';
-                const vari = item.variance !== null ? formatNum(item.variance) : '-';
+            // Determine Date & Day
+            let d = new Date();
+            if (csvReportDate) {
+                const parsed = new Date(csvReportDate);
+                if (!isNaN(parsed.getTime())) d = parsed;
+            }
+            const dayStr = String(d.getDate()).padStart(2, '0');
+            const monthStr = String(d.getMonth() + 1).padStart(2, '0');
+            const yearStr = d.getFullYear();
+            const dateFormatted = `${dayStr}-${monthStr}-${yearStr}`;
 
-                tSys += item.systemQty;
-                if (item.physicalQty !== null) {
-                    tPhys += item.physicalQty;
-                    tAdv += (item.advStock || 0);
-                    tBills += (item.manualBills || 0);
-                    tQty += item.finalQty;
-                    tVar += item.variance;
+            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const dayName = dayNames[d.getDay()];
+
+            // Master Reference Template Definition matching reference sheet
+            const MASTER_TEMPLATE = [
+                {
+                    groupName: 'Accessories',
+                    items: [
+                        'POCKET SQUARE', 'SOCKS', 'TIES', 'BROUCH', 'BOWTIES', 'BELTS',
+                        'CUFFLINKS', 'SHOES', 'UNDERWEAR', 'VEST', 'CUMMARBAND', 'HANKIES',
+                        'STOLE', 'SAFA', 'SUSPENDER', 'MALA', 'MOJADI', 'SHORTS', 'SCARVES'
+                    ]
+                },
+                {
+                    groupName: 'Fabrics',
+                    items: [
+                        'SUITINGS', 'SHIRTINGS', 'ETHNIC FABRICS', 'FABRICS GIFT BOX',
+                        'COATLENGTHS', 'SUITLENGTHS', 'SWATCH'
+                    ]
+                },
+                {
+                    groupName: 'Ready made',
+                    items: [
+                        'SUITS', 'SHIRTS', 'TROUSERS', 'JACKETS', 'KURTASETS', 'TRACK PANTS',
+                        'DHOTY', 'WAISTCOATS', 'LONGSUITS', 'Tailoring Shirts'
+                    ]
                 }
+            ];
 
-                const values = [
-                    index + 1,
-                    `"${item.category.replace(/"/g, '""')}"`,
-                    formatNum(item.systemQty),
-                    phys,
-                    adv,
-                    bills,
-                    qty,
-                    vari,
-                    `"${(item.remarks || '').replace(/"/g, '""')}"`
-                ];
-                csvRows.push(values.join(','));
+            // Helper to format numbers cleanly (integers or rounded to 2 decimals)
+            const formatNum = (num) => {
+                if (num === null || num === undefined || num === '' || isNaN(num)) return '';
+                return Number.isInteger(num) ? num : parseFloat(num.toFixed(2));
+            };
+
+            // Helper to match category names flexibly
+            const cleanStr = s => (s || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+            function findMatchingItem(pool, targetCat) {
+                const targetClean = cleanStr(targetCat);
+                return pool.find(it => {
+                    const itClean = cleanStr(it.category);
+                    if (itClean === targetClean) return true;
+                    if (targetClean === 'BROUCH' && itClean === 'BROOCH') return true;
+                    if (targetClean === 'BROOCH' && itClean === 'BROUCH') return true;
+                    if (targetClean === 'CUMMARBAND' && (itClean === 'CUMMERBUND' || itClean === 'KAMARBAND')) return true;
+                    if (targetClean === 'DHOTY' && itClean === 'DHOTI') return true;
+                    if (targetClean === 'DHOTI' && itClean === 'DHOTY') return true;
+                    return false;
+                });
+            }
+
+            // Build rows and track row metadata for styling
+            const rows = [];
+            const rowTypes = [];
+
+            // 1. Metadata Box Rows (Rows 0-2) matching new reference theme
+            rows.push(["Date", dateFormatted, "", "", ""]);
+            rowTypes.push('meta');
+
+            rows.push(["Day", dayName, "", "", ""]);
+            rowTypes.push('meta');
+
+            rows.push(["Store", storeName, "", "", ""]);
+            rowTypes.push('meta');
+
+            // 2. Blank Row (Row 3)
+            rows.push(["", "", "", "", ""]);
+            rowTypes.push('blank');
+
+            // 3. Table Header Row (Row 4)
+            rows.push([
+                "Item_Ser_Descr",
+                "Item_Type_Descr",
+                "On Hand Qty As per System",
+                "Global - Count",
+                "Shortage / Excess"
+            ]);
+            rowTypes.push('header');
+
+            let grandTotalSys = 0;
+            let grandTotalGlobal = 0;
+            const handledItemIds = new Set();
+
+            MASTER_TEMPLATE.forEach(grp => {
+                let grpTotalSys = 0;
+                let grpTotalGlobal = 0;
+
+                // Process standard items
+                grp.items.forEach((catName, idx) => {
+                    const item = findMatchingItem(siteItems, catName);
+                    let sysQtyCell = "";
+                    let globalCountCell = "";
+                    let remarksCell = "";
+
+                    if (item) {
+                        handledItemIds.add(item.id);
+                        if (item.systemQty > 0) {
+                            sysQtyCell = formatNum(item.systemQty);
+                            grpTotalSys += item.systemQty;
+                        }
+                        if (item.finalQty !== null) {
+                            globalCountCell = formatNum(item.finalQty);
+                            grpTotalGlobal += item.finalQty;
+                        } else if (item.physicalQty !== null) {
+                            globalCountCell = formatNum(item.physicalQty);
+                            grpTotalGlobal += item.physicalQty;
+                        }
+                        if (item.remarks && item.remarks.trim()) {
+                            remarksCell = item.remarks.trim();
+                        }
+                    }
+
+                    rows.push([
+                        idx === 0 ? grp.groupName : "",
+                        catName,
+                        sysQtyCell,
+                        globalCountCell,
+                        remarksCell
+                    ]);
+                    rowTypes.push(idx === 0 ? 'groupHeader' : 'data');
+                });
+
+                // Append any extra items belonging to this series
+                const extraItems = siteItems.filter(it => !handledItemIds.has(it.id) && matchesItemSer(it.itemSer, grp.groupName));
+                extraItems.forEach(it => {
+                    handledItemIds.add(it.id);
+                    let sysQtyCell = "";
+                    let globalCountCell = "";
+                    let remarksCell = "";
+
+                    if (it.systemQty > 0) {
+                        sysQtyCell = formatNum(it.systemQty);
+                        grpTotalSys += it.systemQty;
+                    }
+                    if (it.finalQty !== null) {
+                        globalCountCell = formatNum(it.finalQty);
+                        grpTotalGlobal += it.finalQty;
+                    } else if (it.physicalQty !== null) {
+                        globalCountCell = formatNum(it.physicalQty);
+                        grpTotalGlobal += it.physicalQty;
+                    }
+                    if (it.remarks && it.remarks.trim()) {
+                        remarksCell = it.remarks.trim();
+                    }
+
+                    rows.push([
+                        "",
+                        it.category,
+                        sysQtyCell,
+                        globalCountCell,
+                        remarksCell
+                    ]);
+                    rowTypes.push('data');
+                });
+
+                // Group Total Row
+                rows.push([
+                    `${grp.groupName} Total`,
+                    "",
+                    grpTotalSys > 0 ? formatNum(grpTotalSys) : "",
+                    grpTotalGlobal > 0 ? formatNum(grpTotalGlobal) : "",
+                    ""
+                ]);
+                rowTypes.push('groupTotal');
+
+                grandTotalSys += grpTotalSys;
+                grandTotalGlobal += grpTotalGlobal;
             });
 
-            // Professional GRAND TOTAL Row
-            const totalRow = [
-                '""',
-                '"GRAND TOTAL"',
-                formatNum(tSys),
-                formatNum(tPhys),
-                formatNum(tAdv),
-                formatNum(tBills),
-                formatNum(tQty),
-                formatNum(tVar),
-                '""'
-            ];
-            csvRows.push(totalRow.join(','));
+            // Any remaining items that didn't match the 3 standard groups
+            const remainingItems = siteItems.filter(it => !handledItemIds.has(it.id));
+            if (remainingItems.length > 0) {
+                const otherGroups = {};
+                remainingItems.forEach(it => {
+                    const g = it.itemSer || 'Other';
+                    if (!otherGroups[g]) otherGroups[g] = [];
+                    otherGroups[g].push(it);
+                });
 
-            // Include UTF-8 BOM so Excel opens with correct character encoding and layout
-            const csvString = '\uFEFF' + csvRows.join('\n');
-            const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            const url = URL.createObjectURL(blob);
-            link.setAttribute("href", url);
+                Object.keys(otherGroups).forEach(gName => {
+                    let otherSys = 0;
+                    let otherGlobal = 0;
+                    otherGroups[gName].forEach((it, idx) => {
+                        let sysQtyCell = "";
+                        let globalCountCell = "";
+                        let remarksCell = "";
 
-            const siteName = document.getElementById('siteFilter').value.replace(/\s+/g, '_');
-            const d = new Date();
-            const dateStr = `${d.getDate().toString().padStart(2, '0')}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getFullYear()}`;
+                        if (it.systemQty > 0) {
+                            sysQtyCell = formatNum(it.systemQty);
+                            otherSys += it.systemQty;
+                        }
+                        if (it.finalQty !== null) {
+                            globalCountCell = formatNum(it.finalQty);
+                            otherGlobal += it.finalQty;
+                        } else if (it.physicalQty !== null) {
+                            globalCountCell = formatNum(it.physicalQty);
+                            otherGlobal += it.physicalQty;
+                        }
+                        if (it.remarks && it.remarks.trim()) {
+                            remarksCell = it.remarks.trim();
+                        }
 
-            link.setAttribute("download", `Global_Count_${siteName}_${dateStr}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
+                        rows.push([
+                            idx === 0 ? gName : "",
+                            it.category,
+                            sysQtyCell,
+                            globalCountCell,
+                            remarksCell
+                        ]);
+                        rowTypes.push(idx === 0 ? 'groupHeader' : 'data');
+                    });
+
+                    rows.push([
+                        `${gName} Total`,
+                        "",
+                        otherSys > 0 ? formatNum(otherSys) : "",
+                        otherGlobal > 0 ? formatNum(otherGlobal) : "",
+                        ""
+                    ]);
+                    rowTypes.push('groupTotal');
+
+                    grandTotalSys += otherSys;
+                    grandTotalGlobal += otherGlobal;
+                });
+            }
+
+            // Grand Total Row
+            rows.push([
+                "Grand Total",
+                "",
+                grandTotalSys > 0 ? formatNum(grandTotalSys) : "",
+                grandTotalGlobal > 0 ? formatNum(grandTotalGlobal) : "",
+                ""
+            ]);
+            rowTypes.push('grandTotal');
+
+            const fileBaseName = `Global_Count_${storeName.replace(/\s+/g, '_')}_${dateFormatted}`;
+
+            // Style Definitions for Excel Theme (Borders, Highlights & Fills)
+            const B_MED = { style: "medium", color: { rgb: "000000" } };
+            const B_THIN = { style: "thin", color: { rgb: "000000" } };
+            const B_DOT = { style: "dotted", color: { rgb: "A6A6A6" } };
+            const B_DBL = { style: "double", color: { rgb: "000000" } };
+
+            const FILL_GRAY = { fgColor: { rgb: "D9D9D9" } };
+
+            const FONT_REG = { name: "Calibri", sz: 11, bold: false, color: { rgb: "000000" } };
+            const FONT_BOLD = { name: "Calibri", sz: 11, bold: true, color: { rgb: "000000" } };
+
+            if (typeof XLSX !== 'undefined') {
+                const ws = XLSX.utils.aoa_to_sheet(rows);
+
+                // Apply styling to each cell according to its row type and column position
+                for (let r = 0; r < rows.length; r++) {
+                    const type = rowTypes[r];
+                    if (type === 'blank') continue;
+
+                    const maxCol = (type === 'meta') ? 2 : 5;
+                    for (let c = 0; c < maxCol; c++) {
+                        const cellRef = XLSX.utils.encode_cell({ r, c });
+                        if (!ws[cellRef]) {
+                            ws[cellRef] = { t: 's', v: '' };
+                        }
+
+                        const cell = ws[cellRef];
+                        const isNumCol = (c === 2 || c === 3);
+
+                        if (type === 'meta') {
+                            cell.s = {
+                                font: c === 0 ? FONT_BOLD : FONT_REG,
+                                alignment: { vertical: "center", horizontal: "left" },
+                                border: {
+                                    top: B_THIN,
+                                    bottom: B_THIN,
+                                    left: B_THIN,
+                                    right: B_THIN
+                                }
+                            };
+                        } else if (type === 'header') {
+                            cell.s = {
+                                fill: FILL_GRAY,
+                                font: FONT_BOLD,
+                                alignment: { vertical: "center", horizontal: isNumCol ? "right" : "left" },
+                                border: {
+                                    top: B_MED,
+                                    bottom: B_THIN,
+                                    left: c === 0 ? B_MED : B_THIN,
+                                    right: c === 4 ? B_MED : B_THIN
+                                }
+                            };
+                        } else if (type === 'groupHeader') {
+                            cell.s = {
+                                fill: c === 0 ? FILL_GRAY : undefined,
+                                font: c === 0 ? FONT_BOLD : FONT_REG,
+                                alignment: { vertical: "center", horizontal: isNumCol ? "right" : "left" },
+                                border: {
+                                    top: B_THIN,
+                                    bottom: B_DOT,
+                                    left: c === 0 ? B_MED : B_DOT,
+                                    right: c === 4 ? B_MED : B_DOT
+                                }
+                            };
+                        } else if (type === 'data') {
+                            cell.s = {
+                                font: FONT_REG,
+                                alignment: { vertical: "center", horizontal: isNumCol ? "right" : "left" },
+                                border: {
+                                    top: B_DOT,
+                                    bottom: B_DOT,
+                                    left: c === 0 ? B_MED : B_DOT,
+                                    right: c === 4 ? B_MED : B_DOT
+                                }
+                            };
+                        } else if (type === 'groupTotal') {
+                            cell.s = {
+                                fill: FILL_GRAY,
+                                font: FONT_BOLD,
+                                alignment: { vertical: "center", horizontal: isNumCol ? "right" : "left" },
+                                border: {
+                                    top: B_THIN,
+                                    bottom: B_THIN,
+                                    left: c === 0 ? B_MED : B_THIN,
+                                    right: c === 4 ? B_MED : B_THIN
+                                }
+                            };
+                        } else if (type === 'grandTotal') {
+                            cell.s = {
+                                fill: FILL_GRAY,
+                                font: FONT_BOLD,
+                                alignment: { vertical: "center", horizontal: isNumCol ? "right" : "left" },
+                                border: {
+                                    top: B_THIN,
+                                    bottom: B_DBL,
+                                    left: c === 0 ? B_MED : B_THIN,
+                                    right: c === 4 ? B_MED : B_THIN
+                                }
+                            };
+                        }
+                    }
+                }
+
+                // Professional column widths matching reference table
+                ws['!cols'] = [
+                    { wch: 20 }, // Item_Ser_Descr
+                    { wch: 24 }, // Item_Type_Descr
+                    { wch: 28 }, // On Hand Qty As per System
+                    { wch: 20 }, // Global - Count
+                    { wch: 32 }  // Shortage / Excess
+                ];
+
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Global Count");
+                XLSX.writeFile(wb, `${fileBaseName}.xlsx`);
+            } else {
+                // Fallback: Styled HTML-based Excel file (.xls) with identical borders, fills, and formatting
+                let html = `
+                    <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+                    <head>
+                        <meta charset="utf-8">
+                        <!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Global Count</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
+                        <style>
+                            table { border-collapse: collapse; font-family: Calibri, sans-serif; font-size: 11pt; }
+                            td, th { padding: 4px 8px; }
+                            .meta-cell { border: 1px solid #000; font-weight: bold; }
+                            .meta-val { border: 1px solid #000; }
+                            .hdr-cell { background-color: #D9D9D9; font-weight: bold; border-top: 2px solid #000; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000; }
+                            .grp-hdr-a { background-color: #D9D9D9; font-weight: bold; border-left: 2px solid #000; border-top: 1px solid #000; border-bottom: 1px dotted #A6A6A6; border-right: 1px dotted #A6A6A6; }
+                            .data-cell { border: 1px dotted #A6A6A6; }
+                            .tot-cell { background-color: #D9D9D9; font-weight: bold; border-top: 1px solid #000; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000; }
+                            .gtot-cell { background-color: #D9D9D9; font-weight: bold; border-top: 1px solid #000; border-bottom: 3px double #000; border-left: 1px solid #000; border-right: 1px solid #000; }
+                            .out-l { border-left: 2px solid #000 !important; }
+                            .out-r { border-right: 2px solid #000 !important; }
+                            .num { text-align: right; }
+                        </style>
+                    </head>
+                    <body>
+                        <table>
+                `;
+
+                rows.forEach((row, r) => {
+                    const type = rowTypes[r];
+                    html += '<tr>';
+                    if (type === 'meta') {
+                        html += `<td class="meta-cell">${row[0]}</td><td class="meta-val">${row[1]}</td><td></td><td></td><td></td>`;
+                    } else if (type === 'blank') {
+                        html += '<td colspan="5" style="height: 15px;"></td>';
+                    } else if (type === 'header') {
+                        row.forEach((cell, c) => {
+                            const outClass = (c === 0 ? 'out-l ' : '') + (c === 4 ? 'out-r ' : '');
+                            const numClass = (c === 2 || c === 3) ? 'num ' : '';
+                            html += `<th class="hdr-cell ${outClass}${numClass}">${cell}</th>`;
+                        });
+                    } else if (type === 'groupHeader') {
+                        row.forEach((cell, c) => {
+                            const outClass = (c === 0 ? 'out-l ' : '') + (c === 4 ? 'out-r ' : '');
+                            const numClass = (c === 2 || c === 3) ? 'num ' : '';
+                            const baseClass = (c === 0 ? 'grp-hdr-a ' : 'data-cell ');
+                            html += `<td class="${baseClass}${outClass}${numClass}">${cell}</td>`;
+                        });
+                    } else if (type === 'data') {
+                        row.forEach((cell, c) => {
+                            const outClass = (c === 0 ? 'out-l ' : '') + (c === 4 ? 'out-r ' : '');
+                            const numClass = (c === 2 || c === 3) ? 'num ' : '';
+                            html += `<td class="data-cell ${outClass}${numClass}">${cell}</td>`;
+                        });
+                    } else if (type === 'groupTotal') {
+                        row.forEach((cell, c) => {
+                            const outClass = (c === 0 ? 'out-l ' : '') + (c === 4 ? 'out-r ' : '');
+                            const numClass = (c === 2 || c === 3) ? 'num ' : '';
+                            html += `<td class="tot-cell ${outClass}${numClass}">${cell}</td>`;
+                        });
+                    } else if (type === 'grandTotal') {
+                        row.forEach((cell, c) => {
+                            const outClass = (c === 0 ? 'out-l ' : '') + (c === 4 ? 'out-r ' : '');
+                            const numClass = (c === 2 || c === 3) ? 'num ' : '';
+                            html += `<td class="gtot-cell ${outClass}${numClass}">${cell}</td>`;
+                        });
+                    }
+                    html += '</tr>';
+                });
+
+                html += '</table></body></html>';
+
+                const blob = new Blob([html], { type: 'application/vnd.ms-excel;charset=utf-8' });
+                const link = document.createElement("a");
+                const url = URL.createObjectURL(blob);
+                link.setAttribute("href", url);
+                link.setAttribute("download", `${fileBaseName}.xls`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }
         }
     </script>
     <script src="assets/notifications.js"></script>
