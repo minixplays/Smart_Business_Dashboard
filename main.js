@@ -182,6 +182,15 @@ function setupAppMenu() {
         { role: 'zoomIn' },
         { role: 'zoomOut' },
         { type: 'separator' },
+        {
+          label: 'Toggle Dark / Light Theme',
+          accelerator: 'CmdOrCtrl+T',
+          click: () => {
+            if (mainWindow) {
+              mainWindow.webContents.executeJavaScript('if (typeof toggleTheme === "function") toggleTheme();');
+            }
+          }
+        },
         { role: 'togglefullscreen', accelerator: 'F11' }
       ]
     },

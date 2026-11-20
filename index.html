@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="assets/theme.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="assets/theme.js"></script>
+    <script src="assets/notifications.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
@@ -220,13 +221,14 @@
         }
 
         /* Dark Theme Styles - Premium Obsidian/Zinc Aesthetic */
-        body.dark-mode {
+        html.dark-mode,
+        body.dark-mode,
+        body.dark-mode.theme-bg,
+        html.dark-mode body,
+        html.dark-mode .theme-bg {
             color-scheme: dark;
+            background: #090a0f !important;
             color: #f4f4f5 !important;
-        }
-
-        body.dark-mode .theme-bg {
-            background: linear-gradient(135deg, #09090b 0%, #141417 50%, #1c1c21 100%);
         }
 
         body.dark-mode .dashboard-container {
@@ -235,7 +237,10 @@
             box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
         }
 
-        body.dark-mode .text-\[#242424\] {
+        body.dark-mode .text-\[#242424\],
+        html.dark-mode .text-\[#242424\],
+        body.dark-mode .text-\[#1a1a1a\],
+        html.dark-mode .text-\[#1a1a1a\] {
             color: #f4f4f5 !important;
         }
 
@@ -244,13 +249,21 @@
         body.dark-mode h3,
         body.dark-mode h4,
         body.dark-mode h5,
-        body.dark-mode h6 {
+        body.dark-mode h6,
+        html.dark-mode h1,
+        html.dark-mode h2,
+        html.dark-mode h3,
+        html.dark-mode h4,
+        html.dark-mode h5,
+        html.dark-mode h6 {
             color: #ffffff !important;
         }
 
-        body.dark-mode .bg-white {
-            background: #18181b;
-            color: #f4f4f5;
+        body.dark-mode .bg-white,
+        html.dark-mode .bg-white {
+            background-color: #18181b !important;
+            color: #f4f4f5 !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
         }
 
         body.dark-mode .text-neutral-500 {
@@ -1578,28 +1591,37 @@
             padding-left: 0 !important;
             padding-right: 0 !important;
         }
-        body.dark-mode .sidebar-nav {
-            background: #0d0f14;
+        body.dark-mode .sidebar-nav,
+        html.dark-mode .sidebar-nav {
+            background: #0d0f14 !important;
         }
-        body.dark-mode header {
-            background: rgba(13, 15, 20, 0.8) !important;
-            border-bottom-color: rgba(255, 255, 255, 0.05) !important;
+        body.dark-mode header,
+        html.dark-mode header {
+            background: rgba(13, 15, 20, 0.85) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
         }
-        body.dark-mode .theme-bg {
+        body.dark-mode,
+        body.dark-mode.theme-bg,
+        html.dark-mode body,
+        html.dark-mode .theme-bg {
             background: #090a0f !important;
         }
-        body.dark-mode header input {
+        body.dark-mode header input,
+        html.dark-mode header input {
             background: #141720 !important;
             border-color: #272a35 !important;
             color: #f4f4f5 !important;
         }
-        body.dark-mode header button {
+        body.dark-mode header button,
+        html.dark-mode header button {
             background: #141720 !important;
             border-color: #272a35 !important;
             color: #94a3b8 !important;
         }
-        body.dark-mode header button:hover {
+        body.dark-mode header button:hover,
+        html.dark-mode header button:hover {
             color: #ffffff !important;
+            background: #27272a !important;
         }
 
     </style>
@@ -3356,7 +3378,6 @@
         </div>
     </div>
 
-    <script src="assets/notifications.js"></script>
 
     <script>
         function renderDashboardTargets() {

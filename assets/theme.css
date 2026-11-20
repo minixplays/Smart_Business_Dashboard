@@ -545,3 +545,68 @@ html.dark-mode .toast-close:hover,
 body.dark-mode .toast-close:hover {
     color: #d4d4d8 !important;
 }
+
+/* ============================================================
+   Theme Toggle & Sun/Moon Icons
+   ============================================================ */
+.theme-toggle {
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.25s ease;
+}
+.theme-toggle .sun-icon,
+.theme-toggle .moon-icon,
+.sun-icon,
+.moon-icon {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.sun-icon {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+    color: #52525b;
+}
+.moon-icon {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.6);
+    color: #f4c74a;
+}
+html.dark-mode .sun-icon,
+body.dark-mode .sun-icon {
+    opacity: 0 !important;
+    display: none !important;
+    transform: rotate(-90deg) scale(0.6) !important;
+}
+html.dark-mode .moon-icon,
+body.dark-mode .moon-icon {
+    opacity: 1 !important;
+    display: flex !important;
+    transform: rotate(0deg) scale(1) !important;
+}
+
+/* Dark Mode Action Buttons */
+html.dark-mode .theme-toggle,
+body.dark-mode .theme-toggle,
+html.dark-mode #notificationBtn,
+body.dark-mode #notificationBtn,
+html.dark-mode #floatingThemeBtn {
+    background: #18181b !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: #f4f4f5 !important;
+}
+html.dark-mode .theme-toggle:hover,
+body.dark-mode .theme-toggle:hover,
+html.dark-mode #notificationBtn:hover,
+body.dark-mode #notificationBtn:hover,
+html.dark-mode #floatingThemeBtn:hover {
+    background: #27272a !important;
+    color: #ffffff !important;
+}
+
