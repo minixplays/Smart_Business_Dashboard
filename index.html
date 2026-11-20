@@ -3244,8 +3244,11 @@
         }
 
         // Initialize dynamic elements on load
-        window.onload = function () {
-            loadTheme();
+        function initDashboard() {
+            if (window._dashboardInitialized) return;
+            window._dashboardInitialized = true;
+
+            if (typeof loadTheme === 'function') loadTheme();
             updateGreeting();
             updateClock();
             setInterval(updateClock, 60000);
@@ -3317,7 +3320,14 @@
                     });
                 });
             }
-        };
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initDashboard);
+        } else {
+            initDashboard();
+        }
+        window.addEventListener('load', initDashboard);
     </script>
     <!-- Edit Store Routine Modal -->
     <div id="editRoutineModal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">

@@ -84,6 +84,11 @@ function createMainWindow() {
   // Load entry point
   mainWindow.loadFile(path.join(__dirname, 'index.html'));
 
+  // Forward renderer console messages to terminal for debugging
+  mainWindow.webContents.on('console-message', (event, level, message, line, sourceId) => {
+    console.log(`[Renderer] ${message} (${sourceId ? path.basename(sourceId) : 'inline'}:${line})`);
+  });
+
   // Show gracefully when ready
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();

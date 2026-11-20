@@ -931,21 +931,32 @@
             }
         }
 
-        window.onload = () => {
+        function initQuotation() {
+            if (window._quotationInitialized) return;
+            window._quotationInitialized = true;
             addRow();
             addRow();
             setDateTime();
             setInterval(setDateTime, 1000);
             
-            Sortable.create(tbody, {
-                handle: '.drag-handle',
-                animation: 150,
-                ghostClass: 'opacity-50',
-                onEnd: function () {
-                    updateSerialNumbers();
-                }
-            });
-        };
+            if (typeof Sortable !== 'undefined' && tbody) {
+                Sortable.create(tbody, {
+                    handle: '.drag-handle',
+                    animation: 150,
+                    ghostClass: 'opacity-50',
+                    onEnd: function () {
+                        updateSerialNumbers();
+                    }
+                });
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initQuotation);
+        } else {
+            initQuotation();
+        }
+        window.addEventListener('load', initQuotation);
     </script>
 </body>
 </html>
