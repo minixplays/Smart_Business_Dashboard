@@ -8,8 +8,8 @@
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
-    "start": "electron .",
-    "dev": "electron . --enable-logging",
+    "start": "node launch.js",
+    "dev": "node launch.js --enable-logging",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "dist:win": "electron-builder --win",
