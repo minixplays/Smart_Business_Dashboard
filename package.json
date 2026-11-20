@@ -21,13 +21,14 @@
     "copyright": "Copyright © 2026 Smart Business Dashboard",
     "directories": {
       "output": "dist",
-      "buildResources": "assets"
+      "buildResources": "build"
     },
     "files": [
       "**/*",
       "!node_modules/**/*",
       "!dist/**/*",
       "!.git/**/*",
+      "!build/**/*",
       "!*.md"
     ],
     "win": {
