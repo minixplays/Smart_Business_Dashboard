@@ -431,24 +431,45 @@ body.dark-mode .routine-tag-tomorrow {
 /* Notification System Overrides */
 html.dark-mode #notificationPanel,
 body.dark-mode #notificationPanel {
-    background: #18181b !important;
-    border-color: rgba(255, 255, 255, 0.07) !important;
+    background: #14161d !important;
+    border-left-color: rgba(255, 255, 255, 0.08) !important;
+    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.8) !important;
 }
 
 html.dark-mode #notificationPanel > div:first-child,
 body.dark-mode #notificationPanel > div:first-child {
-    background: rgba(9, 9, 11, 0.7) !important;
+    background: rgba(20, 22, 29, 0.95) !important;
+    border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark-mode #notificationPanel .border-b,
+body.dark-mode #notificationPanel .border-b {
     border-bottom-color: rgba(255, 255, 255, 0.07) !important;
 }
 
+html.dark-mode #notificationPanel h3,
 html.dark-mode #notificationPanel h4,
-body.dark-mode #notificationPanel h4 {
+html.dark-mode #notificationPanel h5,
+body.dark-mode #notificationPanel h3,
+body.dark-mode #notificationPanel h4,
+body.dark-mode #notificationPanel h5 {
     color: #f4f4f5 !important;
+}
+
+html.dark-mode #notificationPanel .bg-neutral-50,
+body.dark-mode #notificationPanel .bg-neutral-50 {
+    background: #1e212b !important;
+    border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+html.dark-mode #notificationPanel .bg-white,
+body.dark-mode #notificationPanel .bg-white {
+    background: #14161d !important;
 }
 
 html.dark-mode #notificationList,
 body.dark-mode #notificationList {
-    background: #18181b !important;
+    background: transparent !important;
 }
 
 html.dark-mode .notification-item,

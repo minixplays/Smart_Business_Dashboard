@@ -1809,19 +1809,12 @@
             function checkDataAge(ts) {
                 const ageHours = (Date.now() - ts) / (1000 * 60 * 60);
                 if (ageHours > 24) {
-                    const dot = document.getElementById('notification-dot');
-                    if (dot) dot.classList.remove('hidden');
-                    window.pendingNotification = `Sales data is ${Math.floor(ageHours)} hours old. Please update with the latest report!`;
+                    const msg = `Sales data is ${Math.floor(ageHours)} hours old. Please update with the latest report!`;
+                    if (typeof window.triggerNotification === 'function') {
+                        window.triggerNotification(msg, 'report');
+                    }
                 }
             }
-
-            window.toggleNotificationPanel = function (e) {
-                if (window.pendingNotification) {
-                    toast('warning', 'Data Update Required', window.pendingNotification);
-                } else {
-                    toast('info', 'No Notifications', 'All data is up to date.');
-                }
-            };
 
 
             function loadTargetsFromStorage() {
