@@ -1718,12 +1718,6 @@
                 <span class="nav-text">Notifications</span>
                 <span id="sidebar-notification-dot" class="hidden absolute top-3 right-3 w-1.5 h-1.5 bg-rose-500 rounded-full"></span>
             </button>
-            <button class="sidebar-nav-item text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition" onclick="openExitModal()" title="Exit Application">
-                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                </svg>
-                <span class="nav-text font-semibold">Exit App</span>
-            </button>
 
             <!-- User Profile Row -->
             <div class="user-profile-row flex items-center gap-2.5 px-2 py-2 mt-1 pt-3 border-t border-white/10 cursor-pointer">
@@ -3447,32 +3441,6 @@
             }, 650);
         }
 
-        function openExitModal() {
-            const modal = document.getElementById('exitConfirmModal');
-            if (modal) modal.classList.remove('hidden');
-        }
-
-        function closeExitModal() {
-            const modal = document.getElementById('exitConfirmModal');
-            if (modal) modal.classList.add('hidden');
-        }
-
-        function confirmExitApp() {
-            if (window.desktopAPI && typeof window.desktopAPI.quitApp === 'function') {
-                window.desktopAPI.quitApp();
-            } else if (window.desktopAPI && typeof window.desktopAPI.close === 'function') {
-                window.desktopAPI.close();
-            } else {
-                window.close();
-            }
-        }
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeExitModal();
-            }
-        });
-
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initDashboard);
         } else {
@@ -3704,30 +3672,6 @@
             renderDashboardTargets();
         }
     </script>
-
-    <!-- ===== EXIT CONFIRMATION MODAL ===== -->
-    <div id="exitConfirmModal" class="hidden fixed inset-0 z-[999999] flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeExitModal()"></div>
-        <div class="modal-card relative rounded-3xl shadow-2xl w-full max-w-sm p-6 flex flex-col items-center text-center z-10 border border-neutral-100 transform transition-all scale-100">
-            <div class="w-14 h-14 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center mb-4 border border-rose-100">
-                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                </svg>
-            </div>
-            <h3 class="text-lg font-extrabold text-[#1a1a1a] mb-1">Exit Application?</h3>
-            <p class="text-xs text-neutral-500 leading-relaxed mb-6">
-                Are you sure you want to close Smart Business Dashboard? Any unsaved inputs or active calculations will be closed.
-            </p>
-            <div class="flex items-center gap-3 w-full">
-                <button type="button" onclick="closeExitModal()" class="btn-cancel flex-1 py-2.5 px-4 rounded-xl text-xs font-bold text-neutral-600 bg-neutral-100 hover:bg-neutral-200 transition-colors">
-                    Cancel
-                </button>
-                <button type="button" onclick="confirmExitApp()" class="flex-1 py-2.5 px-4 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 shadow-md transition-colors">
-                    Exit Application
-                </button>
-            </div>
-        </div>
-    </div>
 </body>
 
 </html>
