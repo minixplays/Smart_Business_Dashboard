@@ -1648,8 +1648,8 @@
             <p class="text-xs font-semibold text-neutral-400 uppercase tracking-widest mb-6">Executive Management Suite</p>
 
             <!-- Progress Track -->
-            <div class="w-52 h-1.5 bg-neutral-200/80 rounded-full overflow-hidden relative mb-3 loading-track">
-                <div id="loadingProgressBar" class="absolute top-0 bottom-0 left-0 bg-[#f4c74a] rounded-full transition-all duration-300 ease-out" style="width: 25%;"></div>
+            <div class="w-56 h-1.5 bg-neutral-200/80 rounded-full overflow-hidden relative mb-3 loading-track">
+                <div id="loadingProgressBar" class="absolute top-0 bottom-0 left-0 bg-[#f4c74a] rounded-full transition-all duration-700 ease-out" style="width: 15%;"></div>
             </div>
 
             <!-- Dynamic status text -->
@@ -3304,7 +3304,6 @@
             if (window._dashboardInitialized) return;
             window._dashboardInitialized = true;
 
-            updateLoadingProgress(55, 'Loading system modules...');
             if (typeof loadTheme === 'function') loadTheme();
             updateGreeting();
             updateClock();
@@ -3317,7 +3316,6 @@
             applyPinState(); // Restore pinned state for all app cards
             renderDashboardApps(); // Inject pinned tool cards into dashboard
             applyToolsPinState(); // Sync tools panel pin buttons
-            updateLoadingProgress(85, 'Finalizing dashboard...');
 
             // Animate KPI counters on load based on uploaded reports
             requestAnimationFrame(() => {
@@ -3379,9 +3377,29 @@
                 });
             }
 
-            // Dismiss the initial loading animation screen smoothly
-            updateLoadingProgress(100, 'Ready');
-            setTimeout(dismissLoadingScreen, 350);
+            // Run a smooth 5-second loading sequence while dashboard components fully warm up
+            scheduleLoadingAnimation();
+        }
+
+        function scheduleLoadingAnimation() {
+            const steps = [
+                { time: 800, percent: 32, status: 'Initializing system modules...' },
+                { time: 1800, percent: 58, status: 'Loading store routines & schedules...' },
+                { time: 2900, percent: 80, status: 'Compiling target KPIs & reports...' },
+                { time: 4000, percent: 95, status: 'Finalizing desktop workspace...' },
+                { time: 4800, percent: 100, status: 'Workspace ready' },
+                { time: 5200, action: 'dismiss' }
+            ];
+
+            steps.forEach(step => {
+                setTimeout(() => {
+                    if (step.action === 'dismiss') {
+                        dismissLoadingScreen();
+                    } else {
+                        updateLoadingProgress(step.percent, step.status);
+                    }
+                }, step.time);
+            });
         }
 
         function updateLoadingProgress(percent, status) {
@@ -3398,7 +3416,7 @@
             screen.style.pointerEvents = 'none';
             setTimeout(() => {
                 if (screen && screen.parentNode) screen.parentNode.removeChild(screen);
-            }, 550);
+            }, 650);
         }
 
         function openExitModal() {
