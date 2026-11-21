@@ -281,7 +281,16 @@
         if (window.location.pathname.endsWith('notifications.html') || window.location.href.includes('notifications.html')) {
             return;
         }
-        window.location.href = 'notifications.html';
+        if (typeof window.navigateTo === 'function') {
+            window.navigateTo('notifications');
+            return;
+        }
+        if (document.body) {
+            document.body.classList.add('page-exit');
+        }
+        setTimeout(() => {
+            window.location.href = 'notifications.html';
+        }, 200);
     };
 
     window.toggleNotificationPanel = window.navigateToNotificationPage;
@@ -307,7 +316,7 @@
         }
 
         const sidebarBell = document.getElementById('sidebarNotificationBtn');
-        if (sidebarBell) {
+        if (sidebarBell && !window.location.pathname.endsWith('notifications.html') && !window.location.href.includes('notifications.html')) {
             sidebarBell.onclick = window.navigateToNotificationPage;
         }
 
@@ -318,205 +327,6 @@
             popupDiv.className = 'fixed top-4 right-4 max-w-xs bg-[#242424] text-white text-xs font-bold px-4 py-3 rounded-2xl shadow-2xl z-[999999] opacity-0 transform translate-x-4 transition-all duration-300 pointer-events-none flex items-center justify-center text-center';
             popupDiv.innerHTML = `\x3Cspan id="pushNotificationText">\x3C/span>`;
             document.body.appendChild(popupDiv);
-        }
-
-        window.updateNotificationUI();
-        window.syncNotifSettingsUI();
-        return;
-
-        // Inject Backdrop
-        if (!document.getElementById('notificationBackdrop')) {
-            const backdrop = document.createElement('div');
-            backdrop.id = 'notificationBackdrop';
-            backdrop.className = 'hidden fixed inset-0 bg-black/40 backdrop-blur-xs z-[999998] transition-opacity duration-300 opacity-0 pointer-events-none';
-            backdrop.onclick = window.closeNotificationPanel;
-            document.body.appendChild(backdrop);
-        }
-
-        // Inject Notification Center & Settings Panel (Slide-Over Drawer)
-        if (!document.getElementById('notificationPanel')) {
-            const panel = document.createElement('div');
-            panel.id = 'notificationPanel';
-            panel.className = 'fixed top-0 right-0 bottom-0 w-[420px] max-w-[95vw] bg-white dark:bg-neutral-900 shadow-2xl z-[999999] flex flex-col transform translate-x-full transition-transform duration-300 ease-out border-l border-neutral-200/80 dark:border-neutral-800 pointer-events-none';
-            panel.innerHTML = `
-                <!-- Header -->
-                \x3Cdiv class="px-6 py-5 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between bg-neutral-50/70 dark:bg-neutral-800/40">
-                    \x3Cdiv class="flex items-center gap-3">
-                        \x3Cdiv class="w-10 h-10 rounded-2xl bg-[#f4c74a]/20 border border-[#f4c74a]/40 text-[#242424] flex items-center justify-center font-bold">
-                            \x3Csvg class="w-5 h-5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                \x3Cpath stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                            \x3C/svg>
-                        \x3C/div>
-                        \x3Cdiv>
-                            \x3Ch3 class="text-sm font-extrabold text-[#1a1a1a] dark:text-white leading-tight">Notification Center\x3C/h3>
-                            \x3Cp class="text-[11px] text-neutral-400 font-medium">Alerts & System Preferences\x3C/p>
-                        \x3C/div>
-                    \x3C/div>
-                    \x3Cbutton onclick="closeNotificationPanel()" class="w-8 h-8 rounded-full bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-500 hover:text-black dark:hover:text-white flex items-center justify-center transition-colors" title="Close Panel (Esc)">
-                        \x3Csvg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            \x3Cpath stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        \x3C/svg>
-                    \x3C/button>
-                \x3C/div>
-
-                <!-- Navigation Tabs -->
-                \x3Cdiv class="flex items-center px-6 pt-3 pb-2 border-b border-neutral-100 dark:border-neutral-800 bg-white dark:bg-neutral-900 gap-2">
-                    \x3Cbutton id="notifTabInbox" onclick="switchNotifTab('inbox')" class="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 bg-[#242424] dark:bg-neutral-700 text-white shadow-xs">
-                        \x3Cspan>Inbox\x3C/span>
-                        \x3Cspan id="notifBadgeCount" class="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold bg-[#f4c74a] text-[#1a1a1a]">0\x3C/span>
-                    \x3C/button>
-                    \x3Cbutton id="notifTabSettings" onclick="switchNotifTab('settings')" class="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800">
-                        \x3Csvg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            \x3Cpath stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-                            \x3Cpath stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                        \x3C/svg>
-                        \x3Cspan>Settings\x3C/span>
-                    \x3C/button>
-                \x3C/div>
-
-                <!-- View 1: Inbox List -->
-                \x3Cdiv id="notifViewInbox" class="flex-1 overflow-y-auto p-6 flex flex-col">
-                    \x3Cdiv class="flex items-center justify-between mb-4">
-                        \x3Cspan class="text-xs font-bold text-neutral-400 uppercase tracking-wider">Recent Activity\x3C/span>
-                        \x3Cbutton onclick="clearNotifications(event)" class="text-[11px] font-bold text-neutral-400 hover:text-rose-500 transition-colors flex items-center gap-1">
-                            \x3Csvg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>\x3C/svg>
-                            Clear All
-                        \x3C/button>
-                    \x3C/div>
-                    \x3Cdiv id="notificationList" class="flex flex-col gap-2.5">\x3C/div>
-                \x3C/div>
-
-                <!-- View 2: Settings Controls -->
-                \x3Cdiv id="notifViewSettings" class="hidden flex-1 overflow-y-auto p-6 flex flex-col space-y-6">
-                    <!-- Master Control -->
-                    \x3Cdiv class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between">
-                        \x3Cdiv class="pr-3">
-                            \x3Ch4 class="text-xs font-extrabold text-[#1a1a1a] dark:text-white">Master Notifications\x3C/h4>
-                            \x3Cp class="text-[11px] text-neutral-500 dark:text-neutral-400">Turn on or off all system notifications\x3C/p>
-                        \x3C/div>
-                        \x3Clabel class="relative inline-flex items-center cursor-pointer flex-shrink-0">
-                            \x3Cinput type="checkbox" id="toggle_masterEnabled" onchange="updateNotifSetting('masterEnabled', this.checked)" class="sr-only peer">
-                            \x3Cdiv class="w-11 h-6 bg-neutral-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#f4c74a]">\x3C/div>
-                        \x3C/label>
-                    \x3C/div>
-
-                    <!-- Scheduled Business Alerts -->
-                    \x3Cdiv>
-                        \x3Ch5 class="text-[11px] font-bold text-neutral-400 uppercase tracking-wider mb-3">Routine & Operations Alerts\x3C/h5>
-                        \x3Cdiv class="space-y-2.5">
-                            \x3Cdiv class="flex items-center justify-between p-3 rounded-2xl bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-100 dark:border-neutral-700/60">
-                                \x3Cdiv class="pr-2">
-                                    \x3Cdiv class="text-xs font-bold text-[#1a1a1a] dark:text-white">Hourly Walk-in Entry\x3C/div>
-                                    \x3Cdiv class="text-[10px] text-neutral-400">Hourly prompt to log customer walk-in count\x3C/div>
-                                \x3C/div>
-                                \x3Clabel class="relative inline-flex items-center cursor-pointer flex-shrink-0">
-                                    \x3Cinput type="checkbox" id="toggle_hourlyWalkin" onchange="updateNotifSetting('hourlyWalkin', this.checked)" class="sr-only peer">
-                                    \x3Cdiv class="w-9 h-5 bg-neutral-200 dark:bg-neutral-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#f4c74a]">\x3C/div>
-                                \x3C/label>
-                            \x3C/div>
-                            \x3Cdiv class="flex items-center justify-between p-3 rounded-2xl bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-100 dark:border-neutral-700/60">
-                                \x3Cdiv class="pr-2">
-                                    \x3Cdiv class="text-xs font-bold text-[#1a1a1a] dark:text-white">Tailoring Supervisor Meeting\x3C/div>
-                                    \x3Cdiv class="text-[10px] text-neutral-400">Tuesday 11:00 AM weekly meeting reminder\x3C/div>
-                                \x3C/div>
-                                \x3Clabel class="relative inline-flex items-center cursor-pointer flex-shrink-0">
-                                    \x3Cinput type="checkbox" id="toggle_tailoringMeeting" onchange="updateNotifSetting('tailoringMeeting', this.checked)" class="sr-only peer">
-                                    \x3Cdiv class="w-9 h-5 bg-neutral-200 dark:bg-neutral-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#f4c74a]">\x3C/div>
-                                \x3C/label>
-                            \x3C/div>
-                            \x3Cdiv class="flex items-center justify-between p-3 rounded-2xl bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-100 dark:border-neutral-700/60">
-                                \x3Cdiv class="pr-2">
-                                    \x3Cdiv class="text-xs font-bold text-[#1a1a1a] dark:text-white">Store & Barcode Audits\x3C/div>
-                                    \x3Cdiv class="text-[10px] text-neutral-400">Alerts when audit schedules require update\x3C/div>
-                                \x3C/div>
-                                \x3Clabel class="relative inline-flex items-center cursor-pointer flex-shrink-0">
-                                    \x3Cinput type="checkbox" id="toggle_storeRoutine" onchange="updateNotifSetting('storeRoutine', this.checked)" class="sr-only peer">
-                                    \x3Cdiv class="w-9 h-5 bg-neutral-200 dark:bg-neutral-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#f4c74a]">\x3C/div>
-                                \x3C/label>
-                            \x3C/div>
-                            \x3Cdiv class="flex items-center justify-between p-3 rounded-2xl bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-100 dark:border-neutral-700/60">
-                                \x3Cdiv class="pr-2">
-                                    \x3Cdiv class="text-xs font-bold text-[#1a1a1a] dark:text-white">Daily Report Inwarding\x3C/div>
-                                    \x3Cdiv class="text-[10px] text-neutral-400">Alerts if daily CSV reports are missing\x3C/div>
-                                \x3C/div>
-                                \x3Clabel class="relative inline-flex items-center cursor-pointer flex-shrink-0">
-                                    \x3Cinput type="checkbox" id="toggle_pendingReports" onchange="updateNotifSetting('pendingReports', this.checked)" class="sr-only peer">
-                                    \x3Cdiv class="w-9 h-5 bg-neutral-200 dark:bg-neutral-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#f4c74a]">\x3C/div>
-                                \x3C/label>
-                            \x3C/div>
-                        \x3C/div>
-                    \x3C/div>
-
-                    <!-- Alert Delivery Channels -->
-                    \x3Cdiv>
-                        \x3Ch5 class="text-[11px] font-bold text-neutral-400 uppercase tracking-wider mb-3">Delivery Preferences\x3C/h5>
-                        \x3Cdiv class="space-y-2.5">
-                            \x3Cdiv class="flex items-center justify-between p-3 rounded-2xl bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-100 dark:border-neutral-700/60">
-                                \x3Cdiv class="pr-2">
-                                    \x3Cdiv class="text-xs font-bold text-[#1a1a1a] dark:text-white">Windows OS Notifications\x3C/div>
-                                    \x3Cdiv class="text-[10px] text-neutral-400">Deliver to Windows OS Action Center\x3C/div>
-                                \x3C/div>
-                                \x3Clabel class="relative inline-flex items-center cursor-pointer flex-shrink-0">
-                                    \x3Cinput type="checkbox" id="toggle_desktopPush" onchange="updateNotifSetting('desktopPush', this.checked)" class="sr-only peer">
-                                    \x3Cdiv class="w-9 h-5 bg-neutral-200 dark:bg-neutral-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#f4c74a]">\x3C/div>
-                                \x3C/label>
-                            \x3C/div>
-                            \x3Cdiv class="flex items-center justify-between p-3 rounded-2xl bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-100 dark:border-neutral-700/60">
-                                \x3Cdiv class="pr-2">
-                                    \x3Cdiv class="text-xs font-bold text-[#1a1a1a] dark:text-white">In-App Toast Banners\x3C/div>
-                                    \x3Cdiv class="text-[10px] text-neutral-400">Display floating popup banners in top-right\x3C/div>
-                                \x3C/div>
-                                \x3Clabel class="relative inline-flex items-center cursor-pointer flex-shrink-0">
-                                    \x3Cinput type="checkbox" id="toggle_toastPopups" onchange="updateNotifSetting('toastPopups', this.checked)" class="sr-only peer">
-                                    \x3Cdiv class="w-9 h-5 bg-neutral-200 dark:bg-neutral-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#f4c74a]">\x3C/div>
-                                \x3C/label>
-                            \x3C/div>
-                            \x3Cdiv class="flex items-center justify-between p-3 rounded-2xl bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-100 dark:border-neutral-700/60">
-                                \x3Cdiv class="pr-2">
-                                    \x3Cdiv class="text-xs font-bold text-[#1a1a1a] dark:text-white">Audio Notification Chime\x3C/div>
-                                    \x3Cdiv class="text-[10px] text-neutral-400">Play chime tone on incoming alerts\x3C/div>
-                                \x3C/div>
-                                \x3Clabel class="relative inline-flex items-center cursor-pointer flex-shrink-0">
-                                    \x3Cinput type="checkbox" id="toggle_audioChime" onchange="updateNotifSetting('audioChime', this.checked)" class="sr-only peer">
-                                    \x3Cdiv class="w-9 h-5 bg-neutral-200 dark:bg-neutral-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#f4c74a]">\x3C/div>
-                                \x3C/label>
-                            \x3C/div>
-                        \x3C/div>
-                    \x3C/div>
-
-                    <!-- Interactive Actions -->
-                    \x3Cdiv class="pt-2 flex flex-col gap-2">
-                        \x3Cbutton onclick="sendTestNotification()" class="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-[#f4c74a] hover:bg-[#e6b83b] text-[#1a1a1a] shadow-sm transition flex items-center justify-center gap-2">
-                            \x3Csvg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>\x3C/svg>
-                            Send Test Notification
-                        \x3C/button>
-                        \x3Cbutton onclick="resetNotifSettings()" class="w-full py-2 px-4 rounded-xl text-xs font-bold text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 transition">
-                            Reset to Default Preferences
-                        \x3C/button>
-                    \x3C/div>
-                \x3C/div>
-            `;
-            document.body.appendChild(panel);
-        }
-
-        // Push Popup Toast (floating banner)
-        if (!document.getElementById('pushNotificationPopup')) {
-            const popupDiv = document.createElement('div');
-            popupDiv.id = 'pushNotificationPopup';
-            popupDiv.className = 'fixed top-4 right-4 max-w-xs bg-[#242424] text-white text-xs font-bold px-4 py-3 rounded-2xl shadow-2xl z-[999999] opacity-0 transform translate-x-4 transition-all duration-300 pointer-events-none flex items-center justify-center text-center';
-            popupDiv.innerHTML = `\x3Cspan id="pushNotificationText">\x3C/span>`;
-            document.body.appendChild(popupDiv);
-        }
-
-        // Attach listeners to trigger buttons
-        const mainBell = document.getElementById('notificationBtn');
-        if (mainBell) {
-            mainBell.onclick = window.toggleNotificationPanel;
-        }
-
-        const sidebarBell = document.getElementById('sidebarNotificationBtn');
-        if (sidebarBell) {
-            sidebarBell.onclick = window.toggleNotificationPanel;
         }
 
         window.updateNotificationUI();
