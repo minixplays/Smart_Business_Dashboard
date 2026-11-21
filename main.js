@@ -1,6 +1,25 @@
-const { app, BrowserWindow, Menu, shell, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, Menu, shell, ipcMain, dialog, session } = require('electron');
 const path = require('path');
 const fs = require('fs');
+
+// --- 1. Security: Port Protection & Unauthorized Access Prevention ---
+// Smart Business Dashboard runs 100% locally with offline storage.
+// Strictly reject any CLI flags attempting to open remote debugging, inspection, or network ports.
+const blockedCliArgs = [
+  '--remote-debugging-port',
+  '--remote-debugging-address',
+  '--remote-debugging-pipe',
+  '--inspect',
+  '--inspect-brk'
+];
+
+for (const arg of process.argv) {
+  if (blockedCliArgs.some(blocked => arg.toLowerCase().startsWith(blocked))) {
+    console.error(`[Security Lockdown] Blocked unauthorized debugging port attempt: ${arg}`);
+    app.quit();
+    process.exit(1);
+  }
+}
 
 // Ensure unique application user model ID for Windows taskbar & notifications
 app.setAppUserModelId('com.smartbusiness.dashboard');
@@ -12,6 +31,7 @@ if (!gotTheLock) {
 }
 
 let mainWindow = null;
+let isQuitting = false;
 
 // Window state management for smooth desktop persistence
 const stateFilePath = path.join(app.getPath('userData'), 'window-state.json');
@@ -73,6 +93,7 @@ function createMainWindow() {
       contextIsolation: true,
       sandbox: false,
       webSecurity: true,
+      allowRunningInsecureContent: false,
       spellcheck: true
     }
   });
@@ -101,7 +122,7 @@ function createMainWindow() {
       shell.openExternal(url);
       return { action: 'deny' };
     }
-    return { action: 'allow' };
+    return { action: 'deny' }; // Disallow arbitrary webview popups
   });
 
   mainWindow.webContents.on('will-navigate', (event, url) => {
@@ -112,9 +133,32 @@ function createMainWindow() {
     }
   });
 
-  // Save state on close / resize
-  mainWindow.on('close', () => {
-    saveWindowState();
+  // Intercept close event to display an Exit Confirmation Alert
+  mainWindow.on('close', (event) => {
+    if (isQuitting) {
+      saveWindowState();
+      return;
+    }
+
+    event.preventDefault();
+
+    const choice = dialog.showMessageBoxSync(mainWindow, {
+      type: 'question',
+      buttons: ['Exit Application', 'Cancel'],
+      defaultId: 1, // Cancel is default to prevent accidental closure
+      cancelId: 1,
+      title: 'Exit Smart Business Dashboard',
+      message: 'Are you sure you want to close the application?',
+      detail: 'Any unsaved inputs or temporary sessions will be closed.',
+      icon: path.join(__dirname, 'assets', 'icon.png'),
+      noLink: true
+    });
+
+    if (choice === 0) {
+      isQuitting = true;
+      saveWindowState();
+      app.quit();
+    }
   });
 
   mainWindow.on('closed', () => {
@@ -150,7 +194,13 @@ function setupAppMenu() {
           }
         },
         { type: 'separator' },
-        isMac ? { role: 'close' } : { role: 'quit', label: 'Exit Application' }
+        {
+          label: 'Exit Application',
+          accelerator: 'CmdOrCtrl+Q',
+          click: () => {
+            if (mainWindow) mainWindow.close(); // Triggers exit confirmation
+          }
+        }
       ]
     },
     {
@@ -248,7 +298,7 @@ function setupAppMenu() {
         {
           label: 'Open Web Version / GitHub',
           click: async () => {
-            await shell.openExternal('https://github.com/minixplays/Smart_Business_Dashboard');
+            await shell.openExternal('https://github.com/minixplays/Smart-Business-Manager-Desktop-Pro');
           }
         },
         { type: 'separator' },
@@ -259,7 +309,7 @@ function setupAppMenu() {
               type: 'info',
               title: 'About Smart Business Dashboard',
               message: 'Smart Business Dashboard Desktop Application',
-              detail: `Version: ${app.getVersion()}\nElectron: ${process.versions.electron}\nChrome: ${process.versions.chrome}\nNode: ${process.versions.node}\nOS: ${process.platform} ${process.arch}`,
+              detail: `Version: ${app.getVersion()}\nElectron: ${process.versions.electron}\nChrome: ${process.versions.chrome}\nNode: ${process.versions.node}\nOS: ${process.platform} ${process.arch}\nSecurity: Protected Local Sandbox (Zero Open Ports)`,
               buttons: ['OK']
             });
           }
@@ -272,7 +322,7 @@ function setupAppMenu() {
   Menu.setApplicationMenu(menu);
 }
 
-// IPC Handlers for desktop interactions
+// --- IPC Handlers for desktop interactions ---
 ipcMain.handle('app:get-version', () => app.getVersion());
 ipcMain.handle('app:get-platform', () => process.platform);
 
@@ -298,8 +348,16 @@ ipcMain.on('window:maximize', () => {
   }
 });
 
+// window:close triggers confirmation check
 ipcMain.on('window:close', () => {
   if (mainWindow) mainWindow.close();
+});
+
+// Direct quit bypassing double-prompt when user confirmed from in-app exit modal
+ipcMain.on('app:quit-app', () => {
+  isQuitting = true;
+  saveWindowState();
+  app.quit();
 });
 
 ipcMain.handle('window:is-maximized', () => {
@@ -335,6 +393,17 @@ app.on('second-instance', () => {
 
 // App Lifecycle
 app.whenReady().then(() => {
+  // Session Security Lockdown: Deny unauthorized device and hardware permissions
+  session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
+    const allowedPermissions = ['clipboard-read', 'clipboard-sanitized-write'];
+    if (allowedPermissions.includes(permission)) {
+      return callback(true);
+    }
+    console.warn(`[Security Alert] Blocked unauthorized permission request: ${permission}`);
+    callback(false);
+  });
+  session.defaultSession.setPermissionCheckHandler(() => false);
+
   createMainWindow();
 
   app.on('activate', () => {

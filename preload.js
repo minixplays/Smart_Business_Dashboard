@@ -15,10 +15,11 @@ contextBridge.exposeInMainWorld('desktopAPI', {
   // External Navigation
   openExternal: (url) => ipcRenderer.invoke('app:open-external', url),
 
-  // Window Controls
+  // Window Controls & Exit Confirmation
   minimize: () => ipcRenderer.send('window:minimize'),
   maximize: () => ipcRenderer.send('window:maximize'),
   close: () => ipcRenderer.send('window:close'),
+  quitApp: () => ipcRenderer.send('app:quit-app'),
   isMaximized: () => ipcRenderer.invoke('window:is-maximized'),
   goHome: () => ipcRenderer.send('window:go-home'),
 

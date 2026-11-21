@@ -610,3 +610,59 @@ html.dark-mode #floatingThemeBtn:hover {
     color: #ffffff !important;
 }
 
+/* ============================================================
+   Loading Screen & Exit Modal Styles
+   ============================================================ */
+#appLoadingScreen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #faf8f5;
+    transition: opacity 0.45s ease-out, visibility 0.45s ease-out;
+}
+
+html.dark-mode #appLoadingScreen,
+body.dark-mode #appLoadingScreen {
+    background: #090a0f !important;
+}
+html.dark-mode #appLoadingScreen h2,
+body.dark-mode #appLoadingScreen h2 {
+    color: #f4f4f5 !important;
+}
+html.dark-mode #appLoadingScreen p,
+body.dark-mode #appLoadingScreen p {
+    color: #71717a !important;
+}
+html.dark-mode #appLoadingScreen .loading-track {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+#exitConfirmModal .modal-card {
+    background: #ffffff;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+html.dark-mode #exitConfirmModal .modal-card,
+body.dark-mode #exitConfirmModal .modal-card {
+    background: #18181b !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8) !important;
+}
+html.dark-mode #exitConfirmModal h3 {
+    color: #f4f4f5 !important;
+}
+html.dark-mode #exitConfirmModal p {
+    color: #a1a1aa !important;
+}
+html.dark-mode #exitConfirmModal .btn-cancel {
+    background: #27272a !important;
+    color: #e4e4e7 !important;
+}
+html.dark-mode #exitConfirmModal .btn-cancel:hover {
+    background: #3f3f46 !important;
+}
+
+

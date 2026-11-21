@@ -10,10 +10,15 @@ The native Windows desktop edition of **Smart Business Dashboard**, packaged and
   - Remembers window size, position, and maximized state across sessions.
   - Single-instance locking (prevents duplicate instances, focuses active window).
   - Clean application menu with native accelerators (`Ctrl+H` for Home, `F5` / `Ctrl+R` for Reload, `F12` for DevTools, `Ctrl+P` for Print, `F11` for Full Screen).
-- **Secure Architecture**:
-  - Context isolation enabled (`contextIsolation: true`).
-  - Node integration disabled in renderers (`nodeIntegration: false`).
-  - Preload bridge (`window.desktopAPI`) exposing safe native dialogs, external navigation, and window controls.
+- **Secure Architecture & Port Protection**:
+  - **Zero Open Ports**: The application runs completely offline using local file protocols (`file://`). It does not bind to any network port (no HTTP or WebSocket servers, no `0.0.0.0` or `127.0.0.1` listening sockets).
+  - **Debugging Port Blocklist**: Rejects any CLI flags attempting to open remote debugging ports (`--remote-debugging-port`, `--inspect`, etc.).
+  - **Context Isolation & Sandbox**: Renderer scripts are strictly isolated with Node.js integration disabled (`nodeIntegration: false`, `contextIsolation: true`).
+  - **Permission Lockdown**: Disallows unauthorized hardware access (camera, microphone, geolocation, sensors).
+  - **Content Security Policy (CSP)**: Enforces restrictive CSP denying unauthorized network socket connections.
+- **Loading & Exit Experience**:
+  - **App Loading Animation Screen**: Sleek executive loading splash with animated brand badge, progress track, and status messaging that transitions out smoothly once all routines and metrics load.
+  - **Exit Confirmation Alert**: Intercepts native window closing (`X` button, `Alt+F4`, `Ctrl+Q`, and in-app Exit button) to confirm exit and prevent accidental loss of active sessions.
 - **External Link Interception**:
   - External links (e.g. WhatsApp, documentation, web links) automatically open in the user's default system web browser via `shell.openExternal`.
 - **Packaging & Distribution**:

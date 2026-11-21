@@ -6,6 +6,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: file: https:; connect-src 'self';">
     <meta name="description" content="Smart Business Dashboard — manage reports, tools, calendar and more.">
     <title>Manager — Smart Business Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1629,6 +1630,33 @@
 
 <body class="theme-bg min-h-screen text-[#242424] flex overflow-x-hidden antialiased" style="margin:0;padding:0;">
 
+    <!-- ===== APP INITIAL LOADING SCREEN ===== -->
+    <div id="appLoadingScreen" class="fixed inset-0 z-[9999999] flex flex-col items-center justify-center transition-all duration-500 ease-out select-none" style="background:#faf8f5;">
+        <div class="flex flex-col items-center text-center max-w-sm px-6">
+            <!-- Animated Brand Logo -->
+            <div class="relative mb-6">
+                <div class="w-20 h-20 rounded-3xl bg-[#f4c74a] shadow-xl flex items-center justify-center text-[#1a1a1a] font-extrabold text-2xl tracking-tighter relative z-10 animate-pulse">
+                    PNR
+                </div>
+                <!-- Glowing ripple rings -->
+                <div class="absolute inset-0 rounded-3xl bg-[#f4c74a]/30 animate-ping" style="animation-duration: 2.2s;"></div>
+                <div class="absolute -inset-2 rounded-3xl border border-[#f4c74a]/40 animate-pulse"></div>
+            </div>
+
+            <!-- App Name & Subtitle -->
+            <h2 class="text-xl font-extrabold text-[#1a1a1a] tracking-tight mb-1">Smart Business Dashboard</h2>
+            <p class="text-xs font-semibold text-neutral-400 uppercase tracking-widest mb-6">Executive Management Suite</p>
+
+            <!-- Progress Track -->
+            <div class="w-52 h-1.5 bg-neutral-200/80 rounded-full overflow-hidden relative mb-3 loading-track">
+                <div id="loadingProgressBar" class="absolute top-0 bottom-0 left-0 bg-[#f4c74a] rounded-full transition-all duration-300 ease-out" style="width: 25%;"></div>
+            </div>
+
+            <!-- Dynamic status text -->
+            <span id="loadingStatusText" class="text-[11px] font-medium text-neutral-500 tracking-wide">Starting dashboard...</span>
+        </div>
+    </div>
+
     <!-- ===== LEFT SIDEBAR ===== -->
     <aside id="sidebar" class="sidebar-nav w-56 flex-shrink-0 h-screen sticky top-0 flex flex-col py-6 px-3 z-40 border-r border-neutral-800/40 select-none">
         <!-- Logo & Collapse Button -->
@@ -1713,6 +1741,12 @@
                 </svg>
                 <span class="nav-text">Notifications</span>
                 <span id="sidebar-notification-dot" class="hidden absolute top-3 right-3 w-1.5 h-1.5 bg-rose-500 rounded-full"></span>
+            </button>
+            <button class="sidebar-nav-item text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition" onclick="openExitModal()" title="Exit Application">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                </svg>
+                <span class="nav-text font-semibold">Exit App</span>
             </button>
 
             <!-- User Profile Row -->
@@ -3270,6 +3304,7 @@
             if (window._dashboardInitialized) return;
             window._dashboardInitialized = true;
 
+            updateLoadingProgress(55, 'Loading system modules...');
             if (typeof loadTheme === 'function') loadTheme();
             updateGreeting();
             updateClock();
@@ -3282,6 +3317,7 @@
             applyPinState(); // Restore pinned state for all app cards
             renderDashboardApps(); // Inject pinned tool cards into dashboard
             applyToolsPinState(); // Sync tools panel pin buttons
+            updateLoadingProgress(85, 'Finalizing dashboard...');
 
             // Animate KPI counters on load based on uploaded reports
             requestAnimationFrame(() => {
@@ -3342,7 +3378,54 @@
                     });
                 });
             }
+
+            // Dismiss the initial loading animation screen smoothly
+            updateLoadingProgress(100, 'Ready');
+            setTimeout(dismissLoadingScreen, 350);
         }
+
+        function updateLoadingProgress(percent, status) {
+            const bar = document.getElementById('loadingProgressBar');
+            const txt = document.getElementById('loadingStatusText');
+            if (bar) bar.style.width = percent + '%';
+            if (txt && status) txt.textContent = status;
+        }
+
+        function dismissLoadingScreen() {
+            const screen = document.getElementById('appLoadingScreen');
+            if (!screen) return;
+            screen.style.opacity = '0';
+            screen.style.pointerEvents = 'none';
+            setTimeout(() => {
+                if (screen && screen.parentNode) screen.parentNode.removeChild(screen);
+            }, 550);
+        }
+
+        function openExitModal() {
+            const modal = document.getElementById('exitConfirmModal');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeExitModal() {
+            const modal = document.getElementById('exitConfirmModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function confirmExitApp() {
+            if (window.desktopAPI && typeof window.desktopAPI.quitApp === 'function') {
+                window.desktopAPI.quitApp();
+            } else if (window.desktopAPI && typeof window.desktopAPI.close === 'function') {
+                window.desktopAPI.close();
+            } else {
+                window.close();
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeExitModal();
+            }
+        });
 
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initDashboard);
@@ -3575,6 +3658,30 @@
             renderDashboardTargets();
         }
     </script>
+
+    <!-- ===== EXIT CONFIRMATION MODAL ===== -->
+    <div id="exitConfirmModal" class="hidden fixed inset-0 z-[999999] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeExitModal()"></div>
+        <div class="modal-card relative rounded-3xl shadow-2xl w-full max-w-sm p-6 flex flex-col items-center text-center z-10 border border-neutral-100 transform transition-all scale-100">
+            <div class="w-14 h-14 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center mb-4 border border-rose-100">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                </svg>
+            </div>
+            <h3 class="text-lg font-extrabold text-[#1a1a1a] mb-1">Exit Application?</h3>
+            <p class="text-xs text-neutral-500 leading-relaxed mb-6">
+                Are you sure you want to close Smart Business Dashboard? Any unsaved inputs or active calculations will be closed.
+            </p>
+            <div class="flex items-center gap-3 w-full">
+                <button type="button" onclick="closeExitModal()" class="btn-cancel flex-1 py-2.5 px-4 rounded-xl text-xs font-bold text-neutral-600 bg-neutral-100 hover:bg-neutral-200 transition-colors">
+                    Cancel
+                </button>
+                <button type="button" onclick="confirmExitApp()" class="flex-1 py-2.5 px-4 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 shadow-md transition-colors">
+                    Exit Application
+                </button>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
