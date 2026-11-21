@@ -2,6 +2,19 @@
 (function () {
     'use strict';
 
+    // Synchronize session loaded state across all pages to ensure splash animation only runs on first app launch
+    if (!window.location.pathname.endsWith('index.html') && !window.location.href.endsWith('/') && !window.location.href.endsWith('index.html')) {
+        try {
+            sessionStorage.setItem('app_session_loaded', 'true');
+            if (!window.name || window.name.indexOf('app_session_loaded') === -1) {
+                window.name = (window.name ? window.name + '_' : '') + 'app_session_loaded';
+            }
+        } catch (e) {}
+        if (window.desktopAPI && typeof window.desktopAPI.markLoaded === 'function') {
+            window.desktopAPI.markLoaded();
+        }
+    }
+
     // 1. Notification Settings Management
     const SETTINGS_STORAGE_KEY = 'smart_dash_notif_settings';
     const DEFAULT_SETTINGS = {

@@ -8,9 +8,11 @@ contextBridge.exposeInMainWorld('desktopAPI', {
   isElectron: true,
   platform: process.platform,
 
-  // App Metadata
+  // App Metadata & Session
   getVersion: () => ipcRenderer.invoke('app:get-version'),
   getPlatform: () => ipcRenderer.invoke('app:get-platform'),
+  isFirstLoad: () => ipcRenderer.invoke('app:is-first-load'),
+  markLoaded: () => ipcRenderer.send('app:mark-loaded'),
 
   // External Navigation
   openExternal: (url) => ipcRenderer.invoke('app:open-external', url),

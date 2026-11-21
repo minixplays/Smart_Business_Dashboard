@@ -15,6 +15,18 @@
     <link rel="stylesheet" href="assets/theme.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="assets/theme.js"></script>
+    <script>
+        // Check synchronously if this session was already initialized to avoid re-triggering the loading animation on page redirects
+        (function () {
+            try {
+                var alreadyLoaded = (window.name && window.name.indexOf('app_session_loaded') !== -1) ||
+                                   sessionStorage.getItem('app_session_loaded') === 'true';
+                if (alreadyLoaded) {
+                    document.documentElement.classList.add('app-already-loaded');
+                }
+            } catch (e) {}
+        })();
+    </script>
     <script src="assets/notifications.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
@@ -3342,7 +3354,49 @@
                 });
             }
 
-            // Run a smooth 5-second loading sequence while dashboard components fully warm up
+            // Check if initial session loading was already completed; only run animation on first app open
+            checkAndRunLoadingScreen();
+        }
+
+        async function checkAndRunLoadingScreen() {
+            let alreadyLoaded = false;
+            try {
+                if ((window.name && window.name.indexOf('app_session_loaded') !== -1) ||
+                    sessionStorage.getItem('app_session_loaded') === 'true') {
+                    alreadyLoaded = true;
+                }
+            } catch (e) {}
+
+            if (window.desktopAPI && typeof window.desktopAPI.isFirstLoad === 'function') {
+                try {
+                    const isFirst = await window.desktopAPI.isFirstLoad();
+                    if (!isFirst) {
+                        alreadyLoaded = true;
+                    }
+                } catch (e) {}
+            }
+
+            if (alreadyLoaded) {
+                // Instantly remove loading screen without delay on page redirects
+                const screen = document.getElementById('appLoadingScreen');
+                if (screen && screen.parentNode) {
+                    screen.parentNode.removeChild(screen);
+                }
+                return;
+            }
+
+            // Mark session as initialized across storage and desktop main process
+            try {
+                sessionStorage.setItem('app_session_loaded', 'true');
+                if (!window.name || window.name.indexOf('app_session_loaded') === -1) {
+                    window.name = (window.name ? window.name + '_' : '') + 'app_session_loaded';
+                }
+            } catch (e) {}
+            if (window.desktopAPI && typeof window.desktopAPI.markLoaded === 'function') {
+                window.desktopAPI.markLoaded();
+            }
+
+            // Run a smooth 5-second loading sequence only on first startup
             scheduleLoadingAnimation();
         }
 
@@ -3375,6 +3429,15 @@
         }
 
         function dismissLoadingScreen() {
+            try {
+                sessionStorage.setItem('app_session_loaded', 'true');
+                if (!window.name || window.name.indexOf('app_session_loaded') === -1) {
+                    window.name = (window.name ? window.name + '_' : '') + 'app_session_loaded';
+                }
+            } catch (e) {}
+            if (window.desktopAPI && typeof window.desktopAPI.markLoaded === 'function') {
+                window.desktopAPI.markLoaded();
+            }
             const screen = document.getElementById('appLoadingScreen');
             if (!screen) return;
             screen.style.opacity = '0';

@@ -323,6 +323,12 @@ function setupAppMenu() {
 }
 
 // --- IPC Handlers for desktop interactions ---
+let appInitialLoaded = false;
+ipcMain.handle('app:is-first-load', () => !appInitialLoaded);
+ipcMain.on('app:mark-loaded', () => {
+  appInitialLoaded = true;
+});
+
 ipcMain.handle('app:get-version', () => app.getVersion());
 ipcMain.handle('app:get-platform', () => process.platform);
 

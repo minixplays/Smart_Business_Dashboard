@@ -646,6 +646,12 @@ html.dark-mode #floatingThemeBtn:hover {
     transition: opacity 0.45s ease-out, visibility 0.45s ease-out;
 }
 
+html.app-already-loaded #appLoadingScreen,
+body.app-already-loaded #appLoadingScreen,
+.app-already-loaded #appLoadingScreen {
+    display: none !important;
+}
+
 html.dark-mode #appLoadingScreen,
 body.dark-mode #appLoadingScreen {
     background: #090a0f !important;
