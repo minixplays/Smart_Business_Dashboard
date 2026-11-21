@@ -59,8 +59,7 @@
     };
 
     // 2. Audio Chime (Synthesized Web Audio API)
-    function playNotificationChime() {
-        if (!window.notifSettings.audioChime || !window.notifSettings.masterEnabled) return;
+    function playRawChime() {
         try {
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             if (!AudioContext) return;
@@ -91,6 +90,14 @@
             osc2.stop(ctx.currentTime + 0.45);
         } catch (e) {}
     }
+
+    function playNotificationChime() {
+        if (!window.notifSettings.audioChime || !window.notifSettings.masterEnabled) return;
+        playRawChime();
+    }
+
+    window.playNotificationChime = playNotificationChime;
+    window.playNotificationChimeExplicit = playRawChime;
 
     // 3. Tab Switching in Notification Center
     window.switchNotifTab = function (tab) {
@@ -198,6 +205,9 @@
             localStorage.setItem('smart_dash_notifications', JSON.stringify(window.notifications));
         } catch (e) {}
         window.updateNotificationUI();
+        try {
+            window.dispatchEvent(new CustomEvent('smart_dash_notification_added'));
+        } catch (e) {}
     };
 
     window.triggerNotification = function (msg, category = 'general') {
@@ -250,49 +260,19 @@
         }
     };
 
-    window.toggleNotificationPanel = function (e) {
+    window.navigateToNotificationPage = function (e) {
         if (e && e.preventDefault) {
             e.preventDefault();
             e.stopPropagation();
         }
-        const panel = document.getElementById('notificationPanel');
-        const backdrop = document.getElementById('notificationBackdrop');
-        if (!panel) return;
-
-        const isOpen = panel.classList.contains('translate-x-0');
-
-        if (!isOpen) {
-            // Open right drawer
-            panel.classList.remove('translate-x-full', 'pointer-events-none');
-            panel.classList.add('translate-x-0', 'pointer-events-auto');
-            if (backdrop) {
-                backdrop.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
-                backdrop.classList.add('opacity-100', 'pointer-events-auto');
-            }
-            window.updateNotificationUI();
-            window.syncNotifSettingsUI();
-        } else {
-            window.closeNotificationPanel();
+        if (window.location.pathname.endsWith('notifications.html') || window.location.href.includes('notifications.html')) {
+            return;
         }
+        window.location.href = 'notifications.html';
     };
 
-    window.closeNotificationPanel = function () {
-        const panel = document.getElementById('notificationPanel');
-        const backdrop = document.getElementById('notificationBackdrop');
-        if (panel) {
-            panel.classList.remove('translate-x-0', 'pointer-events-auto');
-            panel.classList.add('translate-x-full', 'pointer-events-none');
-        }
-        if (backdrop) {
-            backdrop.classList.remove('opacity-100', 'pointer-events-auto');
-            backdrop.classList.add('opacity-0', 'pointer-events-none');
-            setTimeout(() => {
-                if (backdrop.classList.contains('opacity-0')) {
-                    backdrop.classList.add('hidden');
-                }
-            }, 300);
-        }
-    };
+    window.toggleNotificationPanel = window.navigateToNotificationPage;
+    window.closeNotificationPanel = function () {};
 
     window.clearNotifications = function (e) {
         if (e && e.preventDefault) {
@@ -305,8 +285,31 @@
 
     // 5. Inject UI Elements into Document Body
     function initNotificationsUI() {
-        if (window._notifUIInitialized && document.getElementById('notificationPanel')) return;
+        if (window._notifUIInitialized) return;
         window._notifUIInitialized = true;
+
+        const mainBell = document.getElementById('notificationBtn');
+        if (mainBell) {
+            mainBell.onclick = window.navigateToNotificationPage;
+        }
+
+        const sidebarBell = document.getElementById('sidebarNotificationBtn');
+        if (sidebarBell) {
+            sidebarBell.onclick = window.navigateToNotificationPage;
+        }
+
+        // Push Popup Toast (floating banner)
+        if (!document.getElementById('pushNotificationPopup')) {
+            const popupDiv = document.createElement('div');
+            popupDiv.id = 'pushNotificationPopup';
+            popupDiv.className = 'fixed top-4 right-4 max-w-xs bg-[#242424] text-white text-xs font-bold px-4 py-3 rounded-2xl shadow-2xl z-[999999] opacity-0 transform translate-x-4 transition-all duration-300 pointer-events-none flex items-center justify-center text-center';
+            popupDiv.innerHTML = `\x3Cspan id="pushNotificationText">\x3C/span>`;
+            document.body.appendChild(popupDiv);
+        }
+
+        window.updateNotificationUI();
+        window.syncNotifSettingsUI();
+        return;
 
         // Inject Backdrop
         if (!document.getElementById('notificationBackdrop')) {

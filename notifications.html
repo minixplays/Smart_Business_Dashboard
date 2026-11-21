@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manage system alerts, operational reminders, and notification preferences.">
+    <title>Notification Center – Smart Business Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="assets/normalize.css">
+    <link rel="stylesheet" href="assets/theme.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/theme.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #faf8f5;
+            color: #242424;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        #sidebar {
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            background: #14161d;
+        }
+
+        .sidebar-expanded {
+            width: 260px;
+            min-width: 260px;
+        }
+
+        .sidebar-collapsed {
+            width: 76px;
+            min-width: 76px;
+        }
+
+        .sidebar-collapsed .logo-text,
+        .sidebar-collapsed .nav-text,
+        .sidebar-collapsed .profile-text,
+        .sidebar-collapsed .collapse-icon-expanded {
+            display: none !important;
+        }
+
+        .sidebar-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.65rem 0.85rem;
+            border-radius: 0.85rem;
+            font-size: 0.825rem;
+            font-weight: 600;
+            color: #9ca3af;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            border: none;
+            background: transparent;
+        }
+
+        .sidebar-nav-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #ffffff;
+        }
+
+        .sidebar-nav-item.active {
+            background: rgba(244, 199, 74, 0.15);
+            color: #f4c74a;
+        }
+
+        .sidebar-nav-item.active svg {
+            color: #f4c74a;
+        }
+
+        .sidebar-collapsed .sidebar-nav-item {
+            justify-content: center !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+
+        /* Dark mode overrides for notifications page */
+        html.dark-mode body,
+        body.dark-mode {
+            background: #0f1015 !important;
+            color: #f4f4f5 !important;
+        }
+
+        html.dark-mode .notif-card,
+        body.dark-mode .notif-card {
+            background: #171923 !important;
+            border-color: rgba(255, 255, 255, 0.07) !important;
+        }
+
+        html.dark-mode .notif-item-card,
+        body.dark-mode .notif-item-card {
+            background: #1e212d !important;
+            border-color: rgba(255, 255, 255, 0.06) !important;
+        }
+
+        html.dark-mode .notif-item-card:hover,
+        body.dark-mode .notif-item-card:hover {
+            background: #252937 !important;
+        }
+
+        html.dark-mode .notif-setting-row,
+        body.dark-mode .notif-setting-row {
+            background: rgba(255, 255, 255, 0.03) !important;
+            border-color: rgba(255, 255, 255, 0.06) !important;
+        }
+
+        html.dark-mode .notif-setting-row:hover,
+        body.dark-mode .notif-setting-row:hover {
+            background: rgba(255, 255, 255, 0.06) !important;
+        }
+
+        .page-exit {
+            opacity: 0;
+            transition: opacity 0.2s ease-out;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex antialiased">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside id="sidebar" class="sidebar-expanded h-screen sticky top-0 flex flex-col justify-between p-4 z-40 border-r border-neutral-800">
+        <div>
+            <!-- Header: Logo & Toggle -->
+            <div class="sidebar-header flex items-center justify-between px-2 mb-7">
+                <div class="flex items-center gap-2.5 cursor-pointer" onclick="navigateTo('index')">
+                    <div class="w-8 h-8 rounded-full bg-[#f4c74a] flex items-center justify-center text-[#1a1a1a] font-extrabold text-xs shadow-inner flex-shrink-0">
+                        PNR
+                    </div>
+                    <span class="logo-text font-extrabold text-base tracking-tight text-white">Manager</span>
+                </div>
+                <button onclick="toggleSidebar()" class="collapse-icon-expanded p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-white/5 transition" title="Toggle Sidebar">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="flex flex-col gap-1.5">
+                <button class="sidebar-nav-item" onclick="navigateTo('index')">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    <span class="nav-text">Dashboard</span>
+                </button>
+                <button class="sidebar-nav-item" onclick="navigateTo('smartNotes')">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span class="nav-text">Smart Notes</span>
+                </button>
+                <button class="sidebar-nav-item" onclick="navigateTo('allocation')">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                    </svg>
+                    <span class="nav-text">Allocation</span>
+                </button>
+                <button class="sidebar-nav-item" onclick="navigateTo('reports')">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span class="nav-text">Reports</span>
+                </button>
+                <button class="sidebar-nav-item" onclick="navigateTo('Pending_PO')">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span class="nav-text">Pending POs</span>
+                </button>
+                <button class="sidebar-nav-item" onclick="navigateTo('calendar')">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span class="nav-text">Calendar</span>
+                </button>
+                <button class="sidebar-nav-item" onclick="navigateTo('target')">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0013 3.06V1h-2v2.06A8.994 8.994 0 003.06 11H1v2h2.06A8.994 8.994 0 0011 20.94V23h2v-2.06A8.994 8.994 0 0020.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z" />
+                    </svg>
+                    <span class="nav-text">Target</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Bottom Items -->
+        <div class="flex flex-col gap-1.5 pt-3 border-t border-white/10">
+            <button class="sidebar-nav-item" onclick="showToast('General Settings', 'info')">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span class="nav-text">Settings</span>
+            </button>
+            <button id="sidebarNotificationBtn" class="sidebar-nav-item active relative" onclick="window.location.reload()">
+                <svg class="w-4 h-4 flex-shrink-0 text-[#f4c74a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                <span class="nav-text font-bold text-[#f4c74a]">Notifications</span>
+                <span id="sidebar-notification-dot" class="hidden absolute top-3 right-3 w-2 h-2 bg-rose-500 rounded-full"></span>
+            </button>
+            <button class="sidebar-nav-item text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition" onclick="openExitModal()" title="Exit Application">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                <span class="nav-text font-semibold">Exit App</span>
+            </button>
+
+            <!-- User Profile Row -->
+            <div class="user-profile-row flex items-center gap-2.5 px-2 py-2 mt-1 pt-3 border-t border-white/10 cursor-pointer">
+                <div class="w-8 h-8 rounded-full bg-[#1b1e24] border border-neutral-700/80 flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
+                    AU
+                </div>
+                <div class="profile-text flex-grow min-w-0">
+                    <div class="text-xs font-bold text-white truncate leading-tight">Admin User</div>
+                    <div class="text-[10px] text-neutral-400 font-medium">Super Admin</div>
+                </div>
+                <svg class="profile-text w-3.5 h-3.5 text-neutral-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ===== MAIN CONTENT COLUMN ===== -->
+    <div class="flex-1 flex flex-col min-w-0 min-h-screen overflow-y-auto">
+
+        <!-- ===== TOP BAR HEADER ===== -->
+        <header class="flex items-center justify-between px-6 py-4 bg-transparent sticky top-0 z-30 backdrop-blur-md">
+            <!-- Left: Sidebar Toggle & Breadcrumb -->
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSidebar()" class="w-9 h-9 rounded-xl bg-white dark:bg-neutral-800 border border-neutral-200/60 dark:border-neutral-700 shadow-xs flex items-center justify-center text-neutral-700 dark:text-neutral-200 hover:text-black dark:hover:text-white transition" title="Toggle Sidebar">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+                <div class="hidden sm:flex items-center gap-2 text-xs font-semibold text-neutral-400">
+                    <span class="cursor-pointer hover:text-neutral-600 dark:hover:text-neutral-300" onclick="navigateTo('index')">Dashboard</span>
+                    <span>/</span>
+                    <span class="text-[#1a1a1a] dark:text-white font-bold">Notifications</span>
+                </div>
+            </div>
+
+            <!-- Center: Search Notifications -->
+            <div class="flex-1 max-w-md mx-4">
+                <div class="relative w-full">
+                    <div class="absolute inset-y-0 left-3.5 flex items-center pointer-events-none">
+                        <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                    <input type="text" id="notifSearchInput" oninput="onSearchNotifications(this.value)" placeholder="Search notifications..."
+                        class="w-full pl-10 pr-4 py-2 text-xs sm:text-sm font-medium bg-white dark:bg-neutral-800 rounded-full border border-neutral-200/80 dark:border-neutral-700 shadow-xs focus:outline-none focus:ring-2 focus:ring-[#f4c74a]/40 focus:border-[#f4c74a] transition text-[#1a1a1a] dark:text-white placeholder-neutral-400">
+                </div>
+            </div>
+
+            <!-- Right: Clock, Theme & Profile -->
+            <div class="flex items-center gap-2.5">
+                <div class="hidden sm:flex flex-col items-end mr-2">
+                    <span id="live-clock" class="text-xs font-bold text-[#1a1a1a] dark:text-white tabular-nums tracking-tight">--:-- --</span>
+                    <span id="live-date" class="text-[9px] font-bold text-neutral-400 uppercase tracking-widest">---</span>
+                </div>
+                <button onclick="toggleTheme()" class="w-9 h-9 rounded-full bg-white dark:bg-neutral-800 border border-neutral-200/80 dark:border-neutral-700 shadow-xs flex items-center justify-center text-neutral-500 dark:text-neutral-300 hover:text-[#1a1a1a] hover:bg-neutral-50 dark:hover:bg-neutral-700 transition theme-toggle relative" title="Toggle Theme">
+                    <span class="sun-icon">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1m-16 0H1m15.364 1.636l.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                    </span>
+                    <span class="moon-icon">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                        </svg>
+                    </span>
+                </button>
+                <div class="w-9 h-9 rounded-full bg-[#171920] text-white flex items-center justify-center text-xs font-bold shadow-xs cursor-pointer ml-0.5">
+                    AU
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== MAIN VIEWPORT ===== -->
+        <main class="flex-1 px-6 sm:px-8 py-6 max-w-7xl w-full mx-auto space-y-6">
+
+            <!-- Banner / Header Section -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-neutral-800/80 p-6 rounded-3xl border border-neutral-200/80 dark:border-neutral-700 shadow-xs">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-2xl bg-[#f4c74a]/20 border border-[#f4c74a]/40 text-[#f4c74a] flex items-center justify-center font-bold flex-shrink-0 shadow-inner">
+                        <svg class="w-7 h-7 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2.5">
+                            <h1 class="text-xl sm:text-2xl font-extrabold text-[#1a1a1a] dark:text-white tracking-tight">Notification Center</h1>
+                            <span id="activeNotifsPill" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#f4c74a] text-[#1a1a1a]">0 Active</span>
+                        </div>
+                        <p class="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 mt-1">
+                            Review live activity, alerts, and manage all automated routine notification switches.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2.5 flex-wrap">
+                    <button onclick="window.sendTestNotification()" class="px-4 py-2.5 rounded-xl bg-[#f4c74a] hover:bg-[#e6b83b] text-[#1a1a1a] font-bold text-xs shadow-xs transition flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        Send Test Alert
+                    </button>
+                    <button onclick="clearAllNotificationsWithConfirm()" class="px-4 py-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-700 dark:hover:bg-neutral-600 text-neutral-700 dark:text-neutral-200 font-bold text-xs transition flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        Clear All
+                    </button>
+                </div>
+            </div>
+
+            <!-- Two-Column Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+                <!-- Left Column: Notifications Feed (7 Cols) -->
+                <div class="lg:col-span-7 notif-card bg-white dark:bg-neutral-800/80 rounded-3xl border border-neutral-200/80 dark:border-neutral-700 shadow-xs p-6 flex flex-col min-h-[500px]">
+                    <div class="flex items-center justify-between pb-4 border-b border-neutral-100 dark:border-neutral-700 mb-4">
+                        <div class="flex items-center gap-2">
+                            <h2 class="text-sm font-extrabold text-[#1a1a1a] dark:text-white uppercase tracking-wider">Active Alerts & Activity Feed</h2>
+                            <span id="inboxCountBadge" class="text-xs font-bold text-neutral-400">(0)</span>
+                        </div>
+                        <div class="flex items-center gap-1.5" id="categoryFilterContainer">
+                            <button onclick="setCategoryFilter('all')" data-filter="all" class="category-filter-btn px-3 py-1 rounded-lg text-xs font-bold bg-[#242424] dark:bg-neutral-700 text-white transition">All</button>
+                            <button onclick="setCategoryFilter('walkin')" data-filter="walkin" class="category-filter-btn px-3 py-1 rounded-lg text-xs font-semibold text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition">Walk-in</button>
+                            <button onclick="setCategoryFilter('tailoring')" data-filter="tailoring" class="category-filter-btn px-3 py-1 rounded-lg text-xs font-semibold text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition">Meeting</button>
+                            <button onclick="setCategoryFilter('routine')" data-filter="routine" class="category-filter-btn px-3 py-1 rounded-lg text-xs font-semibold text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition">Audits</button>
+                            <button onclick="setCategoryFilter('report')" data-filter="report" class="category-filter-btn px-3 py-1 rounded-lg text-xs font-semibold text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition">Reports</button>
+                        </div>
+                    </div>
+
+                    <!-- Notification List Container -->
+                    <div id="fullNotificationList" class="flex flex-col gap-3 flex-1 overflow-y-auto max-h-[640px] pr-1">
+                        <!-- Injected via JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Right Column: Routine & Delivery Settings (5 Cols) -->
+                <div class="lg:col-span-5 space-y-6">
+
+                    <!-- Master Notification Card -->
+                    <div class="notif-card bg-white dark:bg-neutral-800/80 rounded-3xl border border-neutral-200/80 dark:border-neutral-700 shadow-xs p-6">
+                        <div class="flex items-center justify-between">
+                            <div class="pr-3">
+                                <h3 class="text-sm font-extrabold text-[#1a1a1a] dark:text-white">Master Notifications Switch</h3>
+                                <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">Globally turn on or off all automated notifications and scheduled reminders.</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
+                                <input type="checkbox" id="toggle_masterEnabled" onchange="updateRoutineSetting('masterEnabled', this.checked)" class="sr-only peer">
+                                <div class="w-12 h-6 bg-neutral-200 dark:bg-neutral-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#f4c74a]"></div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Routine Operations Alerts Card -->
+                    <div class="notif-card bg-white dark:bg-neutral-800/80 rounded-3xl border border-neutral-200/80 dark:border-neutral-700 shadow-xs p-6 space-y-4">
+                        <div>
+                            <h3 class="text-xs font-extrabold text-[#1a1a1a] dark:text-white uppercase tracking-wider">Routine Operations Alerts</h3>
+                            <p class="text-[11px] text-neutral-400 mt-0.5">Toggle recurring operational reminders for store staff and managers.</p>
+                        </div>
+
+                        <div class="space-y-3">
+                            <!-- Hourly Walk-in -->
+                            <div class="notif-setting-row flex items-center justify-between p-3.5 rounded-2xl bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-100 dark:border-neutral-700/60 transition">
+                                <div class="pr-3">
+                                    <div class="text-xs font-bold text-[#1a1a1a] dark:text-white flex items-center gap-2">
+                                        <span>Hourly Walk-in Entry</span>
+                                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300">Routine</span>
+                                    </div>
+                                    <div class="text-[11px] text-neutral-400 mt-0.5">Hourly prompt to log store customer walk-in footfall count</div>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
+                                    <input type="checkbox" id="toggle_hourlyWalkin" onchange="updateRoutineSetting('hourlyWalkin', this.checked)" class="sr-only peer">
+                                    <div class="w-10 h-5 bg-neutral-200 dark:bg-neutral-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#f4c74a]"></div>
+                                </label>
+                            </div>
+
+                            <!-- Tailoring Meeting -->
+                            <div class="notif-setting-row flex items-center justify-between p-3.5 rounded-2xl bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-100 dark:border-neutral-700/60 transition">
+                                <div class="pr-3">
+                                    <div class="text-xs font-bold text-[#1a1a1a] dark:text-white flex items-center gap-2">
+                                        <span>Tailoring Supervisor Meeting</span>
+                                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">Weekly</span>
+                                    </div>
+                                    <div class="text-[11px] text-neutral-400 mt-0.5">Tuesday 11:00 AM weekly tailoring supervisor review reminder</div>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
+                                    <input type="checkbox" id="toggle_tailoringMeeting" onchange="updateRoutineSetting('tailoringMeeting', this.checked)" class="sr-only peer">
+                                    <div class="w-10 h-5 bg-neutral-200 dark:bg-neutral-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#f4c74a]"></div>
+                                </label>
+                            </div>
+
+                            <!-- Store & Barcode Audits -->
+                            <div class="notif-setting-row flex items-center justify-between p-3.5 rounded-2xl bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-100 dark:border-neutral-700/60 transition">
+                                <div class="pr-3">
+                                    <div class="text-xs font-bold text-[#1a1a1a] dark:text-white flex items-center gap-2">
+                                        <span>Store & Barcode Audits</span>
+                                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300">Audits</span>
+                                    </div>
+                                    <div class="text-[11px] text-neutral-400 mt-0.5">Alerts when store section barcode audits are due</div>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
+                                    <input type="checkbox" id="toggle_storeRoutine" onchange="updateRoutineSetting('storeRoutine', this.checked)" class="sr-only peer">
+                                    <div class="w-10 h-5 bg-neutral-200 dark:bg-neutral-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#f4c74a]"></div>
+                                </label>
+                            </div>
+
+                            <!-- Daily Report Inwarding -->
+                            <div class="notif-setting-row flex items-center justify-between p-3.5 rounded-2xl bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-100 dark:border-neutral-700/60 transition">
+                                <div class="pr-3">
+                                    <div class="text-xs font-bold text-[#1a1a1a] dark:text-white flex items-center gap-2">
+                                        <span>Daily Report Inwarding</span>
+                                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">Daily</span>
+                                    </div>
+                                    <div class="text-[11px] text-neutral-400 mt-0.5">Alerts if daily CSV reports have not been uploaded</div>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
+                                    <input type="checkbox" id="toggle_pendingReports" onchange="updateRoutineSetting('pendingReports', this.checked)" class="sr-only peer">
+                                    <div class="w-10 h-5 bg-neutral-200 dark:bg-neutral-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#f4c74a]"></div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Delivery Channels Card -->
+                    <div class="notif-card bg-white dark:bg-neutral-800/80 rounded-3xl border border-neutral-200/80 dark:border-neutral-700 shadow-xs p-6 space-y-4">
+                        <div>
+                            <h3 class="text-xs font-extrabold text-[#1a1a1a] dark:text-white uppercase tracking-wider">Alert Delivery Channels</h3>
+                            <p class="text-[11px] text-neutral-400 mt-0.5">Configure how you receive alert prompts while using the application.</p>
+                        </div>
+
+                        <div class="space-y-3">
+                            <!-- Windows OS Push -->
+                            <div class="notif-setting-row flex items-center justify-between p-3.5 rounded-2xl bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-100 dark:border-neutral-700/60 transition">
+                                <div class="pr-3">
+                                    <div class="text-xs font-bold text-[#1a1a1a] dark:text-white">Windows OS Notifications</div>
+                                    <div class="text-[11px] text-neutral-400 mt-0.5">Deliver directly to Windows Notification Action Center</div>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
+                                    <input type="checkbox" id="toggle_desktopPush" onchange="updateRoutineSetting('desktopPush', this.checked)" class="sr-only peer">
+                                    <div class="w-10 h-5 bg-neutral-200 dark:bg-neutral-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#f4c74a]"></div>
+                                </label>
+                            </div>
+
+                            <!-- In-App Toast Banners -->
+                            <div class="notif-setting-row flex items-center justify-between p-3.5 rounded-2xl bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-100 dark:border-neutral-700/60 transition">
+                                <div class="pr-3">
+                                    <div class="text-xs font-bold text-[#1a1a1a] dark:text-white">In-App Toast Banners</div>
+                                    <div class="text-[11px] text-neutral-400 mt-0.5">Display floating toast banners in top-right corner</div>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
+                                    <input type="checkbox" id="toggle_toastPopups" onchange="updateRoutineSetting('toastPopups', this.checked)" class="sr-only peer">
+                                    <div class="w-10 h-5 bg-neutral-200 dark:bg-neutral-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#f4c74a]"></div>
+                                </label>
+                            </div>
+
+                            <!-- Audio Chime -->
+                            <div class="notif-setting-row flex items-center justify-between p-3.5 rounded-2xl bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-100 dark:border-neutral-700/60 transition">
+                                <div class="pr-3">
+                                    <div class="text-xs font-bold text-[#1a1a1a] dark:text-white flex items-center gap-2">
+                                        <span>Audio Notification Chime</span>
+                                        <button onclick="playChimeSample()" class="text-[10px] text-amber-600 dark:text-amber-400 hover:underline font-bold">Play Sample</button>
+                                    </div>
+                                    <div class="text-[11px] text-neutral-400 mt-0.5">Play two-tone audio chime on incoming alerts</div>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
+                                    <input type="checkbox" id="toggle_audioChime" onchange="updateRoutineSetting('audioChime', this.checked)" class="sr-only peer">
+                                    <div class="w-10 h-5 bg-neutral-200 dark:bg-neutral-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#f4c74a]"></div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reset Preferences -->
+                    <div class="pt-1">
+                        <button onclick="resetRoutineSettings()" class="w-full py-2.5 px-4 rounded-xl text-xs font-bold text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition text-center">
+                            ↺ Reset All Notification Preferences to Defaults
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ===== EXIT CONFIRMATION MODAL ===== -->
+    <div id="exitConfirmModal" class="hidden fixed inset-0 z-[999999] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeExitModal()"></div>
+        <div class="modal-card relative rounded-3xl shadow-2xl w-full max-w-sm p-6 flex flex-col items-center text-center z-10 bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 transform transition-all scale-100">
+            <div class="w-14 h-14 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-500 flex items-center justify-center mb-4 border border-rose-100 dark:border-rose-900/40">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+            </div>
+            <h3 class="text-lg font-extrabold text-[#1a1a1a] dark:text-white mb-1">Exit Application?</h3>
+            <p class="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed mb-6">
+                Are you sure you want to close Smart Business Dashboard? Any unsaved inputs or active calculations will be closed.
+            </p>
+            <div class="flex items-center gap-3 w-full">
+                <button type="button" onclick="closeExitModal()" class="btn-cancel flex-1 py-2.5 px-4 rounded-xl text-xs font-bold text-neutral-600 dark:text-neutral-300 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors">
+                    Cancel
+                </button>
+                <button type="button" onclick="confirmExitApp()" class="btn-danger flex-1 py-2.5 px-4 rounded-xl text-xs font-bold text-white bg-rose-500 hover:bg-rose-600 shadow-md shadow-rose-500/20 transition-all">
+                    Exit App
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== LOGIC SCRIPTS ===== -->
+    <script src="assets/notifications.js"></script>
+    <script>
+        // Navigation Handler
+        function navigateTo(pageId) {
+            const routes = {
+                'index': 'index.html',
+                'dashboard': 'index.html',
+                'quotation': 'quotationMaker.html',
+                'global-count': 'gcMaker.html',
+                'dsrmaker': 'dsrMaker.html',
+                'knockoff': 'knockoffMaker.html',
+                'unconfirmed': 'unconfirmedStock.html',
+                'poMaker': 'poMaker.html',
+                'tailoring': 'Tailoring_Tracker.html',
+                'size-stocks': 'size_stocks.html',
+                'allocation': 'allocate.html',
+                'smartNotes': 'smartNotes.html',
+                'calendar': 'calendar.html',
+                'reports': 'reports.html',
+                'Pending_PO': 'Pending_PO.html',
+                'target': 'target.html',
+                'notifications': 'notifications.html'
+            };
+
+            if (routes[pageId]) {
+                document.body.classList.add('page-exit');
+                setTimeout(() => {
+                    window.location.href = routes[pageId];
+                }, 200);
+            }
+        }
+
+        // Sidebar Toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            if (!sidebar) return;
+            const isCollapsed = sidebar.classList.contains('sidebar-collapsed');
+            if (isCollapsed) {
+                sidebar.classList.remove('sidebar-collapsed');
+                sidebar.classList.add('sidebar-expanded');
+                localStorage.setItem('sidebar_collapsed', 'false');
+            } else {
+                sidebar.classList.remove('sidebar-expanded');
+                sidebar.classList.add('sidebar-collapsed');
+                localStorage.setItem('sidebar_collapsed', 'true');
+            }
+        }
+
+        // Restore Sidebar State
+        if (localStorage.getItem('sidebar_collapsed') === 'true') {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) {
+                sidebar.classList.remove('sidebar-expanded');
+                sidebar.classList.add('sidebar-collapsed');
+            }
+        }
+
+        // Live Clock & Date
+        function updateClock() {
+            const now = new Date();
+            const timeEl = document.getElementById('live-clock');
+            const dateEl = document.getElementById('live-date');
+            if (timeEl) {
+                timeEl.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+            }
+            if (dateEl) {
+                dateEl.textContent = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+            }
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Exit Modal
+        function openExitModal() {
+            const modal = document.getElementById('exitConfirmModal');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeExitModal() {
+            const modal = document.getElementById('exitConfirmModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function confirmExitApp() {
+            if (window.desktopAPI && typeof window.desktopAPI.quitApp === 'function') {
+                window.desktopAPI.quitApp();
+            } else if (window.desktopAPI && typeof window.desktopAPI.close === 'function') {
+                window.desktopAPI.close();
+            } else {
+                window.close();
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeExitModal();
+        });
+
+        // Filter & Search State
+        let currentFilter = 'all';
+        let searchQuery = '';
+
+        function setCategoryFilter(cat) {
+            currentFilter = cat;
+            document.querySelectorAll('.category-filter-btn').forEach(btn => {
+                if (btn.getAttribute('data-filter') === cat) {
+                    btn.className = 'category-filter-btn px-3 py-1 rounded-lg text-xs font-bold bg-[#242424] dark:bg-neutral-700 text-white transition';
+                } else {
+                    btn.className = 'category-filter-btn px-3 py-1 rounded-lg text-xs font-semibold text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition';
+                }
+            });
+            renderFullNotificationList();
+        }
+
+        function onSearchNotifications(q) {
+            searchQuery = (q || '').trim().toLowerCase();
+            renderFullNotificationList();
+        }
+
+        function getCategoryBadge(cat) {
+            switch (cat) {
+                case 'walkin':
+                    return '\x3Cspan class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300">Walk-in\x3C/span>';
+                case 'tailoring':
+                    return '\x3Cspan class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">Meeting\x3C/span>';
+                case 'routine':
+                    return '\x3Cspan class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300">Audit\x3C/span>';
+                case 'report':
+                    return '\x3Cspan class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">Report\x3C/span>';
+                default:
+                    return '\x3Cspan class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300">System\x3C/span>';
+            }
+        }
+
+        function escapeText(str) {
+            return String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function renderFullNotificationList() {
+            const container = document.getElementById('fullNotificationList');
+            if (!container) return;
+
+            let notifs = Array.isArray(window.notifications) ? window.notifications : [];
+            const totalCount = notifs.length;
+
+            const pill = document.getElementById('activeNotifsPill');
+            if (pill) pill.textContent = `${totalCount} Active`;
+
+            const badge = document.getElementById('inboxCountBadge');
+            if (badge) badge.textContent = `(${totalCount})`;
+
+            // Filter by category
+            if (currentFilter !== 'all') {
+                notifs = notifs.filter(n => n.category === currentFilter);
+            }
+
+            // Filter by search query
+            if (searchQuery) {
+                notifs = notifs.filter(n => (n.msg || '').toLowerCase().includes(searchQuery));
+            }
+
+            if (notifs.length === 0) {
+                container.innerHTML = `
+                    \x3Cdiv class="flex flex-col items-center justify-center py-20 text-center my-auto">
+                        \x3Cdiv class="w-16 h-16 rounded-3xl bg-neutral-100 dark:bg-neutral-800/80 text-neutral-400 flex items-center justify-center mb-4">
+                            \x3Csvg class="w-8 h-8 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                \x3Cpath stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                            \x3C/svg>
+                        \x3C/div>
+                        \x3Ch4 class="text-sm font-extrabold text-[#1a1a1a] dark:text-neutral-100">All caught up!\x3C/h4>
+                        \x3Cp class="text-xs text-neutral-400 max-w-xs mt-1">No notifications match your current filter. Scheduled alerts will appear automatically when due.\x3C/p>
+                    \x3C/div>
+                `;
+                return;
+            }
+
+            container.innerHTML = notifs.map((n, idx) => `
+                \x3Cdiv class="notif-item-card flex items-start justify-between p-4 rounded-2xl bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-100 dark:border-neutral-700/60 transition group">
+                    \x3Cdiv class="flex items-start gap-3 flex-1 min-w-0 pr-3">
+                        \x3Cdiv class="w-2.5 h-2.5 rounded-full bg-[#f4c74a] mt-1.5 flex-shrink-0">\x3C/div>
+                        \x3Cdiv class="flex-1 min-w-0">
+                            \x3Cdiv class="flex items-center gap-2 mb-1 flex-wrap">
+                                ${getCategoryBadge(n.category)}
+                                \x3Cspan class="text-[10px] font-semibold text-neutral-400">${escapeText(n.time || '')}\x3C/span>
+                            \x3C/div>
+                            \x3Cdiv class="text-xs sm:text-sm font-bold text-[#1a1a1a] dark:text-neutral-100 leading-snug break-words">
+                                ${escapeText(n.msg || '')}
+                            \x3C/div>
+                        \x3C/div>
+                    \x3C/div>
+                    \x3Cbutton onclick="deleteNotificationItem(${idx})" class="p-1.5 rounded-xl text-neutral-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition" title="Dismiss Alert">
+                        \x3Csvg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            \x3Cpath stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        \x3C/svg>
+                    \x3C/button>
+                \x3C/div>
+            `).join('');
+        }
+
+        function deleteNotificationItem(index) {
+            if (Array.isArray(window.notifications) && window.notifications[index]) {
+                window.notifications.splice(index, 1);
+                window.saveNotifications();
+                renderFullNotificationList();
+            }
+        }
+
+        function clearAllNotificationsWithConfirm() {
+            if (!Array.isArray(window.notifications) || window.notifications.length === 0) return;
+            window.notifications = [];
+            window.saveNotifications();
+            renderFullNotificationList();
+            showToast('All notifications cleared', 'info');
+        }
+
+        function updateRoutineSetting(key, val) {
+            if (typeof window.updateNotifSetting === 'function') {
+                window.updateNotifSetting(key, val);
+            }
+        }
+
+        function resetRoutineSettings() {
+            if (typeof window.resetNotifSettings === 'function') {
+                window.resetNotifSettings();
+                syncTogglesFromStorage();
+            }
+        }
+
+        function syncTogglesFromStorage() {
+            const settings = window.notifSettings || {};
+            const keys = ['masterEnabled', 'hourlyWalkin', 'tailoringMeeting', 'storeRoutine', 'pendingReports', 'desktopPush', 'toastPopups', 'audioChime'];
+            keys.forEach(k => {
+                const el = document.getElementById('toggle_' + k);
+                if (el) {
+                    el.checked = !!settings[k];
+                }
+            });
+        }
+
+        function playChimeSample() {
+            if (typeof window.playNotificationChimeExplicit === 'function') {
+                window.playNotificationChimeExplicit();
+            } else if (typeof window.playNotificationChime === 'function') {
+                window.playNotificationChime();
+            }
+        }
+
+        // Global Toast Notification inside page
+        function showToast(msg, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-6 right-6 z-[999999] px-4 py-2.5 rounded-2xl text-xs font-bold text-white shadow-xl transition-all duration-300 transform translate-y-4 opacity-0 flex items-center gap-2 ${type === 'success' ? 'bg-emerald-600' : type === 'warning' ? 'bg-amber-600' : type === 'error' ? 'bg-rose-600' : 'bg-[#242424]'}`;
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.remove('translate-y-4', 'opacity-0');
+            }, 10);
+            setTimeout(() => {
+                toast.classList.add('translate-y-4', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Initialization
+        window.addEventListener('DOMContentLoaded', () => {
+            syncTogglesFromStorage();
+            renderFullNotificationList();
+        });
+
+        // Listen for storage events (e.g., alerts triggered in background)
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'smart_dash_notifications') {
+                renderFullNotificationList();
+            } else if (e.key === 'smart_dash_notif_settings') {
+                syncTogglesFromStorage();
+            }
+        });
+
+        // Observe custom notification events
+        window.addEventListener('smart_dash_notification_added', () => {
+            renderFullNotificationList();
+        });
+    </script>
+</body>
+
+</html>
